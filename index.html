@@ -13,13 +13,116 @@
 </head>
 <body>
   <header class="hero">
+    
     <div class="sports-scene" aria-hidden="true">
-      <span class="sport-figure f1">⚽</span>
-      <span class="sport-figure f2">🏃</span>
-      <span class="sport-figure f3">🏐</span>
-      <span class="sport-figure f4">🏀</span>
-      <span class="sport-figure f5">🤸</span>
-      <span class="sport-figure f6">🏃‍♀️</span>
+      <svg class="hero-sports-art" viewBox="0 0 1600 620" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="skyG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#dbeff3"/>
+            <stop offset="45%" stop-color="#f7e8d2"/>
+            <stop offset="100%" stop-color="#f2c8b8"/>
+          </linearGradient>
+          <linearGradient id="fieldG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b8d7c7"/>
+            <stop offset="100%" stop-color="#8eb9a2"/>
+          </linearGradient>
+          <filter id="softShadow">
+            <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#6d7d77" flood-opacity=".18"/>
+          </filter>
+        </defs>
+
+        <!-- sky / festival field -->
+        <rect width="1600" height="620" fill="url(#skyG)"/>
+        <circle cx="1360" cy="90" r="58" fill="#f5c96d" opacity=".7"/>
+        <path d="M0 420 Q300 355 610 405 T1200 390 T1600 405 V620 H0Z" fill="url(#fieldG)"/>
+        <path d="M0 505 Q420 455 800 515 T1600 490" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="5"/>
+        <path d="M0 555 Q420 505 800 565 T1600 540" fill="none" stroke="#ffffff" stroke-opacity=".38" stroke-width="4"/>
+
+        <!-- flags / festival -->
+        <path d="M160 115 Q520 55 880 115 T1460 92" fill="none" stroke="#ffffff" stroke-width="3" opacity=".75"/>
+        <g opacity=".9">
+          <path d="M270 92 l26 9 -20 18 z" fill="#e69379"/>
+          <path d="M410 78 l28 8 -20 20 z" fill="#e5c568"/>
+          <path d="M555 77 l28 10 -22 19 z" fill="#80b7b7"/>
+          <path d="M705 93 l28 10 -22 18 z" fill="#d6a3b8"/>
+          <path d="M865 108 l26 10 -20 18 z" fill="#e69379"/>
+          <path d="M1040 105 l28 9 -21 19 z" fill="#e5c568"/>
+          <path d="M1225 94 l27 10 -22 18 z" fill="#80b7b7"/>
+        </g>
+
+        <!-- runner left -->
+        <g transform="translate(230 290)" stroke="#375d63" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
+          <circle cx="26" cy="-30" r="22" fill="#f2b59b" stroke="none"/>
+          <path d="M22 0 L58 72"/>
+          <path d="M45 42 L-5 68"/>
+          <path d="M46 42 L92 22"/>
+          <path d="M58 72 L10 132"/>
+          <path d="M58 72 L122 122"/>
+        </g>
+
+        <!-- jump rope center-left -->
+        <g transform="translate(525 270)" stroke="#745b65" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
+          <circle cx="0" cy="-40" r="21" fill="#f3b9a4" stroke="none"/>
+          <path d="M0 -10 L0 74"/>
+          <path d="M0 22 L-52 50"/>
+          <path d="M0 22 L50 44"/>
+          <path d="M0 74 L-34 140"/>
+          <path d="M0 74 L42 138"/>
+          <path d="M-55 45 Q-95 125 -35 176 Q30 210 78 148 Q102 90 49 40" stroke="#f5f0e8" stroke-width="6"/>
+        </g>
+
+        <!-- basketball player center -->
+        <g transform="translate(820 245)" stroke="#4f6670" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
+          <circle cx="5" cy="-42" r="22" fill="#efae8e" stroke="none"/>
+          <path d="M5 -10 L15 78"/>
+          <path d="M10 18 L-50 40"/>
+          <path d="M10 18 L74 -8"/>
+          <path d="M15 78 L-30 150"/>
+          <path d="M15 78 L68 145"/>
+          <circle cx="106" cy="-20" r="24" fill="#d48454" stroke="#b96a41" stroke-width="5"/>
+        </g>
+
+        <!-- volleyball player -->
+        <g transform="translate(1085 255)" stroke="#556f68" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
+          <circle cx="0" cy="-42" r="22" fill="#f0b39a" stroke="none"/>
+          <path d="M0 -10 L-5 75"/>
+          <path d="M-2 12 L-62 -22"/>
+          <path d="M-2 12 L54 -28"/>
+          <path d="M-5 75 L-48 145"/>
+          <path d="M-5 75 L42 142"/>
+          <circle cx="72" cy="-70" r="21" fill="#faf7ef" stroke="#7aa0a0" stroke-width="5"/>
+          <path d="M60 -82 q14 14 25 4 M56 -64 q18 -5 28 6" stroke="#7aa0a0" stroke-width="3"/>
+        </g>
+
+        <!-- tug of war right -->
+        <g transform="translate(1300 335)" filter="url(#softShadow)">
+          <path d="M-110 35 L210 5" stroke="#f4eee5" stroke-width="10" stroke-linecap="round"/>
+          <g transform="translate(-65 0)" stroke="#6a5964" stroke-width="15" stroke-linecap="round" fill="none">
+            <circle cx="0" cy="-35" r="20" fill="#efb096" stroke="none"/>
+            <path d="M0 -5 L-12 65"/>
+            <path d="M-5 20 L-58 8"/>
+            <path d="M-8 24 L50 16"/>
+            <path d="M-12 65 L-58 120"/>
+            <path d="M-12 65 L34 112"/>
+          </g>
+          <g transform="translate(58 -8)" stroke="#54666d" stroke-width="15" stroke-linecap="round" fill="none">
+            <circle cx="0" cy="-35" r="20" fill="#f2b59b" stroke="none"/>
+            <path d="M0 -5 L-8 65"/>
+            <path d="M-3 20 L-52 10"/>
+            <path d="M-5 24 L48 14"/>
+            <path d="M-8 65 L-48 116"/>
+            <path d="M-8 65 L38 112"/>
+          </g>
+        </g>
+
+        <!-- motion streaks -->
+        <g stroke="#ffffff" stroke-linecap="round" opacity=".5">
+          <path d="M92 340 H190" stroke-width="8"/>
+          <path d="M125 375 H205" stroke-width="5"/>
+          <path d="M720 350 H770" stroke-width="6"/>
+          <path d="M1180 410 H1250" stroke-width="6"/>
+        </g>
+      </svg>
     </div>
     <div class="confetti c1"></div><div class="confetti c2"></div><div class="confetti c3"></div>
     <div class="hero-inner">
