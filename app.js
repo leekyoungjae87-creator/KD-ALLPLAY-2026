@@ -190,32 +190,60 @@ function renderOps(query=''){
 opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
 
-qnaForm.onsubmit=e=>{
+
+const SUPA_ENABLED = Boolean(window.KD_SUPABASE_URL && window.KD_SUPABASE_ANON_KEY && window.supabase);
+const kdSupa = SUPA_ENABLED ? window.supabase.createClient(window.KD_SUPABASE_URL, window.KD_SUPABASE_ANON_KEY) : null;
+
+async function getQnaData(){
+  if(SUPA_ENABLED){
+    const {data,error}=await kdSupa.from('qna').select('*').order('created_at',{ascending:false});
+    if(error){ console.error(error); return []; }
+    return (data||[]).map(x=>({
+      id:String(x.id),
+      no:x.student_no||'',
+      name:x.student_name||'',
+      question:x.question||'',
+      answer:x.answer||'',
+      time:x.created_at ? new Date(x.created_at).toLocaleString() : ''
+    }));
+  }
+  return load(STORE.qna,[]).slice().reverse();
+}
+
+qnaForm.onsubmit=async e=>{
   e.preventDefault();
-  let a=load(STORE.qna,[]);
-  a.push({
-    id:'q'+Date.now(),
+  const payload={
     no:qnaNo.value.trim(),
     name:qnaName.value.trim(),
-    question:qnaQuestion.value.trim(),
-    answer:'',
-    time:new Date().toLocaleString()
-  });
-  save(STORE.qna,a);
+    question:qnaQuestion.value.trim()
+  };
+  if(SUPA_ENABLED){
+    const {error}=await kdSupa.from('qna').insert({
+      student_no:payload.no,
+      student_name:payload.name,
+      question:payload.question
+    });
+    if(error){ alert('질문 등록 중 오류가 발생했습니다.'); console.error(error); return; }
+  }else{
+    let a=load(STORE.qna,[]);
+    a.push({id:'q'+Date.now(),...payload,answer:'',time:new Date().toLocaleString()});
+    save(STORE.qna,a);
+  }
   e.target.reset();
-  renderQna();
-  alert('질문이 등록되었습니다.');
+  await renderQna();
+  alert(SUPA_ENABLED?'질문이 등록되었습니다. 선생님 화면에서도 확인할 수 있습니다.':'질문이 이 기기에 등록되었습니다. Supabase 연결 전에는 다른 기기와 공유되지 않습니다.');
 };
-function renderQna(){
-  let a=load(STORE.qna,[]);
-  qnaList.innerHTML=a.length?a.slice().reverse().map(x=>`
+
+async function renderQna(){
+  let a=await getQnaData();
+  qnaList.innerHTML=a.length?a.map(x=>`
     <article class="qna-card">
       <div class="qna-card-head"><b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))}</b><small>${escapeHtml(x.time||'')}</small></div>
       <p class="qna-question">${escapeHtml(x.question)}</p>
       ${x.answer?`<div class="qna-answer"><b>관리자 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<span class="qna-wait">답변 대기</span>`}
     </article>`).join(''):`<div class="post">아직 등록된 질문이 없습니다.</div>`;
 
-  let recent=a.slice().reverse().slice(0,3);
+  let recent=a.slice(0,3);
   homeQnaList.innerHTML=recent.length?recent.map(x=>`
     <div class="home-qna-item">
       <b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.question.length>36?x.question.slice(0,36)+'…':x.question)}</b>
@@ -253,17 +281,27 @@ function staffView(v){
     staffContent.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
-    let a=load(STORE.qna,[]);
-    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>학생 질문을 확인하고 답변을 저장합니다.</p>
-      <div>${a.length?a.slice().reverse().map(x=>`<div class="staff-qna-card">
+    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>${SUPA_ENABLED?'학생 질문이 모든 기기에서 실시간으로 공유됩니다.':'현재는 기기 내 저장 모드입니다. config.js에 Supabase 정보를 입력하면 다기기 공유가 활성화됩니다.'}</p><div id="staffQnaItems">불러오는 중...</div>`;
+    getQnaData().then(a=>{
+      staffQnaItems.innerHTML=a.length?a.map(x=>`<div class="staff-qna-card">
         <small>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.time||'')}</small>
         <b>${escapeHtml(x.question)}</b>
         <textarea id="qa_${x.id}" placeholder="관리자 답변을 입력하세요.">${escapeHtml(x.answer||'')}</textarea>
         <button data-qna-save="${x.id}">답변 저장</button>
-      </div>`).join(''):'<div class="info-note">아직 등록된 질문이 없습니다.</div>'}</div>`;
-    document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=()=>{
-      let list=load(STORE.qna,[]), item=list.find(x=>x.id===btn.dataset.qnaSave);
-      if(item){item.answer=document.getElementById(`qa_${item.id}`).value.trim();save(STORE.qna,list);renderQna();alert('답변을 저장했습니다.');staffView('qnaanswer')}
+      </div>`).join(''):'<div class="info-note">아직 등록된 질문이 없습니다.</div>';
+      document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{
+        const answer=document.getElementById(`qa_${btn.dataset.qnaSave}`).value.trim();
+        if(SUPA_ENABLED){
+          const {error}=await kdSupa.from('qna').update({answer}).eq('id',btn.dataset.qnaSave);
+          if(error){ alert('답변 저장 중 오류가 발생했습니다.'); console.error(error); return; }
+        }else{
+          let list=load(STORE.qna,[]), item=list.find(x=>String(x.id)===String(btn.dataset.qnaSave));
+          if(item){item.answer=answer;save(STORE.qna,list);}
+        }
+        await renderQna();
+        alert('답변을 저장했습니다.');
+        staffView('qnaanswer');
+      });
     });
   } else if(v==='performance'){
     staffContent.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
@@ -273,3 +311,9 @@ function staffView(v){
 }
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+
+if(SUPA_ENABLED){
+  kdSupa.channel('qna-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:'qna'},()=>renderQna())
+    .subscribe();
+}
