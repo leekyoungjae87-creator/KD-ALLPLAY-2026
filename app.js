@@ -51,7 +51,7 @@ const ops = [
   ["이어달리기 결승","체육교사","배턴터치존·골인지점 운영"]
 ];
 const defaultNotices = [
-  {title:"선수 대기 안내",body:"참가 선수는 경기 시작 10분 전 대기 장소로 이동해 주세요.",time:"행사 운영 안내"},
+  {title:"선수 대기 안내",body:"참가 선수는 경기 시작 5분 전 대기 장소로 이동해 주세요.",time:"행사 운영 안내"},
   {title:"참가 원칙",body:"달리는 줄다리기를 제외하고 1인당 최소 2종목 이상, 최대 4종목까지 참여합니다.",time:"참가 요강"},
   {title:"안전 안내",body:"경기 중 심판의 안내와 안전수칙을 반드시 지켜 주세요.",time:"안전교육"}
 ];
@@ -317,3 +317,102 @@ if(SUPA_ENABLED){
     .on('postgres_changes',{event:'*',schema:'public',table:'qna'},()=>renderQna())
     .subscribe();
 }
+
+
+const WEATHER_EVENT_DATE='2026-10-01';
+const WEATHER_LAT=36.6424;
+const WEATHER_LON=127.4890;
+
+function weatherIcon(code){
+  if(code===0) return '☀️';
+  if([1,2].includes(code)) return '🌤️';
+  if(code===3) return '☁️';
+  if([45,48].includes(code)) return '🌫️';
+  if([51,53,55,56,57].includes(code)) return '🌦️';
+  if([61,63,65,66,67,80,81,82].includes(code)) return '🌧️';
+  if([71,73,75,77,85,86].includes(code)) return '🌨️';
+  if([95,96,99].includes(code)) return '⛈️';
+  return '🌤️';
+}
+function weatherText(code){
+  if(code===0) return '맑음';
+  if([1,2].includes(code)) return '대체로 맑음';
+  if(code===3) return '흐림';
+  if([45,48].includes(code)) return '안개';
+  if([51,53,55,56,57].includes(code)) return '이슬비 가능';
+  if([61,63,65,66,67,80,81,82].includes(code)) return '비 가능';
+  if([71,73,75,77,85,86].includes(code)) return '눈 가능';
+  if([95,96,99].includes(code)) return '뇌우 가능';
+  return '예보 확인';
+}
+async function loadEventWeather(){
+  const headline=document.getElementById('weatherHeadline');
+  if(!headline) return;
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,weather_code&timezone=Asia%2FSeoul&forecast_days=16`;
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok) throw new Error('weather fetch failed');
+    const data=await res.json();
+    const di=(data.daily?.time||[]).indexOf(WEATHER_EVENT_DATE);
+
+    if(di<0){
+      weatherHeadline.textContent='예보 제공 전';
+      weatherSummary.textContent='행사일이 예보 범위에 들어오면 자동으로 최신 예보를 표시합니다.';
+      weatherSymbol.textContent='🗓️';
+      weatherStatus.className='weather-status';
+      weatherStatus.innerHTML='<div class="weather-status-icon">🗓️</div><div><b>아직 행사일 예보 제공 전입니다.</b><p>행사일이 가까워지면 기온·강수확률·풍속·시간대별 예보가 자동으로 나타납니다.</p></div>';
+      return;
+    }
+
+    const code=data.daily.weather_code[di];
+    const tmax=Math.round(data.daily.temperature_2m_max[di]);
+    const tmin=Math.round(data.daily.temperature_2m_min[di]);
+    const rain=Math.round(data.daily.precipitation_probability_max[di]??0);
+    const wind=Math.round((data.daily.wind_speed_10m_max[di]??0)*10)/10;
+
+    weatherHeadline.textContent=weatherText(code);
+    weatherSummary.textContent=`최고 ${tmax}℃ · 최저 ${tmin}℃ · 강수확률 ${rain}%`;
+    weatherSymbol.textContent=weatherIcon(code);
+    weatherTemp.textContent=`${tmax}℃ / ${tmin}℃`;
+    weatherRain.textContent=`${rain}%`;
+    weatherWind.textContent=`${wind} km/h`;
+
+    const hours=['09:00','12:00','15:00'];
+    const hourlyHtml=[];
+    let humidities=[];
+    hours.forEach(h=>{
+      const target=`${WEATHER_EVENT_DATE}T${h}`;
+      const hi=(data.hourly?.time||[]).indexOf(target);
+      if(hi>=0){
+        const ht=Math.round(data.hourly.temperature_2m[hi]);
+        const hr=Math.round(data.hourly.precipitation_probability[hi]??0);
+        const hh=Math.round(data.hourly.relative_humidity_2m[hi]??0);
+        const hc=data.hourly.weather_code[hi];
+        humidities.push(hh);
+        hourlyHtml.push(`<div class="weather-hour"><time>${h}</time><span>${weatherIcon(hc)}</span><b>${ht}℃</b><small>강수 ${hr}% · 습도 ${hh}%</small></div>`);
+      }
+    });
+    if(hourlyHtml.length) weatherHourly.innerHTML=hourlyHtml.join('');
+    if(humidities.length) weatherHumidity.textContent=`${Math.round(humidities.reduce((a,b)=>a+b,0)/humidities.length)}%`;
+
+    let cls='good', icon='🟢', title='현재 예보 기준 정상 진행 가능';
+    let detail='기상 상황을 계속 확인하며 정상 운영을 준비하세요.';
+    if(rain>=60){cls='rain';icon='🌧️';title='우천 대비 필요';detail='강수확률이 높습니다. 우천 대체 운영과 장비 보호를 함께 준비하세요.'}
+    else if(rain>=30){cls='warn';icon='🟡';title='강수 가능성 확인';detail='경기 전 최신 강수 예보와 운동장 상태를 다시 확인하세요.'}
+    weatherStatus.className=`weather-status ${cls}`;
+    weatherStatus.innerHTML=`<div class="weather-status-icon">${icon}</div><div><b>${title}</b><p>${detail}</p></div>`;
+
+    weatherTips.innerHTML=`
+      <div><span>${rain>=60?'🌧️':'🟢'}</span><b>${rain>=60?'우천 대비':'정상 진행 체크'}</b><small>${rain>=60?'대체 장소·우천 운영안 확인':'현재 예보 기준 운영 가능'}</small></div>
+      <div><span>💧</span><b>수분 섭취</b><small>${tmax>=26?'기온이 높아 음수 시간을 자주 안내':'종목 사이 충분한 음수 안내'}</small></div>
+      <div><span>${tmax>=24?'☀️':'🧢'}</span><b>햇빛 대비</b><small>${tmax>=24?'모자·자외선 차단 준비 권장':'장시간 야외활동 대비 권장'}</small></div>
+      <div><span>💨</span><b>바람 확인</b><small>${wind>=25?'깃발·천막·방송 장비 고정 강화':'깃발·천막 고정 상태 확인'}</small></div>`;
+  }catch(err){
+    console.error(err);
+    weatherHeadline.textContent='예보를 불러오지 못했습니다';
+    weatherSummary.textContent='잠시 후 다시 새로고침해 주세요.';
+    weatherSymbol.textContent='🔄';
+  }
+}
+document.getElementById('weatherRefresh')?.addEventListener('click',loadEventWeather);
+loadEventWeather();
