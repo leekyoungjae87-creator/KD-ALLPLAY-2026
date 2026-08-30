@@ -1047,3 +1047,33 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:520px){
   #seating .grade3 .seat-row{grid-template-columns:repeat(2,1fr)}
 }
+
+/* v22 compact seating diagram */
+.compact-seat-map{padding:14px}
+.compact-map{display:grid;grid-template-columns:.72fr 2.2fr 1fr;gap:10px;align-items:stretch}
+.map-side,.map-center{display:flex;flex-direction:column;gap:9px}
+.map-place{display:grid;place-items:center;min-height:76px;border:1px solid #dfe7e3;border-radius:13px;background:#f8fbf9;color:#5e7569;font-size:9px;font-weight:1000;text-align:center}
+.map-place small{font-size:7px;color:#8a9991}
+.map-grade{padding:10px;border:1px solid #e0e6e9;border-radius:14px}
+.map-grade>b{display:block;margin-bottom:7px;font-size:9px;color:#445d6d}
+.map-grade>div{display:grid;gap:5px}
+.map-grade.g1{background:#f3f8ff}.map-grade.g1>div{grid-template-columns:repeat(7,1fr)}
+.map-grade.g2{background:#fff8ef;flex:1}.map-grade.g2>div{grid-template-columns:repeat(2,1fr)}
+.map-grade.g2 .last-class{display:flex;justify-content:flex-end;margin-top:5px}
+.map-grade.g2 .last-class span{width:46%}
+.map-grade.g3{background:#f6f3ff}.map-grade.g3>div{grid-template-columns:repeat(8,1fr)}
+.map-grade span,.map-grade strong{display:grid;place-items:center;min-height:34px;border-radius:8px;background:#fff;border:1px solid #dfe6ea;font-size:8px;color:#465d6c;font-weight:1000;text-align:center}
+.map-grade strong{background:#365f4b;color:#fff;border-color:#365f4b;line-height:1.1}
+.map-grade strong small{font-size:6px;color:#e8f1ed}
+.field-core{flex:1;min-height:115px;display:grid;place-items:center;align-content:center;border:2px dashed #d8e7de;border-radius:18px;background:linear-gradient(145deg,#f4faf6,#fff);font-size:13px;font-weight:1000;color:#5b7868;text-align:center}
+.field-core small{font-size:8px;color:#8ba095;margin-top:3px}
+.map-bottom{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-top:10px}
+.map-bottom>*{padding:9px;border-radius:10px;background:#f5f7f9;border:1px solid #e2e7ea;text-align:center;font-size:8px;color:#61717d}
+@media(max-width:720px){
+ .compact-map{grid-template-columns:1fr}
+ .map-grade.g1>div{grid-template-columns:repeat(4,1fr)}
+ .map-grade.g3>div{grid-template-columns:repeat(4,1fr)}
+ .map-grade.g2>div{grid-template-columns:repeat(4,1fr)}
+ .map-grade.g2 .last-class span{width:auto}
+ .map-bottom{grid-template-columns:1fr 1.5fr 1fr}
+}
