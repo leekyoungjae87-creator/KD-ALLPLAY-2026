@@ -155,3 +155,59 @@ function renderSimpleDday(){
   else{el.textContent='ALL PLAY';msg.textContent='함께 만든 멋진 하루를 기억해요!';}
 }
 renderSimpleDday();
+
+
+function updateKrDday(){
+  const target = new Date(2026,9,1);
+  const now = new Date();
+  const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff = Math.ceil((target-today)/86400000);
+  const text = diff>0 ? `D-${diff}` : diff===0 ? 'D-DAY' : 'ALL PLAY';
+  const el = document.getElementById('ddayNumber');
+  const home = document.getElementById('homeDday');
+  if(el) el.textContent = text;
+  if(home) home.textContent = text;
+  const msg = document.getElementById('ddayMessage');
+  if(msg){
+    msg.textContent = diff>0 ? `${diff}일 뒤, 체육한마당에서 만나요!`
+      : diff===0 ? '오늘은 경덕 ALL PLAY 체육한마당!' : '함께 만든 멋진 하루를 기억해요!';
+  }
+}
+
+function updateKrNow(){
+  const nowEl = document.getElementById('krNowEvent');
+  const nextEl = document.getElementById('krNextEvent');
+  if(!nowEl || !nextEl) return;
+
+  const now = new Date();
+  const y=now.getFullYear(), m=now.getMonth()+1, d=now.getDate();
+  if(!(y===2026 && m===10 && d===1)){
+    nowEl.textContent='체육한마당 준비 중';
+    nextEl.textContent='10월 1일 08:30 개회식';
+    return;
+  }
+
+  const mins=now.getHours()*60+now.getMinutes();
+  const slots=[
+    [495,510,'학급 집결','08:30 개회식'],
+    [510,540,'개회식 · 준비운동','09:00 학급 응원 퍼포먼스'],
+    [540,570,'학급 응원 퍼포먼스','09:30 순환 종목'],
+    [570,605,'순환 종목 1','10:05 순환 종목 2'],
+    [605,640,'순환 종목 2','10:40 순환 종목 3'],
+    [640,675,'순환 종목 3','11:15 2인3각 릴레이'],
+    [675,720,'2인3각 릴레이','12:00 점심시간'],
+    [720,780,'점심시간','13:00 집결 · 축하공연'],
+    [780,800,'집결 · 축하공연','13:20 달리는 줄다리기'],
+    [800,840,'달리는 줄다리기','14:00 미션 이어달리기'],
+    [840,870,'미션 이어달리기','14:30 이어달리기 결승'],
+    [870,900,'이어달리기 결승','15:00 시상 및 폐회'],
+    [900,930,'시상 · 폐회 · 정리','행사 종료']
+  ];
+  const slot=slots.find(s=>mins>=s[0] && mins<s[1]);
+  if(slot){ nowEl.textContent=slot[2]; nextEl.textContent=slot[3]; }
+  else if(mins<495){ nowEl.textContent='행사 시작 전'; nextEl.textContent='08:15 학급 집결'; }
+  else{ nowEl.textContent='행사 종료'; nextEl.textContent='수고했어요!'; }
+}
+updateKrDday();
+updateKrNow();
+setInterval(updateKrNow,60000);

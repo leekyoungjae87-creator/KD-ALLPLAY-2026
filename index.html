@@ -12,20 +12,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero compact-hero">
-    <div class="compact-hero-inner">
-      <div>
-        <span class="compact-kicker">2026 경덕중학교</span>
-        <h1>ALL <em>PLAY</em> 체육한마당</h1>
-        <p>모두가 함께, 모두가 빛나는 하루</p>
-      </div>
-      <div class="compact-meta">
-        <span>📅 2026. 10. 1.(목)</span>
-        <span>⏰ 08:30~16:00</span>
-        <span>📍 운동장 · 경덕관</span>
-      </div>
+  <header class="hero kr-header">
+  <div class="kr-header-inner">
+    <div>
+      <span class="kr-school">2026 경덕중학교</span>
+      <h1>경덕 <b>ALL PLAY</b> 체육한마당</h1>
+      <p>모두가 함께, 모두가 빛나는 하루</p>
     </div>
-  </header>
+    <div class="kr-header-meta">
+      <span>📅 2026. 10. 1.(목)</span>
+      <span>⏰ 08:30~16:00</span>
+      <span>📍 운동장 · 경덕관</span>
+    </div>
+  </div>
+</header>
 
   <nav class="nav" id="nav">
     <button class="nav-btn active" data-section="home">홈</button>
@@ -97,22 +97,30 @@
     </section>
 
     
-    <section id="dday" class="page">
-      <div class="section-visual"><span class="section-visual-icon">⏳</span><span>D-DAY</span></div>
-      <div class="section-head">
-        <div><span class="kicker">COUNTDOWN</span><h2>체육한마당까지</h2></div>
-      </div>
-      <div class="dday-box">
-        <div class="dday-number" id="ddayNumber">D-DAY</div>
-        <div class="dday-date">2026. 10. 1.(목) 08:30~16:00</div>
-        <div class="dday-place">본교 운동장 · 경덕관</div>
-        <div class="dday-message" id="ddayMessage">모두가 함께, 모두가 빛나는 하루!</div>
-      </div>
-      <div class="dday-links">
-        <button class="btn primary" data-go="schedule">전체 일정 보기</button>
-        <button class="btn ghost" data-go="events">종목 확인하기</button>
-      </div>
-    </section>
+    
+<section id="dday" class="page">
+  <div class="section-visual"><span class="section-visual-icon">⏳</span><span>D-DAY</span></div>
+  <div class="section-head">
+    <div>
+      <span class="kicker">COUNTDOWN</span>
+      <h2>체육한마당까지</h2>
+      <p>10월 1일, 모두 함께 만나요!</p>
+    </div>
+  </div>
+
+  <div class="kr-dday-wrap">
+    <div class="kr-dday-number" id="ddayNumber">D-DAY</div>
+    <div class="kr-dday-date">2026. 10. 1.(목) 08:30~16:00</div>
+    <div class="kr-dday-place">📍 본교 운동장 · 경덕관</div>
+    <div class="kr-dday-message" id="ddayMessage">모두가 함께, 모두가 빛나는 하루!</div>
+  </div>
+
+  <div class="kr-dday-actions">
+    <button class="btn primary" data-go="schedule">오늘 일정 보기</button>
+    <button class="btn ghost" data-go="events">종목·규칙 보기</button>
+  </div>
+</section>
+
 
     <section id="live" class="page">
       <div class="section-visual"><span class="section-visual-icon">📣</span><span>LIVE</span></div>
