@@ -159,7 +159,7 @@
     <button class="nav-btn" data-section="scores">점수·순위</button>
     <button class="nav-btn" data-section="events">종목안내</button>
     <button class="nav-btn" data-section="class">학급페이지</button>
-    <button class="nav-btn" data-section="flags">학급 깃발</button>
+    <button class="nav-btn staff-nav" data-section="staffvote">🔒 교직원 투표</button>
     <button class="nav-btn" data-section="songs">신청곡</button>
     <button class="nav-btn" data-section="gallery">사진·영상</button>
     <button class="nav-btn" data-section="notice">본부공지</button>
@@ -278,18 +278,61 @@
       <div id="classPage"></div>
     </section>
 
-    <section id="flags" class="page">
+    <section id="staffvote" class="page">
       <div class="section-head">
-        <div><span class="kicker">CLASS FLAGS</span><h2>학급 깃발 갤러리</h2></div>
-        <span class="pill">우리 반의 색을 보여주세요</span>
+        <div><span class="kicker">STAFF ONLY</span><h2>🔒 교직원 투표</h2></div>
+        <span class="pill staff-pill">교직원 전용</span>
       </div>
-      <div class="flag-intro">
-        <div>
-          <b>🚩 2026 경덕 ALL PLAY 학급 깃발</b>
-          <p>학급의 개성과 단합을 담은 깃발을 한곳에서 볼 수 있습니다. 관리자 화면에서 사진을 등록하면 이 탭에 표시됩니다.</p>
+
+      <div id="staffLoginBox" class="staff-login-card">
+        <div class="staff-lock">🔐</div>
+        <h3>교직원 전용 메뉴입니다</h3>
+        <p>비밀번호 입력 후 학급 깃발 및 학급 응원 퍼포먼스 투표에 참여할 수 있습니다.</p>
+        <div class="staff-login-row">
+          <input id="staffPassword" type="password" autocomplete="current-password" placeholder="교직원 비밀번호">
+          <button class="btn primary" id="staffLoginBtn">입장하기</button>
         </div>
+        <small id="staffLoginMsg"></small>
       </div>
-      <div id="flagGallery" class="flag-gallery"></div>
+
+      <div id="staffVoteArea" class="staff-vote-area hidden">
+        <div class="staff-vote-banner">
+          <div><b>📣 2026 경덕 ALL PLAY 교직원 투표</b><p>학년별로 가장 뛰어난 학급을 선택해 주세요.</p></div>
+          <button class="btn ghost" id="staffLogoutBtn">로그아웃</button>
+        </div>
+
+        <div class="staff-vote-grid">
+          <article class="staff-vote-card flag-vote-card">
+            <div class="staff-card-title">
+              <span class="staff-icon">🚩</span>
+              <div><h3>학급 깃발 투표</h3><p>학급의 개성·창의성·완성도를 고려해 학년별 우수 학급을 선택합니다.</p></div>
+            </div>
+            <div class="vote-control">
+              <label>학년</label><select id="flagVoteGrade"></select>
+              <label>투표할 학급</label><select id="flagVoteClass"></select>
+              <button class="btn navy wide" id="submitFlagVote">학급 깃발 투표하기</button>
+              <small id="flagVoteMsg"></small>
+            </div>
+            <div class="mini-note">※ 학급 깃발 사진은 관리자 메뉴에서 등록하며, 등록된 사진을 보고 투표할 수 있도록 구성했습니다.</div>
+            <div id="staffFlagGallery" class="staff-flag-gallery"></div>
+          </article>
+
+          <article class="staff-vote-card performance-vote-card">
+            <div class="staff-card-title">
+              <span class="staff-icon">📣</span>
+              <div><h3>학급 응원 퍼포먼스 투표</h3><p>참여도·협동성·창의성·완성도·호응도를 기준으로 평가합니다.</p></div>
+            </div>
+            <div class="vote-control">
+              <label>학년</label><select id="perfVoteGrade"></select>
+              <label>평가 학급</label><select id="perfVoteClass"></select>
+            </div>
+            <div id="perfVoteForm" class="vote-form staff-rubric"></div>
+            <button class="btn green wide" id="submitPerfVote">응원 퍼포먼스 평가 저장</button>
+            <small id="perfVoteMsg"></small>
+          </article>
+        </div>
+        <div class="staff-security-note">🔒 이 메뉴는 교직원만 사용하도록 비밀번호로 보호됩니다. 실제 여러 기기에서 투표를 모으는 기능은 온라인 DB 연동 단계에서 완성됩니다.</div>
+      </div>
     </section>
 
     <section id="songs" class="page">
@@ -349,7 +392,7 @@
           </article>
 
           <article class="feature">
-            <h3>학급 깃발 등록</h3>
+            <h3>교직원 투표용 학급 깃발 등록</h3>
             <select id="flagGrade"></select>
             <select id="flagClass"></select>
             <input id="flagImage" type="file" accept="image/*">
