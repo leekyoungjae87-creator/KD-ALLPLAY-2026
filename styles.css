@@ -1360,3 +1360,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .rule-body{margin:0 8px 8px;padding:9px 10px 10px}
   .rule-illustration{width:41px;height:41px;font-size:21px}
 }
+
+/* v25 student quick access additions */
+.quick.q10{background:linear-gradient(145deg,#f4f8ff,#ffffff);border-color:#dce7f2}
+.quick.q11{background:linear-gradient(145deg,#fff6f8,#ffffff);border-color:#f0dfe4}
