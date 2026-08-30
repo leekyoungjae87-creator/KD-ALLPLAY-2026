@@ -135,3 +135,34 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .point-notes{margin-top:10px;padding:12px 14px;border-radius:12px;background:#f7f9fb;color:#71808f;font-size:9px}
 .point-notes b,.point-notes span{display:block}.point-notes b{color:#40566d;margin-bottom:5px}.point-notes span+span{margin-top:3px}
 @media(max-width:700px){.point-summary{grid-template-columns:1fr}}
+
+/* v5 cleaner points page */
+.hero-card h2 .hero-focus{
+  font-size:.64em !important;
+}
+.points-clean{display:grid;gap:11px}
+.points-group{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.points-group-head{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;background:#f7f9fb;border-bottom:1px solid #e9edf1}
+.points-group-head small{font-size:8px;letter-spacing:.12em;font-weight:1000;color:#6f8296}
+.points-group-head h3{margin:2px 0 0;font-size:16px;color:#29435f}
+.points-group-head>span{font-size:9px;font-weight:900;color:#59728c;background:#fff;border:1px solid #dfe6ec;border-radius:999px;padding:5px 8px}
+.point-row{display:grid;grid-template-columns:minmax(170px,1.6fr) repeat(5,minmax(58px,.6fr));align-items:center;min-width:570px;border-bottom:1px solid #eef1f4}
+.point-row:last-child{border-bottom:0}
+.point-row>*{padding:10px 8px;text-align:center;font-size:10px}
+.point-row>b{text-align:left;padding-left:15px;color:#344d67;font-size:11px}
+.point-row>strong{color:#b77817;font-size:13px}
+.point-row.point-head{background:#fbfcfd;color:#83909d}
+.point-row.point-head>*{font-size:8px;font-weight:900}
+.point-row.highlight{background:#f3f7fd}
+.point-row.highlight>b{color:#234a7b}
+.points-group{overflow-x:auto}
+.points-foot{margin-top:12px;display:grid;gap:7px}
+.points-foot>div{display:flex;gap:10px;align-items:center;background:#fff8e5;border:1px solid #eee0b7;border-radius:12px;padding:10px 12px}
+.points-foot b{font-size:10px;color:#5a4a24}.points-foot span{font-size:9px;color:#776b51}
+.points-foot>small{padding:0 3px;color:#7d8995;font-size:8px}
+@media(max-width:650px){
+  .points-group-head{padding:11px 12px}
+  .points-group-head>span{font-size:8px}
+  .point-row{grid-template-columns:minmax(145px,1.5fr) repeat(5,minmax(50px,.55fr))}
+  .points-foot>div{align-items:flex-start;flex-direction:column;gap:3px}
+}

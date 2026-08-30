@@ -147,37 +147,55 @@
 
 
   <section class="page" id="points">
-    <div class="page-title scorepoints"><div class="icon">📊</div><div><small>POINT TABLE</small><h2>종목별 배점표</h2><p>체육한마당 종합점수에 반영되는 종목별 배점을 확인하세요.</p></div></div>
+    <div class="page-title scorepoints"><div class="icon">📊</div><div><small>POINT TABLE</small><h2>종목별 배점표</h2><p>종목별 순위에 따른 종합점수 배점을 한눈에 확인하세요.</p></div></div>
 
-    <div class="point-summary">
-      <div><span>최고 배점</span><b>120점</b><small>달리는 줄다리기 · 이어달리기</small></div>
-      <div><span>중점 단체경기</span><b>80점</b><small>2인 3각 1위 기준</small></div>
-      <div><span>순환경기</span><b>60점</b><small>8자 · 슈팅 · 바운드 배구 1위</small></div>
+    <div class="points-clean">
+      <div class="points-group">
+        <div class="points-group-head">
+          <div><small>PRE-GAMES</small><h3>사전 경기</h3></div>
+          <span>1위 최고 50점</span>
+        </div>
+        <div class="point-row point-head"><b>종목</b><span>1위</span><span>2위</span><span>3위</span><span>4위</span><span>5위 이하</span></div>
+        <div class="point-row"><b>⚽ 축구</b><strong>50</strong><span>40</span><span>30</span><span>20</span><span>10</span></div>
+        <div class="point-row"><b>🔴 피구</b><strong>50</strong><span>40</span><span>30</span><span>20</span><span>10</span></div>
+      </div>
+
+      <div class="points-group">
+        <div class="points-group-head">
+          <div><small>ROTATION GAMES</small><h3>순환 경기</h3></div>
+          <span>1위 최고 60점</span>
+        </div>
+        <div class="point-row point-head"><b>종목</b><span>1위</span><span>2위</span><span>3위</span><span>4위</span><span>5위 이하</span></div>
+        <div class="point-row"><b>➰ 8자 줄넘기</b><strong>60</strong><span>50</span><span>40</span><span>30</span><span>20</span></div>
+        <div class="point-row"><b>🏀 슈팅 릴레이</b><strong>60</strong><span>50</span><span>40</span><span>30</span><span>20</span></div>
+        <div class="point-row"><b>🏐 바운드 배구</b><strong>60</strong><span>50</span><span>40</span><span>30</span><span>20</span></div>
+      </div>
+
+      <div class="points-group">
+        <div class="points-group-head">
+          <div><small>TEAM GAMES</small><h3>단체 경기</h3></div>
+          <span>종목별 가중치 적용</span>
+        </div>
+        <div class="point-row point-head"><b>종목</b><span>1위</span><span>2위</span><span>3위</span><span>4위</span><span>5위 이하</span></div>
+        <div class="point-row"><b>👟 2인 3각</b><strong>80</strong><span>70</span><span>60</span><span>50</span><span>40</span></div>
+        <div class="point-row highlight"><b>💪 달리는 줄다리기</b><strong>120</strong><span>100</span><span>80</span><span>60</span><span>40</span></div>
+        <div class="point-row"><b>🎯 미션 이어달리기</b><strong>30</strong><span>20</span><span>10</span><span>-</span><span>-</span></div>
+        <div class="point-row highlight"><b>🏃 이어달리기</b><strong>120</strong><span>100</span><span>80</span><span>60</span><span>40</span></div>
+      </div>
+
+      <div class="points-group points-extra">
+        <div class="points-group-head">
+          <div><small>CLASS ACTIVITY</small><h3>학급 활동</h3></div>
+          <span>교직원 평가</span>
+        </div>
+        <div class="point-row point-head"><b>항목</b><span>1위</span><span>2위</span><span>3위</span><span>4위</span><span>5위 이하</span></div>
+        <div class="point-row"><b>🚩 학급 깃발</b><strong>30</strong><span>20</span><span>10</span><span>-</span><span>-</span></div>
+      </div>
     </div>
 
-    <div class="point-table-wrap">
-      <table class="point-table">
-        <thead>
-          <tr><th>종목</th><th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>5위 이하</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>⚽ 축구</td><td>50</td><td>40</td><td>30</td><td>20</td><td>10</td></tr>
-          <tr><td>🔴 피구</td><td>50</td><td>40</td><td>30</td><td>20</td><td>10</td></tr>
-          <tr><td>🏐 바운드 배구</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
-          <tr><td>➰ 8자 줄넘기</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
-          <tr><td>🏀 슈팅 릴레이</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
-          <tr><td>👟 2인 3각</td><td>80</td><td>70</td><td>60</td><td>50</td><td>40</td></tr>
-          <tr class="major"><td>💪 달리는 줄다리기</td><td>120</td><td>100</td><td>80</td><td>60</td><td>40</td></tr>
-          <tr><td>🎯 미션 이어달리기</td><td>30</td><td>20</td><td>10</td><td>-</td><td>-</td></tr>
-          <tr class="major"><td>🏃 이어달리기</td><td>120</td><td>100</td><td>80</td><td>60</td><td>40</td></tr>
-          <tr><td>🚩 학급 깃발</td><td>30</td><td>20</td><td>10</td><td>-</td><td>-</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="point-notes">
-      <b>배점 안내</b>
-      <span>응원 퍼포먼스는 종합점수에 포함하지 않고 학년별 별도 시상합니다.</span>
-      <span>동점 및 세부 순위는 운영 계획의 종목별 규정에 따라 처리합니다.</span>
+    <div class="points-foot">
+      <div><b>🎉 응원 퍼포먼스</b><span>종합점수에는 포함하지 않으며 학년별 별도 시상합니다.</span></div>
+      <small>※ 종목별 동점 처리 및 세부 순위는 경기 운영 규정에 따릅니다.</small>
     </div>
   </section>
 
