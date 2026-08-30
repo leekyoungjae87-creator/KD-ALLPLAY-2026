@@ -282,3 +282,15 @@ function updateLiveCountdown(){
 }
 updateLiveCountdown();
 setInterval(updateLiveCountdown,1000);
+
+
+function syncFusionStatus(){
+  const d=document.getElementById('fusionDday'), source=document.getElementById('homeDday');
+  if(d && source) d.textContent=source.textContent;
+  const n=document.getElementById('fusionNow'), nx=document.getElementById('fusionNext');
+  const ns=document.getElementById('krNowEvent'), nxs=document.getElementById('krNextEvent');
+  if(n && ns) n.textContent=ns.textContent;
+  if(nx && nxs) nx.textContent=nxs.textContent;
+}
+syncFusionStatus();
+setInterval(syncFusionStatus,1000);

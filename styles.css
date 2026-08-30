@@ -654,3 +654,48 @@ body::before{
   .countdown-grid strong{font-size:24px}
   .dday-hero-card{padding:28px 12px}
 }
+
+/* v11 — Kyongduk × clean school sports-day fusion */
+:root{--fusion-navy:#123968;--fusion-blue:#3974b9;--fusion-green:#2f8a61;--fusion-gold:#e9b83f}
+body{background:linear-gradient(180deg,#f4f8fc 0,#f7faf8 52%,#fffaf4 100%)!important}
+.nav{background:rgba(255,255,255,.96)!important;box-shadow:0 4px 16px rgba(25,52,85,.07);position:sticky;top:0;z-index:50}
+.nav-btn{border-radius:10px!important}
+.fusion-status{
+  max-width:1180px;margin:14px auto 0;padding:0 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px
+}
+.fusion-status button{
+  display:flex;align-items:center;gap:10px;text-align:left;background:#fff;border:1px solid #e0e7ee;
+  border-radius:14px;padding:12px;cursor:pointer;box-shadow:0 5px 14px rgba(25,52,85,.04)
+}
+.fusion-status span{font-size:23px}.fusion-status small,.fusion-status b{display:block}
+.fusion-status small{font-size:10px;color:#7b8793}.fusion-status b{font-size:13px;color:#27405d;margin-top:2px}
+.fusion-status button:first-child{border-bottom:3px solid var(--fusion-gold)}
+.fusion-status button:nth-child(2){border-bottom:3px solid #e26050}
+.fusion-status button:nth-child(3){border-bottom:3px solid var(--fusion-green)}
+.fusion-status button:nth-child(4){border-bottom:3px solid var(--fusion-blue)}
+
+.fusion-tools{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
+.fusion-tool-card{
+  display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid #e1e7ed;
+  border-radius:17px;padding:15px;box-shadow:0 6px 17px rgba(25,52,85,.04)
+}
+.fusion-tool-icon{width:45px;height:45px;display:flex;align-items:center;justify-content:center;background:#f1f6fb;border-radius:14px;font-size:24px}
+.fusion-tool-card b{color:#213d5d}.fusion-tool-card p{margin:4px 0 0;color:#7a8793;font-size:11px}
+.fusion-tool-card button{border:0;background:#edf4fb;color:#285d98;border-radius:999px;padding:8px 10px;font-weight:800;cursor:pointer}
+
+.fusion-info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}
+.fusion-info-row div{background:#fff;border:1px solid #e1e7ed;border-radius:15px;padding:13px;text-align:center}
+.fusion-info-row span,.fusion-info-row b,.fusion-info-row small{display:block}
+.fusion-info-row span{font-size:25px}.fusion-info-row b{margin:5px 0 3px;color:#28415d}.fusion-info-row small{font-size:10px;color:#7c8995}
+
+/* make the main quick cards slightly more like a polished Korean school portal */
+.student-core-wrap{border-top:4px solid var(--fusion-navy)!important}
+.core-card{min-height:150px!important}
+.core-card:hover{border-color:#c8d6e4!important}
+.section-head h2{color:#203c5c}
+.page{border-radius:20px!important}
+@media(max-width:820px){
+ .fusion-status{grid-template-columns:repeat(2,1fr)}
+ .fusion-tools{grid-template-columns:1fr}
+ .fusion-info-row{grid-template-columns:1fr}
+}

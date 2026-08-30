@@ -45,7 +45,15 @@
   </nav>
 
 
-  <main>
+  
+<section class="fusion-status">
+  <button data-go="dday"><span>⏳</span><div><small>체육한마당까지</small><b id="fusionDday">D-DAY</b></div></button>
+  <button data-go="live"><span>🔥</span><div><small>현재 진행</small><b id="fusionNow">행사 준비 중</b></div></button>
+  <button data-go="schedule"><span>⏭️</span><div><small>다음 일정</small><b id="fusionNext">10월 1일 08:30 개회식</b></div></button>
+  <button data-go="notice"><span>📢</span><div><small>본부 안내</small><b>공지 확인</b></div></button>
+</section>
+
+<main>
     <section id="home" class="page active">
       <div class="section-head">
         <div><span class="kicker">BEFORE · LIVE · AFTER</span><h2>경덕 ALL PLAY 한눈에</h2></div>
@@ -135,6 +143,25 @@
           <small>멋진 순간을 공유</small>
         </button>
       </div></div>
+
+<div class="fusion-tools">
+  <div class="fusion-tool-card">
+    <div class="fusion-tool-icon">🔎</div>
+    <div>
+      <b>내 경기 빠르게 찾기</b>
+      <p>우리 반 메뉴에서 학년·반을 선택하면 종목별 점수와 진행 상황을 확인할 수 있어요.</p>
+    </div>
+    <button data-go="class">우리 반 보기 →</button>
+  </div>
+  <div class="fusion-tool-card">
+    <div class="fusion-tool-icon">📋</div>
+    <div>
+      <b>예선 진행 및 결과</b>
+      <p>축구·피구·바운드 배구·달리는 줄다리기·이어달리기 예선을 확인하세요.</p>
+    </div>
+    <button data-go="prelim">결과 보기 →</button>
+  </div>
+</div>
 
       <div class="student-small-links">
         <button data-go="live">🔥 지금 진행</button>
@@ -269,6 +296,12 @@
       <div class="section-head">
         <div><span class="kicker">GAME GUIDE</span><h2>종목별 안내</h2></div>
       </div>
+<div class="fusion-info-row">
+  <div><span>🏅</span><b>학년별 종합 시상</b><small>1·2·3위 학급 시상</small></div>
+  <div><span>🎉</span><b>응원 퍼포먼스</b><small>학년별 우수 학급 별도 시상</small></div>
+  <div><span>🤝</span><b>ALL PLAY</b><small>모두가 참여하는 체육한마당</small></div>
+</div>
+
       <div class="rule-banner">부정선수 적발 시 해당 경기 몰수패 및 팀 점수 20점 감점. 모든 학생은 안전수칙과 진행요원의 안내를 준수합니다.</div>
       <div id="eventGrid" class="grid two"></div>
     </section>
