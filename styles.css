@@ -115,3 +115,23 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   color:#8a97a3;
   margin-left:6px;
 }
+
+/* v4 point table */
+.scorepoints{background:linear-gradient(135deg,#edf3ff,#eef8f3)}
+.point-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.point-summary div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.point-summary span,.point-summary b,.point-summary small{display:block}
+.point-summary span{font-size:9px;color:#7f8d9a;font-weight:800}
+.point-summary b{font-size:27px;color:var(--navy);margin:4px 0}
+.point-summary small{font-size:9px;color:#758493}
+.point-table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:15px}
+.point-table{width:100%;border-collapse:collapse;min-width:650px}
+.point-table th,.point-table td{padding:11px 9px;text-align:center;border-bottom:1px solid #edf0f3;font-size:11px}
+.point-table th{background:#f4f7fa;color:#647587;font-size:10px}
+.point-table td:first-child{text-align:left;font-weight:900;color:#304a65;min-width:170px}
+.point-table td:nth-child(2){font-weight:1000;color:#b47612}
+.point-table tr.major{background:#f4f8ff}
+.point-table tr.major td:first-child{color:#234a7b}
+.point-notes{margin-top:10px;padding:12px 14px;border-radius:12px;background:#f7f9fb;color:#71808f;font-size:9px}
+.point-notes b,.point-notes span{display:block}.point-notes b{color:#40566d;margin-bottom:5px}.point-notes span+span{margin-top:3px}
+@media(max-width:700px){.point-summary{grid-template-columns:1fr}}

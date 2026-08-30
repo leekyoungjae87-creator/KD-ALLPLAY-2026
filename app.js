@@ -186,7 +186,7 @@ function renderBoard(){
 }renderBoard();
 
 staffLoginBtn.onclick=()=>{
-  if(staffPw.value==='경덕26**'){staffLogin.classList.add('hidden');staffArea.classList.remove('hidden')}
+  if(staffPw.value==='rudejr26**'){staffLogin.classList.add('hidden');staffArea.classList.remove('hidden')}
   else alert('비밀번호를 확인해 주세요.');
 };
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));

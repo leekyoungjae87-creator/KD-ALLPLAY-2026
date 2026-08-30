@@ -28,6 +28,7 @@
   <button class="active" data-page="home">홈</button>
   <button data-page="schedule">일정</button>
   <button data-page="live">실시간 점수</button>
+  <button data-page="points">종목별 배점표</button>
   <button data-page="rules">경기 규칙</button>
   <button data-page="brackets">사전 경기·예선 일정 및 결과</button>
   <button data-page="participants">참가자</button>
@@ -142,6 +143,42 @@
     <div class="rank-cards" id="rankCards"></div>
     <div class="table-wrap" id="scoreTable"></div>
     <div class="info-note">※ 현재 프로토타입은 기기별 브라우저 저장 방식입니다. 실제 행사 운영 시 실시간 DB 연동이 필요합니다.</div>
+  </section>
+
+
+  <section class="page" id="points">
+    <div class="page-title scorepoints"><div class="icon">📊</div><div><small>POINT TABLE</small><h2>종목별 배점표</h2><p>체육한마당 종합점수에 반영되는 종목별 배점을 확인하세요.</p></div></div>
+
+    <div class="point-summary">
+      <div><span>최고 배점</span><b>120점</b><small>달리는 줄다리기 · 이어달리기</small></div>
+      <div><span>중점 단체경기</span><b>80점</b><small>2인 3각 1위 기준</small></div>
+      <div><span>순환경기</span><b>60점</b><small>8자 · 슈팅 · 바운드 배구 1위</small></div>
+    </div>
+
+    <div class="point-table-wrap">
+      <table class="point-table">
+        <thead>
+          <tr><th>종목</th><th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>5위 이하</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>⚽ 축구</td><td>50</td><td>40</td><td>30</td><td>20</td><td>10</td></tr>
+          <tr><td>🔴 피구</td><td>50</td><td>40</td><td>30</td><td>20</td><td>10</td></tr>
+          <tr><td>🏐 바운드 배구</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
+          <tr><td>➰ 8자 줄넘기</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
+          <tr><td>🏀 슈팅 릴레이</td><td>60</td><td>50</td><td>40</td><td>30</td><td>20</td></tr>
+          <tr><td>👟 2인 3각</td><td>80</td><td>70</td><td>60</td><td>50</td><td>40</td></tr>
+          <tr class="major"><td>💪 달리는 줄다리기</td><td>120</td><td>100</td><td>80</td><td>60</td><td>40</td></tr>
+          <tr><td>🎯 미션 이어달리기</td><td>30</td><td>20</td><td>10</td><td>-</td><td>-</td></tr>
+          <tr class="major"><td>🏃 이어달리기</td><td>120</td><td>100</td><td>80</td><td>60</td><td>40</td></tr>
+          <tr><td>🚩 학급 깃발</td><td>30</td><td>20</td><td>10</td><td>-</td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="point-notes">
+      <b>배점 안내</b>
+      <span>응원 퍼포먼스는 종합점수에 포함하지 않고 학년별 별도 시상합니다.</span>
+      <span>동점 및 세부 순위는 운영 계획의 종목별 규정에 따라 처리합니다.</span>
+    </div>
   </section>
 
   <section class="page" id="rules">
