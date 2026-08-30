@@ -157,22 +157,7 @@ function renderSimpleDday(){
 renderSimpleDday();
 
 
-function updateKrDday(){
-  const target = new Date(2026,9,1);
-  const now = new Date();
-  const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const diff = Math.ceil((target-today)/86400000);
-  const text = diff>0 ? `D-${diff}` : diff===0 ? 'D-DAY' : 'ALL PLAY';
-  const el = document.getElementById('ddayNumber');
-  const home = document.getElementById('homeDday');
-  if(el) el.textContent = text;
-  if(home) home.textContent = text;
-  const msg = document.getElementById('ddayMessage');
-  if(msg){
-    msg.textContent = diff>0 ? `${diff}일 뒤, 체육한마당에서 만나요!`
-      : diff===0 ? '오늘은 경덕 ALL PLAY 체육한마당!' : '함께 만든 멋진 하루를 기억해요!';
-  }
-}
+
 
 function updateKrNow(){
   const nowEl = document.getElementById('krNowEvent');
@@ -208,7 +193,7 @@ function updateKrNow(){
   else if(mins<495){ nowEl.textContent='행사 시작 전'; nextEl.textContent='08:15 학급 집결'; }
   else{ nowEl.textContent='행사 종료'; nextEl.textContent='수고했어요!'; }
 }
-updateKrDday();
+
 updateKrNow();
 setInterval(updateKrNow,60000);
 
@@ -253,3 +238,47 @@ document.querySelectorAll('.prelim-chip').forEach(btn=>{
   });
 });
 renderPrelim();
+
+
+function updateLiveCountdown(){
+  const target = new Date(2026, 9, 1, 8, 30, 0);
+  const now = new Date();
+  let diff = target - now;
+
+  const dday = document.getElementById('ddayNumber');
+  const home = document.getElementById('homeDday');
+  const msg = document.getElementById('ddayMessage');
+  const d = document.getElementById('cdDays');
+  const h = document.getElementById('cdHours');
+  const m = document.getElementById('cdMinutes');
+  const s = document.getElementById('cdSeconds');
+
+  if(diff > 0){
+    const days = Math.floor(diff / 86400000);
+    diff %= 86400000;
+    const hours = Math.floor(diff / 3600000);
+    diff %= 3600000;
+    const mins = Math.floor(diff / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+
+    if(dday) dday.textContent = days > 0 ? `D-${days}` : 'D-DAY';
+    if(home) home.textContent = days > 0 ? `D-${days}` : 'D-DAY';
+    if(d) d.textContent = String(days).padStart(2,'0');
+    if(h) h.textContent = String(hours).padStart(2,'0');
+    if(m) m.textContent = String(mins).padStart(2,'0');
+    if(s) s.textContent = String(secs).padStart(2,'0');
+    if(msg) msg.textContent = days > 0
+      ? `체육한마당까지 ${days}일 ${hours}시간 남았어요!`
+      : `오늘 08:30, 경덕 ALL PLAY가 시작됩니다!`;
+  } else {
+    if(dday) dday.textContent = 'D-DAY';
+    if(home) home.textContent = 'D-DAY';
+    if(d) d.textContent='00';
+    if(h) h.textContent='00';
+    if(m) m.textContent='00';
+    if(s) s.textContent='00';
+    if(msg) msg.textContent = '오늘은 경덕 ALL PLAY 체육한마당!';
+  }
+}
+updateLiveCountdown();
+setInterval(updateLiveCountdown,1000);

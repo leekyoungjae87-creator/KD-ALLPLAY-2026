@@ -538,3 +538,119 @@ body{
   .core-card b{font-size:15px}
   .prelim-grid{grid-template-columns:1fr}
 }
+
+/* v10 polished ALL PLAY visual */
+body{
+  background:
+    radial-gradient(circle at 8% 6%, rgba(255,214,102,.20), transparent 22%),
+    radial-gradient(circle at 94% 12%, rgba(91,143,211,.14), transparent 24%),
+    radial-gradient(circle at 82% 72%, rgba(82,172,128,.12), transparent 26%),
+    linear-gradient(180deg,#f8fbff 0%,#f7faf8 42%,#fffaf5 100%) !important;
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:radial-gradient(circle,rgba(23,52,95,.05) 1px,transparent 1px);
+  background-size:26px 26px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.38),transparent 72%);
+}
+
+.kr-header{
+  background:
+    linear-gradient(100deg,rgba(255,255,255,.96),rgba(249,252,255,.92)),
+    linear-gradient(90deg,#17345f,#19835a)!important;
+  box-shadow:0 8px 30px rgba(23,52,95,.05);
+}
+.kr-header h1 b{
+  background:linear-gradient(90deg,#17345f 0%,#2f66b3 46%,#19835a 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;
+}
+
+.student-core-wrap{
+  margin:16px 0 20px;padding:18px;border-radius:24px;
+  background:rgba(255,255,255,.74);
+  border:1px solid rgba(218,226,234,.85);
+  box-shadow:0 14px 34px rgba(23,52,95,.06);
+  backdrop-filter:blur(6px);
+}
+.core-menu-title{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.core-menu-title span{
+  font-size:10px;letter-spacing:.11em;font-weight:900;color:#fff;background:#17345f;
+  padding:6px 9px;border-radius:999px
+}
+.core-menu-title b{color:#29415d;font-size:17px}
+
+.student-core-menu{margin:0!important}
+.core-card{
+  position:relative;overflow:hidden;border-width:1px!important;
+  box-shadow:0 10px 24px rgba(25,45,70,.07)!important;
+}
+.core-card::after{
+  content:"";position:absolute;width:84px;height:84px;border-radius:50%;
+  right:-28px;bottom:-32px;background:rgba(255,255,255,.48)
+}
+.core-card::before{
+  content:"";position:absolute;left:0;top:0;width:6px;height:100%;background:currentColor;opacity:.34
+}
+.core-card .core-icon{
+  width:48px;height:48px;border-radius:15px;display:flex!important;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.72);box-shadow:0 5px 12px rgba(40,60,85,.08);
+  margin-bottom:12px!important
+}
+.core-card b{font-size:18px!important;letter-spacing:-.02em}
+.core-card strong{
+  display:inline-block!important;width:max-content;padding:4px 8px;border-radius:999px;
+  background:rgba(255,255,255,.55);font-size:10px!important;letter-spacing:.07em!important
+}
+.core-card small{margin-top:7px!important;position:relative;z-index:2}
+.c-dday{background:linear-gradient(145deg,#fff8d7,#fff1a9)!important;color:#b28708}
+.c-prelim{background:linear-gradient(145deg,#edf6ff,#dcecff)!important;color:#3b74b6}
+.c-schedule{background:linear-gradient(145deg,#effaf2,#dff3e5)!important;color:#358c58}
+.c-score{background:linear-gradient(145deg,#fff6ea,#ffe4c4)!important;color:#c9782f}
+.c-events{background:linear-gradient(145deg,#f7f3ff,#e9e2ff)!important;color:#7158b7}
+.c-class{background:linear-gradient(145deg,#effbfb,#d9f1f1)!important;color:#27898c}
+.c-song{background:linear-gradient(145deg,#fff5fa,#ffe2ef)!important;color:#bd678b}
+.c-gallery{background:linear-gradient(145deg,#fff8f0,#ffe9d2)!important;color:#c37a38}
+
+.dday-hero-card{
+  position:relative;overflow:hidden;text-align:center;
+  background:linear-gradient(145deg,#fffdf4 0%,#fff8cf 46%,#f4f9ff 100%);
+  border:1px solid #eadfba;border-radius:28px;padding:34px 22px;
+  box-shadow:0 14px 34px rgba(108,88,25,.08)
+}
+.dday-hero-card::before,.dday-hero-card::after{
+  content:"";position:absolute;border-radius:50%;pointer-events:none
+}
+.dday-hero-card::before{width:220px;height:220px;background:rgba(244,201,93,.16);left:-80px;top:-110px}
+.dday-hero-card::after{width:250px;height:250px;background:rgba(47,102,179,.10);right:-110px;bottom:-140px}
+.dday-big{
+  position:relative;z-index:1;font-size:clamp(64px,10vw,112px);font-weight:1000;
+  letter-spacing:-.07em;color:#17345f;line-height:1
+}
+.countdown-grid{
+  position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;max-width:620px;margin:22px auto 16px
+}
+.countdown-grid div{
+  background:rgba(255,255,255,.78);border:1px solid rgba(223,214,181,.85);border-radius:18px;
+  padding:15px 8px;box-shadow:0 6px 14px rgba(83,73,37,.05)
+}
+.countdown-grid strong{display:block;font-size:32px;color:#17345f;line-height:1}
+.countdown-grid span{display:block;margin-top:6px;font-size:11px;color:#7b725d;font-weight:800}
+.dday-date-line{position:relative;z-index:1;font-size:18px;font-weight:900;color:#304154}
+.dday-place-line{position:relative;z-index:1;margin-top:6px;color:#667787}
+.dday-message-line{
+  position:relative;z-index:1;display:inline-block;margin-top:16px;background:#17345f;color:#fff;
+  border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px
+}
+
+.tone-prelim .section-head h2::after{content:" · 진행상황부터 경기결과까지";font-size:.45em;color:#7194ba;font-weight:700;margin-left:6px}
+
+@media(max-width:620px){
+  .student-core-wrap{padding:13px;border-radius:20px}
+  .core-card b{font-size:16px!important}
+  .countdown-grid{gap:6px}
+  .countdown-grid div{padding:12px 4px;border-radius:14px}
+  .countdown-grid strong{font-size:24px}
+  .dday-hero-card{padding:28px 12px}
+}
