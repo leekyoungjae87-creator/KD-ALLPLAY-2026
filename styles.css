@@ -806,3 +806,63 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   color:#617d6e !important;
   font-size:7px !important;
 }
+
+/* v19 hero */
+.hero-play-title{
+  color:#294d69;
+  letter-spacing:-.025em;
+}
+.hero-play-title span{
+  color:#df4b4b;
+  font-weight:1000;
+  text-shadow:0 2px 10px rgba(223,75,75,.10);
+}
+
+/* v19 detailed rule book */
+#rules .rule-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+#rules .rule-card{
+  border:1px solid #e5e2ee;
+  border-radius:17px;
+  padding:15px 16px;
+  background:linear-gradient(145deg,#fbf9ff,#fff);
+  box-shadow:0 7px 20px rgba(66,57,83,.045);
+}
+#rules .rule-card:nth-child(3n+2){background:linear-gradient(145deg,#f5faff,#fff)}
+#rules .rule-card:nth-child(3n){background:linear-gradient(145deg,#f5fbf7,#fff)}
+#rules .rule-card h3{
+  color:#3d5065;
+  font-size:14px;
+  margin-bottom:8px;
+}
+#rules .rule-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-bottom:10px;
+}
+#rules .rule-meta span{
+  background:#f0eef6;
+  color:#6d6380;
+  border-radius:999px;
+  padding:4px 7px;
+  font-size:7px;
+  font-weight:900;
+}
+#rules .rule-card ul{
+  margin:0;
+  padding-left:18px;
+}
+#rules .rule-card li{
+  color:#596b79;
+  font-size:9px;
+  line-height:1.65;
+  margin:3px 0;
+}
+#rules .rule-card li::marker{color:#899bb0}
+@media(max-width:720px){
+  #rules .rule-list{grid-template-columns:1fr}
+}
