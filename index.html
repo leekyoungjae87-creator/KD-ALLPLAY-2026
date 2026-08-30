@@ -37,6 +37,7 @@
   <button data-page="songs">🎵 신청곡</button>
   <button data-page="media">📸 사진·영상</button>
   <button data-page="board">📢 본부 게시판</button>
+  <button data-page="qna">❓ 체육한마당 Q&A</button>
   <button data-page="staff">🔒 교직원</button>
 </nav>
 
@@ -86,6 +87,36 @@
       <button class="quick q7" data-go="songs"><span>🎵</span><b>신청곡</b><small>응원곡 신청</small></button>
       <button class="quick q8" data-go="media"><span>📸</span><b>사진·영상 콘테스트</b><small>멋진 순간 공유</small></button>
     </div>
+
+    <div class="section-heading teacher-heading">
+      <div><small>TEACHER QUICK ACCESS</small><h3>선생님 바로가기</h3></div>
+      <p>교직원 전용 투표 메뉴입니다.</p>
+    </div>
+    <div class="teacher-quick">
+      <button data-staff-target="flagvote"><span>🚩</span><div><b>학급 깃발 투표</b><small>학년별 학급 깃발 평가</small></div><em>교직원 전용 →</em></button>
+      <button data-staff-target="performance"><span>🎉</span><div><b>응원 퍼포먼스 투표</b><small>참여도 · 협동성 · 창의성 · 완성도 · 호응도</small></div><em>교직원 전용 →</em></button>
+    </div>
+
+    <section class="home-submit">
+      <div class="home-block-head">
+        <div><small>SUBMISSION SCHEDULE</small><h3>제출 일정</h3></div>
+        <span>기한 확인</span>
+      </div>
+      <div class="submit-schedule-grid">
+        <article><time>9.11.(금)</time><b>선수 명단</b><small>점심시간 · 본교무실 · 이0재T</small></article>
+        <article><time>9.18.(금)</time><b>응원 퍼포먼스 음악 및 댄스부 음악</b><small>점심시간 · 본교무실 · 이0재T</small></article>
+        <article><time>9.22.(화)</time><b>학급 깃발</b><small>점심시간 · 본교무실 · 이0재T</small></article>
+      </div>
+    </section>
+
+    <section class="home-qna">
+      <div class="home-block-head">
+        <div><small>SPORTS DAY Q&A</small><h3>체육한마당 Q&A</h3></div>
+        <button data-go="qna">질문하기 →</button>
+      </div>
+      <p class="home-qna-copy">궁금한 점을 남기면 웹앱 관리자가 답변합니다. 이름은 화면에 가운데 글자를 가려 표시합니다.</p>
+      <div id="homeQnaList" class="home-qna-list"></div>
+    </section>
 
     
 <div class="home-prelim">
@@ -253,11 +284,12 @@
 
   <section class="page" id="songs">
     <div class="page-title pink"><div class="icon">🎵</div><div><small>SONG REQUEST</small><h2>신청곡</h2><p>체육한마당에서 듣고 싶은 노래를 신청하세요.</p></div></div>
-    <form id="songForm" class="submit-card">
-      <input id="songClass" placeholder="학년-반 예: 3-4" required>
-      <input id="songTitle" placeholder="곡명 / 가수" required>
-      <textarea id="songMsg" placeholder="신청 메시지 (선택)"></textarea>
-      <button>신청하기</button>
+    <form id="songForm" class="submit-card song-form">
+      <input id="songClass" placeholder="학년-반 예: 3-4" maxlength="5" required>
+      <input id="songName" placeholder="이름 예: 홍길동 → 홍0동으로 표시" maxlength="10" required>
+      <input id="songTitle" placeholder="곡명 / 가수" maxlength="80" required>
+      <textarea id="songMsg" placeholder="신청 메시지(사연) · 300자 이내" maxlength="300"></textarea>
+      <div class="form-foot"><small><span id="songCount">0</span>/300자 · 이름은 가운데 글자를 가려 표시합니다.</small><button>신청하기</button></div>
     </form>
     <div id="songList" class="post-list"></div>
   </section>
@@ -278,6 +310,19 @@
     <div id="boardList" class="board-list"></div>
   </section>
 
+
+  <section class="page" id="qna">
+    <div class="page-title qna-title"><div class="icon">❓</div><div><small>SPORTS DAY Q&A</small><h2>체육한마당 Q&A</h2><p>체육한마당에 대해 궁금한 점을 남겨 주세요. 웹앱 관리자가 확인 후 답변합니다.</p></div></div>
+    <form id="qnaForm" class="submit-card qna-form">
+      <input id="qnaNo" placeholder="학번 예: 30415" maxlength="8" required>
+      <input id="qnaName" placeholder="이름 예: 홍길동 → 홍0동으로 표시" maxlength="10" required>
+      <textarea id="qnaQuestion" placeholder="질문 내용을 적어 주세요." maxlength="500" required></textarea>
+      <div class="form-foot"><small>이름은 공개 화면에서 가운데 글자를 가려 표시합니다.</small><button>질문 등록</button></div>
+    </form>
+    <div class="qna-section-head"><b>질문과 답변</b><small>최근 질문부터 표시됩니다.</small></div>
+    <div id="qnaList" class="qna-list"></div>
+  </section>
+
   <section class="page" id="staff">
     <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF ONLY</small><h2>교직원 전용</h2><p>응원 퍼포먼스·학급 깃발 투표와 간단한 운영 입력 화면입니다.</p></div></div>
     <div id="staffLogin" class="login-card">
@@ -291,6 +336,7 @@
         <button data-staff-view="preliminput">🏟️ 예선 결과 입력</button>
         <button data-staff-view="scoreinput">🏆 점수 입력</button>
         <button data-staff-view="noticeinput">📢 공지 등록</button>
+        <button data-staff-view="qnaanswer">❓ Q&A 답변 관리</button>
       </div>
       <div id="staffContent" class="staff-content">
         <h3>교직원 운영 메뉴</h3><p>위 메뉴를 선택하세요.</p>

@@ -3,7 +3,7 @@ const EVENT_START = new Date(2026,9,1,8,30,0);
 const STORE = {
   scores:'kd_new_scores', prelim:'kd_new_prelim', songs:'kd_new_songs',
   media:'kd_new_media', notices:'kd_new_notices', participants:'kd_new_participants',
-  flags:'kd_new_flags', perfVotes:'kd_new_perf_votes', flagVotes:'kd_new_flag_votes'
+  flags:'kd_new_flags', perfVotes:'kd_new_perf_votes', flagVotes:'kd_new_flag_votes', qna:'kd_new_qna'
 };
 
 const schedule = [
@@ -60,8 +60,24 @@ function load(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSO
 function save(key,val){localStorage.setItem(key,JSON.stringify(val))}
 function classCount(g){return g===2?8:7}
 
+function maskName(name){
+  const n=(name||'').trim();
+  if(n.length<=1) return n;
+  if(n.length===2) return n[0]+'0';
+  return n[0]+'0'+n.slice(2);
+}
+function escapeHtml(v){
+  return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));
+let pendingStaffView='';
+document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
+  pendingStaffView=b.dataset.staffTarget;
+  showPage('staff');
+  if(!staffArea.classList.contains('hidden')) staffView(pendingStaffView);
+});
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
@@ -173,8 +189,44 @@ function renderOps(query=''){
 }
 opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
-songForm.onsubmit=e=>{e.preventDefault();let a=load(STORE.songs,[]);a.push({cls:songClass.value,title:songTitle.value,msg:songMsg.value,time:new Date().toLocaleString()});save(STORE.songs,a);e.target.reset();renderSongs()}
-function renderSongs(){let a=load(STORE.songs,[]);songList.innerHTML=a.length?a.slice().reverse().map(x=>`<div class="post"><b>${x.title}</b><small>${x.cls} · ${x.time}</small>${x.msg?`<p>${x.msg}</p>`:''}</div>`).join(''):`<div class="post">아직 신청곡이 없습니다.</div>`}renderSongs();
+
+qnaForm.onsubmit=e=>{
+  e.preventDefault();
+  let a=load(STORE.qna,[]);
+  a.push({
+    id:'q'+Date.now(),
+    no:qnaNo.value.trim(),
+    name:qnaName.value.trim(),
+    question:qnaQuestion.value.trim(),
+    answer:'',
+    time:new Date().toLocaleString()
+  });
+  save(STORE.qna,a);
+  e.target.reset();
+  renderQna();
+  alert('질문이 등록되었습니다.');
+};
+function renderQna(){
+  let a=load(STORE.qna,[]);
+  qnaList.innerHTML=a.length?a.slice().reverse().map(x=>`
+    <article class="qna-card">
+      <div class="qna-card-head"><b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))}</b><small>${escapeHtml(x.time||'')}</small></div>
+      <p class="qna-question">${escapeHtml(x.question)}</p>
+      ${x.answer?`<div class="qna-answer"><b>관리자 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<span class="qna-wait">답변 대기</span>`}
+    </article>`).join(''):`<div class="post">아직 등록된 질문이 없습니다.</div>`;
+
+  let recent=a.slice().reverse().slice(0,3);
+  homeQnaList.innerHTML=recent.length?recent.map(x=>`
+    <div class="home-qna-item">
+      <b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.question.length>36?x.question.slice(0,36)+'…':x.question)}</b>
+      <small>${x.answer?'답변 완료':'답변 대기'}</small>
+    </div>`).join(''):`<div class="home-qna-empty">아직 등록된 질문이 없습니다.</div>`;
+}
+renderQna();
+
+songForm.onsubmit=e=>{e.preventDefault();let a=load(STORE.songs,[]);a.push({cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300),time:new Date().toLocaleString()});save(STORE.songs,a);e.target.reset();songCount.textContent='0';renderSongs()}
+songMsg.oninput=()=>songCount.textContent=String(songMsg.value.length);
+function renderSongs(){let a=load(STORE.songs,[]);songList.innerHTML=a.length?a.slice().reverse().map(x=>`<div class="post"><b>${escapeHtml(x.title)}</b><small>${escapeHtml(x.cls)} · ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(x.time)}</small>${x.msg?`<p>${escapeHtml(x.msg)}</p>`:''}</div>`).join(''):`<div class="post">아직 신청곡이 없습니다.</div>`}renderSongs();
 
 mediaForm.onsubmit=e=>{e.preventDefault();let a=load(STORE.media,[]);a.push({cls:mediaClass.value,link:mediaLink.value,desc:mediaDesc.value,time:new Date().toLocaleString()});save(STORE.media,a);e.target.reset();renderMedia()}
 function renderMedia(){let a=load(STORE.media,[]);mediaList.innerHTML=a.length?a.slice().reverse().map(x=>`<div class="post"><b>${x.cls} · ${x.desc||'사진/영상'}</b><small>${x.time}</small><p>${x.link}</p></div>`).join(''):`<div class="post">아직 제출된 사진·영상이 없습니다.</div>`}renderMedia();
@@ -186,7 +238,7 @@ function renderBoard(){
 }renderBoard();
 
 staffLoginBtn.onclick=()=>{
-  if(staffPw.value==='rudejr26**'){staffLogin.classList.add('hidden');staffArea.classList.remove('hidden')}
+  if(staffPw.value==='rudejr26**'){staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');if(pendingStaffView)staffView(pendingStaffView)}
   else alert('비밀번호를 확인해 주세요.');
 };
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
@@ -200,6 +252,19 @@ function staffView(v){
   } else if(v==='noticeinput'){
     staffContent.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
+  } else if(v==='qnaanswer'){
+    let a=load(STORE.qna,[]);
+    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>학생 질문을 확인하고 답변을 저장합니다.</p>
+      <div>${a.length?a.slice().reverse().map(x=>`<div class="staff-qna-card">
+        <small>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.time||'')}</small>
+        <b>${escapeHtml(x.question)}</b>
+        <textarea id="qa_${x.id}" placeholder="관리자 답변을 입력하세요.">${escapeHtml(x.answer||'')}</textarea>
+        <button data-qna-save="${x.id}">답변 저장</button>
+      </div>`).join(''):'<div class="info-note">아직 등록된 질문이 없습니다.</div>'}</div>`;
+    document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=()=>{
+      let list=load(STORE.qna,[]), item=list.find(x=>x.id===btn.dataset.qnaSave);
+      if(item){item.answer=document.getElementById(`qa_${item.id}`).value.trim();save(STORE.qna,list);renderQna();alert('답변을 저장했습니다.');staffView('qnaanswer')}
+    });
   } else if(v==='performance'){
     staffContent.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
   } else if(v==='flagvote'){
