@@ -455,3 +455,172 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .weather-metrics{grid-template-columns:repeat(2,1fr)}
   .weather-tips{grid-template-columns:repeat(2,1fr)}
 }
+
+/* v14 September sports calendar */
+.sports-calendar{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid #dfe8ee;
+  border-radius:20px;
+  background:linear-gradient(135deg,#f7fbff 0%,#ffffff 48%,#f7fbf8 100%);
+  box-shadow:0 10px 28px rgba(43,72,97,.06);
+}
+.calendar-head{margin-bottom:8px}
+.calendar-head span{
+  background:#eef4f8;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:8px;
+  color:#617487;
+  font-weight:900;
+}
+.calendar-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:7px 0 11px;
+}
+.calendar-legend span{
+  font-size:8px;
+  font-weight:900;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #e4e9ee;
+}
+.legend-pre{color:#3f6f9f}
+.legend-submit{color:#4d8067}
+.legend-event{color:#a07324}
+.calendar-wrap{
+  overflow:hidden;
+  border:1px solid #e0e7ed;
+  border-radius:16px;
+  background:#fff;
+}
+.calendar-weekdays{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  background:#f2f6f9;
+  border-bottom:1px solid #e1e7ec;
+}
+.calendar-weekdays b{
+  padding:8px 3px;
+  text-align:center;
+  font-size:8px;
+  color:#607486;
+}
+.calendar-weekdays b:first-child{color:#c55c5c}
+.calendar-weekdays b:last-child{color:#5278aa}
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+}
+.cal-day{
+  min-height:86px;
+  padding:6px;
+  border-right:1px solid #edf0f3;
+  border-bottom:1px solid #edf0f3;
+  position:relative;
+  background:#fff;
+}
+.cal-day:nth-child(7n){border-right:0}
+.cal-day .date{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:20px;
+  height:20px;
+  font-size:8px;
+  font-weight:1000;
+  color:#53687b;
+}
+.cal-day.sun .date{color:#c05a5a}
+.cal-day.empty{background:#fafbfc}
+.cal-day.has-pre{background:linear-gradient(160deg,#f2f7fd,#fff)}
+.cal-day.has-submit{background:linear-gradient(160deg,#f3faf6,#fff)}
+.cal-day.has-event{background:linear-gradient(160deg,#fff7dd,#fff)}
+.cal-day.next-month{box-shadow:inset 0 0 0 1px #f0d98d}
+.cal-event{
+  width:100%;
+  border:0;
+  border-radius:9px;
+  padding:6px 4px;
+  margin-top:3px;
+  font-size:7px;
+  line-height:1.35;
+  font-weight:1000;
+  cursor:pointer;
+  text-align:left;
+}
+.cal-event.pre{background:#e9f2fb;color:#3b6996}
+.cal-event.submit{background:#eaf7f0;color:#3c7359}
+.cal-event.event{background:#fff0bd;color:#8a671e}
+.cal-event:hover{filter:brightness(.98);transform:translateY(-1px)}
+.calendar-detail{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding:12px 13px;
+  margin-top:11px;
+  border-radius:14px;
+  background:#f7f9fb;
+  border:1px solid #e4e9ee;
+}
+.calendar-detail-icon{font-size:21px}
+.calendar-detail b{display:block;font-size:10px;color:#3f566d}
+.calendar-detail p{font-size:8px;color:#778897;line-height:1.5;margin:4px 0 0}
+.calendar-detail.active{
+  background:linear-gradient(135deg,#eef6ff,#f7fbff);
+  border-color:#d9e7f1;
+}
+@media(max-width:700px){
+  .sports-calendar{padding:12px}
+  .cal-day{min-height:68px;padding:4px}
+  .cal-day .date{font-size:7px;min-width:18px;height:18px}
+  .cal-event{font-size:6px;padding:5px 3px;border-radius:7px}
+  .calendar-weekdays b{font-size:7px;padding:7px 2px}
+}
+
+/* v15 schedule page: September calendar + event-day program */
+#schedule .sports-calendar{
+  margin-top:0;
+  margin-bottom:20px;
+}
+.schedule-day-heading{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin:22px 0 11px;
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid #dce8e2;
+  background:linear-gradient(135deg,#f1faf5,#ffffff);
+}
+.schedule-day-heading small{
+  display:block;
+  font-size:8px;
+  color:#6d8a7a;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
+.schedule-day-heading h3{
+  margin:4px 0 0;
+  color:#315b48;
+  font-size:16px;
+}
+.schedule-day-heading span{
+  flex:none;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#e7f4ed;
+  color:#47735d;
+  font-size:8px;
+  font-weight:900;
+}
+@media(max-width:700px){
+  .schedule-day-heading{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}

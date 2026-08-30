@@ -416,3 +416,13 @@ async function loadEventWeather(){
 }
 document.getElementById('weatherRefresh')?.addEventListener('click',loadEventWeather);
 loadEventWeather();
+
+document.querySelectorAll('[data-cal-detail]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const detail=document.getElementById('calendarDetail');
+    if(!detail) return;
+    const [date,title,desc]=(btn.dataset.calDetail||'').split('|');
+    detail.classList.add('active');
+    detail.innerHTML=`<div class="calendar-detail-icon">📅</div><div><b>${escapeHtml(date)} · ${escapeHtml(title)}</b><p>${escapeHtml(desc)}</p></div>`;
+  });
+});
