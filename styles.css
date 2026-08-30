@@ -720,3 +720,89 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .timetable-topline{grid-template-columns:82px 1fr 55px}
   .home-hq-feature .home-board{grid-template-columns:1fr}
 }
+
+/* v17 class shirts */
+.shirt-page-title{background:linear-gradient(135deg,#fff2f5,#f8f4ff 55%,#eef7ff)}
+.shirt-info{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid #e7dfe8;border-radius:16px;background:linear-gradient(135deg,#fff7f9,#fbf8ff);margin-bottom:18px}
+.shirt-info>span{font-size:26px}.shirt-info b{font-size:11px;color:#5c4960}.shirt-info p{font-size:8px;color:#857787;margin:4px 0 0;line-height:1.45}
+.shirt-grade-block{margin:0 0 22px}
+.shirt-grade-title{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.shirt-grade-title>span{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#354f68;color:#fff;font-size:15px;font-weight:1000}
+.shirt-grade-title b,.shirt-grade-title small{display:block}.shirt-grade-title b{font-size:13px;color:#354f68}.shirt-grade-title small{font-size:8px;color:#84909a;margin-top:2px}
+.shirt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.shirt-card{border:1px solid #e2e7eb;border-radius:15px;padding:12px;background:#fff;box-shadow:0 6px 16px rgba(45,70,91,.045)}
+.shirt-card:nth-child(4n+1){background:linear-gradient(145deg,#fff7f7,#fff)}
+.shirt-card:nth-child(4n+2){background:linear-gradient(145deg,#f5f9ff,#fff)}
+.shirt-card:nth-child(4n+3){background:linear-gradient(145deg,#f5fbf7,#fff)}
+.shirt-card:nth-child(4n){background:linear-gradient(145deg,#faf6ff,#fff)}
+.shirt-class{display:flex;justify-content:space-between;align-items:center;gap:5px}.shirt-class b{font-size:15px;color:#314b63}
+.shirt-class span{font-size:7px;padding:4px 6px;border-radius:999px;font-weight:1000}.shirt-class .confirmed{background:#e8f6ee;color:#397158}.shirt-class .pending{background:#f2f3f5;color:#7b858e}
+.shirt-swatch{display:flex;align-items:center;gap:5px;margin:10px 0 7px}.shirt-swatch span{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#ff8f91,#7fb3e8,#78b995)}.shirt-swatch small{font-size:8px;color:#7c8995}
+.shirt-card h4{font-size:10px;color:#455968;line-height:1.4;margin:0 0 9px;min-height:28px}
+.shirt-card a{display:inline-block;font-size:8px;font-weight:900;color:#4d7093;background:#eef5fb;padding:5px 7px;border-radius:8px;text-decoration:none}
+.shirt-link-note{font-size:7px;color:#84909a}
+.shirt-source-note{font-size:8px;color:#84909b;background:#f7f9fa;border-radius:10px;padding:9px 11px}
+@media(max-width:800px){.shirt-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){.shirt-grid{grid-template-columns:1fr 1fr;gap:7px}.shirt-card{padding:10px}.shirt-card h4{font-size:9px}}
+
+/* v18 calendar finals */
+.legend-final{color:#8d64a6}
+.cal-day.has-final{background:linear-gradient(160deg,#f8f3ff,#fff)}
+.cal-event.final{background:#f0e8fb;color:#76548f}
+
+/* v18 brighter event-day timetable */
+.schedule-day-heading{
+  background:linear-gradient(135deg,#eef9f4 0%,#f8fcff 52%,#fff8e8 100%) !important;
+  border-color:#d9ebe2 !important;
+  box-shadow:0 8px 22px rgba(56,95,75,.06) !important;
+}
+.schedule-day-heading h3{
+  color:#315d49 !important;
+}
+.event-day-timetable{
+  border-color:#e3e9ee !important;
+  background:#ffffff !important;
+  box-shadow:0 8px 22px rgba(53,76,92,.05) !important;
+}
+.timetable-topline{
+  background:linear-gradient(90deg,#7ea894,#8eb2a0) !important;
+  color:#fff !important;
+  font-size:7px !important;
+  letter-spacing:.06em !important;
+}
+.event-day-timetable .timeline-row{
+  padding:12px 14px !important;
+}
+.event-day-timetable .timeline-row.game{
+  background:linear-gradient(90deg,#f7fbff,#ffffff 78%) !important;
+}
+.event-day-timetable .timeline-row.festival{
+  background:linear-gradient(90deg,#fffaf0,#ffffff 78%) !important;
+}
+.event-day-timetable .timeline-row.lunch{
+  background:linear-gradient(90deg,#f7fbf5,#ffffff 78%) !important;
+}
+.event-day-timetable .timeline-row.finale{
+  background:linear-gradient(90deg,#faf7ff,#ffffff 78%) !important;
+}
+.event-day-timetable .timeline-row.close{
+  background:linear-gradient(90deg,#fff7f6,#ffffff 78%) !important;
+}
+.event-day-timetable .timeline-row time{
+  font-size:8px !important;
+  padding:5px 6px !important;
+  color:#557466 !important;
+  border-color:#e2ebe6 !important;
+  background:#fbfdfc !important;
+}
+.event-day-timetable .timeline-row b{
+  font-size:10.5px !important;
+}
+.event-day-timetable .timeline-row small{
+  font-size:7.5px !important;
+}
+.event-day-timetable .location{
+  background:#f0f7f3 !important;
+  color:#617d6e !important;
+  font-size:7px !important;
+}
