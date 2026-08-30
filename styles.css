@@ -166,3 +166,8 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .point-row{grid-template-columns:minmax(145px,1.5fr) repeat(5,minmax(50px,.55fr))}
   .points-foot>div{align-items:flex-start;flex-direction:column;gap:3px}
 }
+
+/* v6 hero phrase adjustment */
+.hero-card h2 .hero-focus{
+  font-size:.72em !important;
+}
