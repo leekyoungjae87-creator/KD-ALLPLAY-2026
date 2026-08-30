@@ -167,7 +167,34 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .points-foot>div{align-items:flex-start;flex-direction:column;gap:3px}
 }
 
-/* v6 hero phrase adjustment */
-.hero-card h2 .hero-focus{
-  font-size:.72em !important;
+/* v7: top identity + navigation visual cues */
+.site-header{
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255,213,92,.25) 0 8%, transparent 9%),
+    radial-gradient(circle at 91% 72%, rgba(54,151,105,.13) 0 10%, transparent 11%),
+    linear-gradient(120deg,#edf5ff 0%,#f1faf5 55%,#fff8dc 100%);
+}
+.header-inner{position:relative}
+.header-inner:after{
+  content:"⚽  🏃  🏆";
+  position:absolute;
+  right:18px;
+  bottom:-7px;
+  font-size:18px;
+  opacity:.14;
+  letter-spacing:8px;
+  pointer-events:none;
+}
+.event-chip{
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(8px);
+  border-color:rgba(199,213,225,.9);
+}
+.main-nav button{
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+@media(max-width:860px){
+  .header-inner:after{display:none}
 }
