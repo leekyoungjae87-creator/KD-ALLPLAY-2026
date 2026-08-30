@@ -198,3 +198,36 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:860px){
   .header-inner:after{display:none}
 }
+
+/* v8: requested micro-adjustments only */
+
+/* Keep the same top background colors, remove decorative circle shapes */
+.site-header{
+  background:linear-gradient(120deg,#edf5ff 0%,#f1faf5 55%,#fff8dc 100%) !important;
+}
+
+/* Remove the decorative sports/circle layer added in v7 */
+.header-inner:after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Slightly stronger slogan */
+.hero-card .eyebrow,
+.hero-card .hero-kicker,
+.hero-card .hero-slogan{
+  font-weight:1000 !important;
+  color:#2f4f6d !important;
+}
+
+/* Explanatory line under hero title: two steps smaller */
+.hero-card > p,
+.hero-card .hero-copy,
+.hero-card .hero-desc{
+  font-size:.78em !important;
+  line-height:1.55;
+}
+
+.v8-slogan{font-weight:1000 !important;color:#2f4f6d !important;}
+
+.v8-hero-desc{font-size:.78em !important;line-height:1.5;color:#71808f;}
