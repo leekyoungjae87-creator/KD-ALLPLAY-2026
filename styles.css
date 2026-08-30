@@ -1077,3 +1077,107 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
  .map-grade.g2 .last-class span{width:auto}
  .map-bottom{grid-template-columns:1fr 1.5fr 1fr}
 }
+
+/* v23 exact seating-map image */
+.seating-image-card{
+  overflow:hidden;
+  border:1px solid #dfe6eb;
+  border-radius:18px;
+  background:#fff;
+  padding:10px;
+  box-shadow:0 10px 26px rgba(45,67,85,.06);
+}
+.seating-image-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:11px;
+}
+.seating-image-tip{
+  margin-top:10px;
+  padding:10px 13px;
+  border:1px solid #e5eadf;
+  border-radius:12px;
+  background:linear-gradient(90deg,#f5faf7,#fffaf0);
+  color:#65766c;
+  font-size:8.5px;
+  font-weight:800;
+  text-align:center;
+}
+
+/* v23 polished game-rule cards */
+#rules .page-title{
+  background:linear-gradient(135deg,#fff4f1 0%,#fff9f1 48%,#f4f8ff 100%);
+  border-color:#f0dfd9;
+}
+#rules .page-title .icon{
+  background:linear-gradient(135deg,#fff,#ffe9e2);
+  box-shadow:0 5px 14px rgba(180,91,64,.08);
+}
+#rules .rule-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+#rules .rule-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:17px !important;
+  padding:15px 16px 16px !important;
+  border:1px solid #e4e9ed !important;
+  box-shadow:0 7px 20px rgba(53,70,84,.045) !important;
+}
+#rules .rule-card:nth-child(5n+1){background:linear-gradient(145deg,#f5f9ff,#fff 78%) !important;border-color:#dce8f5 !important}
+#rules .rule-card:nth-child(5n+2){background:linear-gradient(145deg,#f4fbf5,#fff 78%) !important;border-color:#dcecdf !important}
+#rules .rule-card:nth-child(5n+3){background:linear-gradient(145deg,#fff9ef,#fff 78%) !important;border-color:#f0e3c9 !important}
+#rules .rule-card:nth-child(5n+4){background:linear-gradient(145deg,#faf6ff,#fff 78%) !important;border-color:#e7def1 !important}
+#rules .rule-card:nth-child(5n){background:linear-gradient(145deg,#fff5f5,#fff 78%) !important;border-color:#f0dddd !important}
+#rules .rule-card:before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:4px;
+  background:#87a6c8;
+}
+#rules .rule-card:nth-child(5n+2):before{background:#87b58e}
+#rules .rule-card:nth-child(5n+3):before{background:#dda85f}
+#rules .rule-card:nth-child(5n+4):before{background:#a68bc0}
+#rules .rule-card:nth-child(5n):before{background:#d88d8d}
+#rules .rule-card h3{
+  margin:0 0 8px !important;
+  font-size:13px !important;
+  color:#344d61 !important;
+  letter-spacing:-.02em;
+}
+#rules .rule-meta{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  margin:0 0 10px !important;
+}
+#rules .rule-meta span{
+  padding:4px 7px !important;
+  border:1px solid rgba(111,132,148,.12);
+  background:rgba(255,255,255,.82) !important;
+  color:#657789 !important;
+  font-size:7.5px !important;
+  font-weight:900;
+}
+#rules .rule-card ul{
+  margin:0 !important;
+  padding:10px 10px 10px 25px !important;
+  border-radius:11px;
+  background:rgba(255,255,255,.66);
+}
+#rules .rule-card li{
+  margin:3px 0 !important;
+  color:#526675 !important;
+  font-size:9px !important;
+  line-height:1.65 !important;
+}
+#rules .rule-card li::marker{color:#7890a3 !important}
+@media(max-width:720px){
+  #rules .rule-list{grid-template-columns:1fr}
+  #rules .rule-card{padding:14px !important}
+  .seating-image-card{padding:5px;border-radius:14px}
+}
