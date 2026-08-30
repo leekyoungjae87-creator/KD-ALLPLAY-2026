@@ -38,7 +38,7 @@ const eventRules = [
 
 const scoreEvents = ["축구","피구","바운드배구","8자줄넘기","슈팅릴레이","2인3각","달리는줄다리기","미션이어달리기","이어달리기","학급깃발"];
 const prelimEvents = ["축구(남)","피구(여)","바운드 배구","달리는 줄다리기","이어달리기"];
-const prelimSchedule = {"축구(남)": "9. 3.(목) · 전 학년 준결승", "피구(여)": "9. 3.(목) · 전 학년 준결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선", "이어달리기": "9. 30.(수) · 전 학년 예선"};
+const prelimSchedule = {"축구(남)": "9. 3.(목) · 전 학년 준결승", "피구(여)": "9. 3.(목) · 전 학년 준결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
 const ops = [
   ["응원 퍼포먼스","전 교직원 투표","각 학년 체육교사 지원"],
   ["학급 깃발","전 교직원 투표","각 학년 체육교사 지원"],
@@ -124,7 +124,8 @@ function renderSchedule(){
   let now=new Date(), mins=now.getHours()*60+now.getMinutes();
   scheduleList.innerHTML=schedule.map(x=>{
     let [a,b]=x[0].split('-').map(toMin), isNow=now.getFullYear()===2026&&now.getMonth()===9&&now.getDate()===1&&mins>=a&&mins<b;
-    return `<div class="timeline-row ${isNow?'current':''}"><time>${x[0]}</time><div><b>${x[1]}</b><small>${x[2]}</small></div><span class="location">${isNow?'진행 중':'예정'}</span></div>`;
+    let cat=(x[1].includes('점심')?'lunch':x[1].includes('줄다리기')||x[1].includes('이어달리기')?'finale':x[1].includes('시상')||x[1].includes('폐회')?'close':x[1].includes('응원')||x[1].includes('축하')?'festival':'game');
+    return `<div class="timeline-row ${cat} ${isNow?'current':''}"><time>${x[0]}</time><div><b>${x[1]}</b><small>${x[2]}</small></div><span class="location">${isNow?'진행 중':'예정'}</span></div>`;
   }).join('');
 }renderSchedule();
 

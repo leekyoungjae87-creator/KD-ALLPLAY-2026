@@ -37,9 +37,9 @@
   <button data-page="operations">🧑‍⚖️ 운영·심판</button>
   <button data-page="songs">🎵 신청곡</button>
   <button data-page="media">📸 사진·영상</button>
-  <button data-page="board">📢 본부 게시판</button>
   <button data-page="qna">❓ 체육한마당 Q&A</button>
   <button data-page="staff">🔒 교직원</button>
+  <button data-page="board">📢 본부 게시판</button>
 </nav>
 
 <main class="shell">
@@ -99,55 +99,14 @@
       <button data-staff-target="flagvote"><span>🚩</span><div><b>학급 깃발 투표</b><small>학년별 학급 깃발 평가</small></div><em>교직원 전용 →</em></button>
       <button data-staff-target="performance"><span>🎉</span><div><b>응원 퍼포먼스 투표</b><small>참여도 · 협동성 · 창의성 · 완성도 · 호응도</small></div><em>교직원 전용 →</em></button>
     </div>
-
-    <section class="home-submit">
-      <div class="home-block-head">
-        <div><small>SUBMISSION SCHEDULE</small><h3>제출 일정</h3></div>
-        <span>제출 방법 확인</span>
-      </div>
-      <div class="submit-schedule-grid">
-        <article class="submit-card-blue">
-          <time>9.11.(금)</time>
-          <b>선수 명단 참가신청서</b>
-          <small>점심시간 · 본교무실 · 이0재T 제출</small>
-        </article>
-        <article class="submit-card-purple">
-          <time>9.18.(금)</time>
-          <b>응원 퍼포먼스 음악 및 댄스부 음악</b>
-          <small>MP3 파일로 USB에 직접 담아서 제출</small>
-        </article>
-        <article class="submit-card-green">
-          <time>9.22.(화)</time>
-          <b>학급 깃발</b>
-          <small>각 학년 체육선생님께 제출 · 1학년 김0현T · 2학년 마0원T · 3학년 이0재T</small>
-        </article>
-      </div>
-    </section>
-
-    
-<div class="home-prelim">
-  <div class="home-prelim-head">
-    <div><small>PRELIMINARY</small><h3>사전 경기 및 예선 일정</h3></div>
-    <button data-go="brackets">일정·결과 보기 →</button>
-  </div>
-  <div class="home-prelim-grid">
-    <div><time>① 9.3.(목)</time><b>축구 · 피구</b><small>1·2·3학년 준결승</small></div>
-    <div><time>② 9.10.(목)</time><b>바운드 배구</b><small>1·2·3학년 예선</small></div>
-    <div><time>③ 9.17.(목)</time><b>바운드 배구</b><small>1·2·3학년 준결승</small></div>
-    <div><time>④ 9.30.(수)</time><b>달리는 줄다리기 · 이어달리기</b><small>1·2·3학년 예선</small></div>
-  </div>
 </div>
-
-    <div class="home-columns">
-      <article class="panel">
-        <div class="panel-head"><div><small>LIVE RANKING</small><h3>현재 학년별 선두</h3></div><button data-go="live">전체보기</button></div>
-        <div id="leaderBoard" class="leaders"></div>
-      </article>
-      <article class="panel">
-        <div class="panel-head"><div><small>HEADQUARTERS</small><h3>최근 본부공지</h3></div><button data-go="board">전체보기</button></div>
-        <div id="homeBoard" class="home-board"></div>
-      </article>
-    </div>
+    <article class="panel home-hq-feature">
+      <div class="panel-head">
+        <div><small>HEADQUARTERS</small><h3>📢 최근 본부공지</h3></div>
+        <button data-go="board">전체보기 →</button>
+      </div>
+      <div id="homeBoard" class="home-board"></div>
+    </article>
   </section>
 
   <section class="page" id="countdown">
@@ -197,7 +156,7 @@
             <button class="cal-event pre" data-cal-detail="9월 3일(목)|축구·피구 준결승|1·2·3학년 사전 경기">축구·피구<br>준결승</button>
           </div>
           <div class="cal-day"><span class="date">4</span></div>
-          <div class="cal-day"><span class="date">5</span></div>
+          <div class="cal-day holiday saturday"><span class="date">5</span></div>
 
           <div class="cal-day sun"><span class="date">6</span></div>
           <div class="cal-day"><span class="date">7</span></div>
@@ -211,7 +170,7 @@
             <span class="date">11</span>
             <button class="cal-event submit" data-cal-detail="9월 11일(금)|선수 명단 참가신청서 제출|점심시간 · 본교무실 · 이0재T 제출">선수명단<br>제출</button>
           </div>
-          <div class="cal-day"><span class="date">12</span></div>
+          <div class="cal-day holiday saturday"><span class="date">12</span></div>
 
           <div class="cal-day sun"><span class="date">13</span></div>
           <div class="cal-day"><span class="date">14</span></div>
@@ -225,7 +184,7 @@
             <span class="date">18</span>
             <button class="cal-event submit" data-cal-detail="9월 18일(금)|응원 퍼포먼스 음악 및 댄스부 음악 제출|MP3 파일로 USB에 직접 담아서 제출">음악 USB<br>제출</button>
           </div>
-          <div class="cal-day"><span class="date">19</span></div>
+          <div class="cal-day holiday saturday"><span class="date">19</span></div>
 
           <div class="cal-day sun"><span class="date">20</span></div>
           <div class="cal-day"><span class="date">21</span></div>
@@ -234,16 +193,16 @@
             <button class="cal-event submit" data-cal-detail="9월 22일(화)|학급 깃발 제출|1학년 김0현T · 2학년 마0원T · 3학년 이0재T">학급깃발<br>제출</button>
           </div>
           <div class="cal-day"><span class="date">23</span></div>
-          <div class="cal-day"><span class="date">24</span></div>
-          <div class="cal-day"><span class="date">25</span></div>
-          <div class="cal-day"><span class="date">26</span></div>
+          <div class="cal-day holiday chuseok"><span class="date">24</span><small class="holiday-label">추석연휴</small></div>
+          <div class="cal-day holiday chuseok"><span class="date">25</span><small class="holiday-label">추석연휴</small></div>
+          <div class="cal-day holiday saturday"><span class="date">26</span></div>
 
           <div class="cal-day sun"><span class="date">27</span></div>
           <div class="cal-day"><span class="date">28</span></div>
           <div class="cal-day"><span class="date">29</span></div>
           <div class="cal-day has-pre">
             <span class="date">30</span>
-            <button class="cal-event pre" data-cal-detail="9월 30일(수)|달리는 줄다리기·이어달리기 예선|1·2·3학년 예선 경기">줄다리기·<br>이어달리기</button>
+            <button class="cal-event pre" data-cal-detail="9월 30일(수)|달리는 줄다리기·이어달리기 예선·준결승|1·2·3학년 예선 및 준결승 경기">줄다리기·이어달리기<br>예선·준결승</button>
           </div>
           <div class="cal-day next-month has-event">
             <span class="date">10/1</span>
@@ -271,7 +230,7 @@
       </div>
       <span>08:15 집결 · 15:30 종료 예정</span>
     </div>
-    <div id="scheduleList" class="timeline"></div>
+    <div class="event-day-timetable"><div class="timetable-topline"><span>TIME</span><span>PROGRAM</span><span>STATUS</span></div><div id="scheduleList" class="timeline"></div></div>
   </section>
 
 
