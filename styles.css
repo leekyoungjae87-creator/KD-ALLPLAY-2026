@@ -133,3 +133,16 @@ body{
   .staff-rubric{grid-template-columns:repeat(2,1fr)}
   .staff-login-row{flex-direction:column}
 }
+
+/* v5 - poster dashboard layout */
+.poster-dashboard{max-width:1180px;margin:-28px auto 16px;padding:0 18px;position:relative;z-index:4;display:grid;grid-template-columns:1fr 1.55fr 1fr;gap:14px}
+.poster-card{background:#fffdf8;border:1px solid #d9d7d0;border-radius:18px;overflow:hidden;box-shadow:0 12px 30px rgba(8,39,95,.08)}
+.poster-card-head{padding:11px 16px;color:white;font-weight:900;font-size:18px}.poster-card-head.navy{background:#0b3c91}.poster-card-head.green{background:#087b43}.poster-card-head.orange{background:#ef7413}
+.poster-card-body{padding:16px}.poster-card-body.center{text-align:center}.big-dday{font-size:54px;font-weight:1000;color:#d92f28;line-height:1.05;margin:5px 0 12px}.poster-card p{margin:5px 0;color:#67645e}
+.compact-schedule div{display:grid;grid-template-columns:70px 1fr;gap:8px;padding:5px 0;border-bottom:1px dashed #e2d8cb}.compact-schedule div:last-child{border:0}.compact-schedule b{color:#e34f22}
+.poster-quick{max-width:1180px;margin:0 auto 18px;padding:0 18px;display:grid;grid-template-columns:repeat(5,1fr);background:#fffdf8}
+.poster-quick button{border:0;border-right:1px solid #e2ddd3;background:transparent;padding:16px 10px;cursor:pointer;font-size:25px}.poster-quick button:last-child{border:0}.poster-quick b,.poster-quick span{display:block}.poster-quick b{font-size:15px;color:#0b2d68;margin-top:5px}.poster-quick span{font-size:10px;color:#777}
+.staff-teaser{border:2px solid #dc5b50;border-radius:20px;padding:18px;margin:22px 0;background:#fffaf3}.staff-teaser-head{display:flex;justify-content:space-between;color:#c7342e;font-size:22px}.staff-teaser-head span{font-size:12px;background:#ffe3b0;color:#765300;border-radius:999px;padding:6px 10px}.staff-teaser>p{margin:4px 0 15px;color:#6d6760}
+.staff-teaser-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.staff-teaser-card{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:10px;text-align:left;border:1px solid #a8bad6;background:white;border-radius:15px;padding:15px;cursor:pointer}.staff-teaser-card>span{font-size:30px}.staff-teaser-card b,.staff-teaser-card small{display:block}.staff-teaser-card b{color:#0b3c91;font-size:18px}.staff-teaser-card small{color:#777;margin-top:3px}.staff-teaser-card strong{color:#0b3c91}.staff-teaser-card.green-card{border-color:#a8c9b6}.staff-teaser-card.green-card b,.staff-teaser-card.green-card strong{color:#087b43}.staff-only-note{text-align:center;background:#ffe49a;border-radius:10px;margin-top:14px;padding:8px;font-size:12px}
+.rally-banner{max-width:1180px;margin:24px auto 0;padding:20px;text-align:center;background:#061f4e;color:white;font-size:25px;font-weight:900;border-radius:16px 16px 0 0}.rally-banner em{color:#f5bb1b;font-style:normal}
+@media(max-width:820px){.poster-dashboard{grid-template-columns:1fr;margin-top:10px}.poster-quick{grid-template-columns:repeat(3,1fr)}.staff-teaser-grid{grid-template-columns:1fr}.rally-banner{font-size:18px;border-radius:0}.big-dday{font-size:46px}}

@@ -166,7 +166,42 @@
     <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
 
-  <main>
+  
+<section class="poster-dashboard">
+  <div class="poster-card dday-card">
+    <div class="poster-card-head navy">체육한마당 D-DAY</div>
+    <div class="poster-card-body center">
+      <div class="big-dday" id="posterDday">D-DAY</div>
+      <b>2026. 10. 1.(목) 08:30~16:00</b>
+      <p>본교 운동장 및 경덕관</p>
+    </div>
+  </div>
+  <div class="poster-card rank-card">
+    <div class="poster-card-head green">실시간 종합 순위 <small>(학년별)</small></div>
+    <div class="poster-card-body" id="posterRanks"></div>
+  </div>
+  <div class="poster-card today-card">
+    <div class="poster-card-head orange">오늘의 주요 일정</div>
+    <div class="poster-card-body compact-schedule">
+      <div><b>08:30</b><span>개회식</span></div>
+      <div><b>09:00</b><span>학급 응원 퍼포먼스</span></div>
+      <div><b>09:30</b><span>순환 종목 경기</span></div>
+      <div><b>13:20</b><span>달리는 줄다리기</span></div>
+      <div><b>14:00</b><span>미션 이어달리기</span></div>
+      <div><b>14:30</b><span>이어달리기 결승</span></div>
+      <div><b>15:00</b><span>시상 및 폐회</span></div>
+    </div>
+  </div>
+</section>
+<section class="poster-quick">
+  <button data-go="events">🏆<b>종목 안내</b><span>경기 방법 및 규칙</span></button>
+  <button data-go="schedule">📅<b>전체 일정표</b><span>시간별 일정 확인</span></button>
+  <button data-go="notices">📣<b>본부 공지</b><span>공지사항 확인</span></button>
+  <button data-go="songs">🎵<b>신청곡</b><span>응원곡 신청하기</span></button>
+  <button data-go="media">📷<b>사진·영상 제보</b><span>행사 사진/영상 보내기</span></button>
+</section>
+
+<main>
     <section id="home" class="page active">
       <div class="section-head">
         <div><span class="kicker">BEFORE · LIVE · AFTER</span><h2>경덕 ALL PLAY 한눈에</h2></div>
@@ -194,7 +229,18 @@
         </article>
       </div>
 
-      <div class="section-head compact">
+      
+<div class="staff-teaser">
+  <div class="staff-teaser-head"><b>📣 교직원 투표</b><span>🔒 교직원 전용</span></div>
+  <p>체육한마당의 멋진 순간을 함께 선정해 주세요.</p>
+  <div class="staff-teaser-grid">
+    <button class="staff-teaser-card" data-go="staffvote"><span>🚩</span><div><b>학급 깃발 투표</b><small>학년별 우수 학급 깃발 선정</small></div><strong>투표하기 →</strong></button>
+    <button class="staff-teaser-card green-card" data-go="staffvote"><span>📣</span><div><b>학급 응원 퍼포먼스 투표</b><small>참여·협동·창의·완성·호응 평가</small></div><strong>투표하기 →</strong></button>
+  </div>
+  <div class="staff-only-note">※ 투표는 교직원만 참여할 수 있으며 비밀번호 입력 후 이용합니다.</div>
+</div>
+
+<div class="section-head compact">
         <div><span class="kicker">QUICK GUIDE</span><h2>꼭 확인할 것</h2></div>
       </div>
       <div class="quick-grid">
@@ -422,5 +468,8 @@
   </footer>
 
   <script src="app.js"></script>
+
+<div class="rally-banner">“ 함께 만들자! 최고의 하루! <em>경덕 ALL PLAY!</em> ”</div>
+
 </body>
 </html>
