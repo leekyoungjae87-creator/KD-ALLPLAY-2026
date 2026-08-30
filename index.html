@@ -1,298 +1,255 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#153B3E" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F4B184">
+  <meta name="description" content="2026 경덕 ALL PLAY 체육한마당 공식 웹앱">
   <title>2026 경덕 ALL PLAY 체육한마당</title>
-  <meta name="description" content="2026 경덕중학교 ALL PLAY 체육한마당 공식 웹앱" />
-  <link rel="stylesheet" href="styles.css" />
-
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="hero">
-    <div class="hero-bg"></div>
-    <div class="topbar">
-      <div class="brand">
-        <span class="brand-mark">AP</span>
+    <div class="confetti c1"></div><div class="confetti c2"></div><div class="confetti c3"></div>
+    <div class="hero-inner">
+      <div class="brand-row">
+        <div class="brand-badge">ALL<br>PLAY</div>
         <div>
-          <b>KYONGDUG MIDDLE SCHOOL</b>
-          <small>2026 SPORTS FESTIVAL</small>
+          <div class="eyebrow">2026 KYONGDUG SPORTS FESTIVAL</div>
+          <div class="school-name">경덕중학교</div>
         </div>
       </div>
-      <button id="menuBtn" class="menu-btn" aria-label="메뉴 열기">☰</button>
-    </div>
-
-    <div class="hero-inner">
-      <div class="eyebrow">2026 KYONGDUG ALL PLAY</div>
-      <h1>모두가 뛰고,<br><span>모두가 빛나는 하루</span></h1>
-      <p>경덕에서 함께 만드는 단 하나의 체육한마당</p>
-
-      <div class="hero-meta">
+      <h1>모두가 참여하고<br><span>함께 빛나는 하루</span></h1>
+      <p>경덕 ALL PLAY 체육한마당</p>
+      <div class="hero-chips">
         <span>📅 2026. 10. 1.(목) 08:30~16:00</span>
-        <span>📍 본교 운동장 · 경덕관</span>
+        <span>📍 운동장 · 경덕관</span>
         <span>🏫 1학년 7반 · 2학년 8반 · 3학년 7반</span>
       </div>
-
       <div class="hero-actions">
-        <button class="primary" data-go="schedule">오늘 일정 보기</button>
-        <button class="secondary" data-go="scores">실시간 점수</button>
+        <button class="btn primary" data-go="live">LIVE 보기</button>
+        <button class="btn ghost" data-go="schedule">전체 일정</button>
       </div>
-
-      <div class="countdown-card">
-        <div>
-          <small>COUNTDOWN TO ALL PLAY</small>
-          <strong id="countdown">D-</strong>
-        </div>
-        <div class="current-program">
-          <span class="live-dot"></span>
-          <div>
-            <small id="currentLabel">CURRENT PROGRAM</small>
-            <b id="currentProgram">행사 일정을 확인 중입니다.</b>
-          </div>
-        </div>
+      <div class="status-strip">
+        <div><small>COUNTDOWN</small><b id="countdown">D-</b></div>
+        <div><small>NOW</small><b id="nowProgram">행사 전 준비기간</b></div>
+        <div><small>NEXT</small><b id="nextProgram">일정 확인</b></div>
       </div>
     </div>
   </header>
 
-  <nav id="mainNav" class="nav">
-    <button class="nav-item active" data-section="home">🏠 홈</button>
-    <button class="nav-item" data-section="schedule">📅 시간표</button>
-    <button class="nav-item" data-section="scores">🏆 실시간 점수</button>
-    <button class="nav-item" data-section="rules">📋 경기요강</button>
-    <button class="nav-item" data-section="brackets">🧩 대진·기록</button>
-    <button class="nav-item" data-section="players">👟 출전선수</button>
-    <button class="nav-item" data-section="flags">🚩 학급 깃발</button>
-    <button class="nav-item" data-section="staff">🦺 운영·심판</button>
-    <button class="nav-item" data-section="songs">🎵 신청곡</button>
-    <button class="nav-item" data-section="notice">📢 본부게시판</button>
-    <button class="nav-item" data-section="admin">⚙️ 관리자</button>
+  <nav class="nav" id="nav">
+    <button class="nav-btn active" data-section="home">홈</button>
+    <button class="nav-btn" data-section="live">LIVE</button>
+    <button class="nav-btn" data-section="schedule">시간표</button>
+    <button class="nav-btn" data-section="scores">점수·순위</button>
+    <button class="nav-btn" data-section="events">종목안내</button>
+    <button class="nav-btn" data-section="class">학급페이지</button>
+    <button class="nav-btn" data-section="vote">교직원투표</button>
+    <button class="nav-btn" data-section="songs">신청곡</button>
+    <button class="nav-btn" data-section="gallery">사진·영상</button>
+    <button class="nav-btn" data-section="notice">본부공지</button>
+    <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
 
   <main>
     <section id="home" class="page active">
       <div class="section-head">
-        <div>
-          <span class="section-kicker">ALL PLAY TODAY</span>
-          <h2>경덕의 하루, 한눈에</h2>
-        </div>
-        <span class="chip">LIVE READY</span>
+        <div><span class="kicker">BEFORE · LIVE · AFTER</span><h2>경덕 ALL PLAY 한눈에</h2></div>
+        <span class="pill">공식 웹앱</span>
       </div>
 
       <div class="grid three">
-        <article class="card accent">
-          <span class="icon">⚡</span>
-          <small>NOW</small>
-          <h3 id="homeCurrent">현재 진행 프로그램</h3>
-          <p id="homeCurrentSub">시간에 따라 자동으로 표시됩니다.</p>
+        <article class="feature live-card">
+          <span class="mini-label">LIVE</span>
+          <h3>지금 경기</h3>
+          <strong id="homeNow">행사 전 준비기간</strong>
+          <p id="homeNowSub">당일에는 현재 진행 종목이 자동 표시됩니다.</p>
         </article>
-        <article class="card">
-          <span class="icon">🏆</span>
-          <small>LEADER</small>
-          <h3>학년별 현재 선두</h3>
-          <div id="leaderMini" class="mini-leaders"></div>
+        <article class="feature">
+          <span class="mini-label">ALL PLAY</span>
+          <h3>참여 원칙</h3>
+          <strong>최소 2종목 · 최대 4종목</strong>
+          <p>달리는 줄다리기는 참여 종목 수 산정에서 제외합니다.</p>
         </article>
-        <article class="card">
-          <span class="icon">🎯</span>
-          <small>ALL PLAY RULE</small>
-          <h3>최소 2종목 참여</h3>
-          <p>달리는 줄다리기를 제외하고 1인당 최소 2종목, 최대 4종목 참여를 원칙으로 합니다.</p>
+        <article class="feature">
+          <span class="mini-label">FINAL</span>
+          <h3>오후 피날레</h3>
+          <strong>줄다리기 → 미션 → 이어달리기</strong>
+          <p>13:20부터 경덕 ALL PLAY의 하이라이트가 이어집니다.</p>
         </article>
       </div>
 
       <div class="section-head compact">
-        <div>
-          <span class="section-kicker">QUICK INFO</span>
-          <h2>꼭 확인하세요</h2>
-        </div>
+        <div><span class="kicker">QUICK GUIDE</span><h2>꼭 확인할 것</h2></div>
+      </div>
+      <div class="quick-grid">
+        <div class="quick"><b>👥 선수명단</b><span>9.11.(금) 점심시간까지</span></div>
+        <div class="quick"><b>🎵 퍼포먼스 음원</b><span>9.18.(금) 점심시간까지</span></div>
+        <div class="quick"><b>🚩 학급 깃발</b><span>9.22.(화) 점심시간까지</span></div>
+        <div class="quick"><b>🦺 안전교육</b><span>9.30.(수) 6교시</span></div>
       </div>
 
-      <div class="grid four">
-        <article class="mini-card"><b>👥 선수명단</b><span>9. 11.(금) 점심시간까지</span></article>
-        <article class="mini-card"><b>🎵 퍼포먼스 음원</b><span>9. 18.(금) 점심시간까지</span></article>
-        <article class="mini-card"><b>🚩 학급 깃발</b><span>9. 22.(화) 점심시간까지</span></article>
-        <article class="mini-card"><b>🦺 안전교육</b><span>9. 30.(수) 6교시</span></article>
-      </div>
-
-      <div class="spotlight">
+      <div class="festival-banner">
         <div>
-          <span class="section-kicker">FINAL STAGE</span>
-          <h2>오후의 하이라이트</h2>
-          <p>달리는 줄다리기 → 미션 이어달리기 → 이어달리기 결승으로 이어지는 경덕 ALL PLAY의 피날레.</p>
+          <span class="kicker">ALL PLAY SPIRIT</span>
+          <h2>승패보다 참여, 경쟁보다 존중</h2>
+          <p>모든 학생이 함께 뛰고, 응원하고, 만들고, 즐기는 체육한마당입니다.</p>
         </div>
-        <button class="primary" data-go="schedule">전체 시간표 보기</button>
+        <button class="btn primary" data-go="events">종목 둘러보기</button>
       </div>
+    </section>
+
+    <section id="live" class="page">
+      <div class="section-head">
+        <div><span class="kicker">LIVE CENTER</span><h2>오늘의 경덕 LIVE</h2></div>
+        <span class="pill danger">● LIVE</span>
+      </div>
+      <div class="grid three">
+        <article class="feature"><span class="mini-label">NOW</span><h3>현재 진행</h3><strong id="liveNow">-</strong><p id="liveNowPlace">-</p></article>
+        <article class="feature"><span class="mini-label">NEXT</span><h3>다음 경기</h3><strong id="liveNext">-</strong><p id="liveNextPlace">-</p></article>
+        <article class="feature"><span class="mini-label">HQ</span><h3>소집 안내</h3><strong>경기 10분 전 대기</strong><p>다음 경기 참가 학급은 경기장 주변 대기선에 미리 집결합니다.</p></article>
+      </div>
+      <div class="section-head compact"><div><span class="kicker">GRADE LEADERS</span><h2>현재 학년별 선두</h2></div></div>
+      <div id="leaders" class="leader-grid"></div>
     </section>
 
     <section id="schedule" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">TIMETABLE</span><h2>체육한마당 일정표</h2></div>
-        <span class="chip">2026.10.01</span>
+        <div><span class="kicker">TIMETABLE</span><h2>전체 일정</h2></div>
+        <span class="pill">10.01 THU</span>
       </div>
       <div id="scheduleList" class="timeline"></div>
     </section>
 
     <section id="scores" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">LIVE SCORE</span><h2>학년별 실시간 종합점수</h2></div>
-        <span class="chip live">● LIVE</span>
+        <div><span class="kicker">SCORE BOARD</span><h2>학년별 종합점수</h2></div>
+        <span class="pill danger">● LIVE</span>
       </div>
-      <div class="tabs" id="gradeTabs">
+      <div id="gradeTabs" class="tabs">
         <button class="tab active" data-grade="1">1학년</button>
         <button class="tab" data-grade="2">2학년</button>
         <button class="tab" data-grade="3">3학년</button>
       </div>
       <div id="scoreBoard"></div>
-      <div class="legend-card">
-        <h3>배점 기준</h3>
-        <div id="scoreLegend" class="table-wrap"></div>
-      </div>
+      <div class="section-head compact"><div><span class="kicker">POINTS</span><h2>종목별 배점</h2></div></div>
+      <div id="pointTable" class="table-wrap"></div>
     </section>
 
-    <section id="rules" class="page">
+    <section id="events" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">GAME GUIDE</span><h2>종목별 경기방법 및 규정</h2></div>
+        <div><span class="kicker">GAME GUIDE</span><h2>종목별 안내</h2></div>
       </div>
-      <div class="common-rule">
-        <b>ALL PLAY 공통 원칙</b>
-        <p>경기규칙과 심판 판정을 존중하고, 안전을 최우선으로 합니다. 부정선수 적발 시 해당 경기 몰수패 및 팀 점수 20점 감점.</p>
-      </div>
-      <div id="ruleGrid" class="grid two"></div>
+      <div class="rule-banner">부정선수 적발 시 해당 경기 몰수패 및 팀 점수 20점 감점. 모든 학생은 안전수칙과 진행요원의 안내를 준수합니다.</div>
+      <div id="eventGrid" class="grid two"></div>
     </section>
 
-    <section id="brackets" class="page">
+    <section id="class" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">BRACKET & RECORD</span><h2>대진표 · 경기기록</h2></div>
+        <div><span class="kicker">MY CLASS</span><h2>학급 페이지</h2></div>
       </div>
-      <div class="notice-box">이 버전은 <b>운영용 프로토타입</b>입니다. 실제 대진은 대표자회의 이후 관리자 화면에서 입력하도록 확장할 수 있습니다.</div>
-      <div class="tabs">
-        <button class="tab active">축구</button><button class="tab">피구</button><button class="tab">바운드 배구</button><button class="tab">달리는 줄다리기</button><button class="tab">이어달리기</button>
+      <div class="selector-card">
+        <select id="classGrade"></select>
+        <select id="classNo"></select>
+        <button class="btn primary" id="showClassBtn">학급 보기</button>
       </div>
-      <div class="empty-state">
-        <span>🧩</span><h3>대진 데이터 준비 중</h3><p>예선 대진 확정 후 학년별 토너먼트와 경기결과가 표시됩니다.</p>
-      </div>
+      <div id="classPage"></div>
     </section>
 
-    <section id="players" class="page">
+    <section id="vote" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">MY PLAY</span><h2>내 참가 종목 찾기</h2></div>
+        <div><span class="kicker">TEACHER VOTE</span><h2>응원 퍼포먼스 교직원 투표</h2></div>
       </div>
-      <div class="search-card">
-        <h3>👟 학번 + 이름으로 확인</h3>
-        <p>선수명단 등록 후 학생 본인의 참가 종목을 빠르게 확인할 수 있습니다.</p>
-        <div class="form-row">
-          <input id="studentNo" placeholder="학번 4자리" maxlength="4">
-          <input id="studentName" placeholder="학생 이름">
-          <button id="playerSearchBtn" class="primary">찾기</button>
-        </div>
-        <div id="playerResult" class="result-box">아직 실제 선수 명단이 등록되지 않았습니다.</div>
+      <div class="rule-banner">평가기준: 참여도 · 협동성 · 창의성 · 완성도 · 호응도, 각 20점 / 학년별 최우수·우수·장려 시상</div>
+      <div class="selector-card">
+        <select id="voteGrade"></select>
+        <select id="voteClass"></select>
       </div>
-    </section>
-
-    <section id="flags" class="page">
-      <div class="section-head">
-        <div><span class="section-kicker">CLASS IDENTITY</span><h2>학급 깃발 갤러리</h2></div>
-      </div>
-      <div class="tabs" id="flagGradeTabs">
-        <button class="tab active" data-flag-grade="1">1학년</button>
-        <button class="tab" data-flag-grade="2">2학년</button>
-        <button class="tab" data-flag-grade="3">3학년</button>
-      </div>
-      <div id="flagGallery" class="flag-grid"></div>
-    </section>
-
-    <section id="staff" class="page">
-      <div class="section-head">
-        <div><span class="section-kicker">OPERATIONS</span><h2>운영본부 · 심판</h2></div>
-      </div>
-      <div class="grid two">
-        <article class="card"><h3>총괄 운영</h3><p><b>총괄:</b> 건강교육부장</p><p><b>운영 스태프:</b> 학생자치회 · 스포츠활동지원단 · 배구동아리</p><p><b>생활지도:</b> 전교사 · 학년부</p></article>
-        <article class="card"><h3>본부 운영</h3><p><b>점수집계 / 현황판:</b> 본부석</p><p><b>방송·사진:</b> 방송 담당</p><p><b>보건·안전:</b> 보건 담당 및 안전팀</p></article>
-      </div>
-      <div id="staffTable" class="table-wrap"></div>
+      <div id="voteForm" class="vote-grid"></div>
+      <button class="btn primary wide" id="submitVote">투표 저장</button>
+      <div id="voteMessage" class="result-box">현재는 브라우저 저장 방식입니다.</div>
     </section>
 
     <section id="songs" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">ALL PLAY RADIO</span><h2>오늘 듣고 싶은 노래</h2></div>
-        <span id="songCount" class="chip">0곡</span>
+        <div><span class="kicker">ALL PLAY RADIO</span><h2>신청곡</h2></div>
+        <span class="pill" id="songCount">0곡</span>
       </div>
-      <div class="search-card">
-        <div class="form-grid">
-          <input id="songTitle" placeholder="노래 제목">
-          <input id="songArtist" placeholder="가수">
-          <input id="songRequester" placeholder="학년·반 또는 이름(선택)">
-          <input id="songMessage" placeholder="짧은 사연(선택)">
-        </div>
-        <button id="songSubmit" class="primary wide">🎵 신청곡 보내기</button>
+      <div class="form-card">
+        <input id="songTitle" placeholder="노래 제목">
+        <input id="songArtist" placeholder="가수">
+        <input id="songRequester" placeholder="학년·반 또는 이름(선택)">
+        <input id="songMessage" placeholder="짧은 사연(선택)">
+        <button class="btn primary wide" id="submitSong">신청곡 보내기</button>
       </div>
-      <div id="songList" class="song-list"></div>
+      <div id="songList" class="stack"></div>
+    </section>
+
+    <section id="gallery" class="page">
+      <div class="section-head">
+        <div><span class="kicker">AFTER PLAY</span><h2>사진 · 영상 제보</h2></div>
+      </div>
+      <div class="form-card">
+        <input id="mediaClass" placeholder="학년·반 또는 이름">
+        <input id="mediaLink" placeholder="사진/영상 공유 링크">
+        <textarea id="mediaMemo" placeholder="짧은 설명"></textarea>
+        <button class="btn primary wide" id="submitMedia">제보 등록</button>
+      </div>
+      <div id="mediaList" class="stack"></div>
     </section>
 
     <section id="notice" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">HQ NOTICE</span><h2>본부게시판</h2></div>
-        <span class="chip live">● 실시간 공지</span>
+        <div><span class="kicker">HQ NOTICE</span><h2>본부게시판</h2></div>
+        <span class="pill danger">● 실시간 공지</span>
       </div>
-      <div id="noticeList" class="notice-list"></div>
+      <div id="noticeList" class="stack"></div>
     </section>
 
     <section id="admin" class="page">
       <div class="section-head">
-        <div><span class="section-kicker">CONTROL ROOM</span><h2>관리자 운영판</h2></div>
+        <div><span class="kicker">CONTROL ROOM</span><h2>관리자 운영판</h2></div>
       </div>
-      <div id="adminLock" class="search-card">
-        <h3>🔒 관리자 로그인</h3>
-        <p>현재 버전은 GitHub Pages 테스트용 로컬 관리자입니다. 실제 운영 시 Supabase 인증으로 교체하는 것을 권장합니다.</p>
-        <div class="form-row">
-          <input id="adminPassword" type="password" placeholder="관리자 비밀번호">
-          <button id="adminLoginBtn" class="primary">로그인</button>
-        </div>
-        <small>테스트 비밀번호: <b>allplay2026</b></small>
+      <div id="adminLogin" class="form-card">
+        <input id="adminPw" type="password" placeholder="관리자 비밀번호">
+        <button class="btn primary" id="adminLoginBtn">로그인</button>
+        <small>테스트 비밀번호: allplay2026</small>
       </div>
-      <div id="adminPanel" class="admin-panel hidden">
+      <div id="adminPanel" class="hidden">
         <div class="grid two">
-          <article class="card">
-            <h3>🏆 점수 입력</h3>
-            <div class="form-grid">
-              <select id="adminGrade"></select>
-              <select id="adminClass"></select>
-              <select id="adminEvent"></select>
-              <input id="adminScore" type="number" placeholder="점수">
-            </div>
-            <button id="saveScore" class="primary wide">점수 반영</button>
+          <article class="feature">
+            <h3>점수 입력</h3>
+            <select id="adminGrade"></select>
+            <select id="adminClass"></select>
+            <select id="adminEvent"></select>
+            <input id="adminScore" type="number" placeholder="점수">
+            <button class="btn primary wide" id="saveScore">점수 반영</button>
           </article>
-          <article class="card">
-            <h3>📢 본부 공지 등록</h3>
-            <input id="adminNoticeTitle" placeholder="공지 제목">
-            <textarea id="adminNoticeBody" placeholder="공지 내용"></textarea>
-            <button id="saveNotice" class="primary wide">공지 등록</button>
+          <article class="feature">
+            <h3>본부 공지</h3>
+            <input id="noticeTitle" placeholder="공지 제목">
+            <textarea id="noticeBody" placeholder="공지 내용"></textarea>
+            <button class="btn primary wide" id="saveNotice">공지 등록</button>
           </article>
-        </div>
-        <div class="danger-zone">
-          <button id="resetData" class="danger">프로토타입 데이터 초기화</button>
         </div>
       </div>
     </section>
   </main>
 
+  <div id="installBar" class="install-bar">
+    <div><b>📲 경덕 ALL PLAY 앱 설치</b><small>홈 화면에 추가하면 앱처럼 바로 실행됩니다.</small></div>
+    <button id="installBtn">설치</button>
+  </div>
+
   <footer>
-    <b>2026 경덕중학교 ALL PLAY 체육한마당</b>
+    <b>2026 경덕 ALL PLAY 체육한마당</b>
     <span>모두가 참여하고, 함께 즐기며, 서로를 존중하는 하루</span>
   </footer>
 
   <script src="app.js"></script>
-
-  <div id="installBanner" class="install-banner">
-    <div><b>📲 경덕 ALL PLAY 앱 설치</b><small>홈 화면에 추가하면 앱처럼 바로 열 수 있습니다.</small></div>
-    <button id="installBtn">설치</button>
-  </div>
-
 </body>
 </html>
