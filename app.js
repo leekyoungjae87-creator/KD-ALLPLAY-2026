@@ -23,14 +23,14 @@ const schedule = [
 ];
 
 const eventRules = [
-  {cat:"이벤트",name:"학급 응원 퍼포먼스",people:"학급 전체",type:"응원전 · 별도 시상",rules:[
+  {icon:"📣",accent:"blue",cat:"이벤트",name:"학급 응원 퍼포먼스",people:"학급 전체",type:"응원전 · 별도 시상",rules:[
     "신청 학급의 학급 전체가 참여하는 것을 원칙으로 하며 학급별 2분 이내로 실시합니다.",
     "입장 → 퍼포먼스 → 퇴장 순으로 진행합니다.",
     "타인 비방, 불쾌감을 주거나 선정적인 내용이 포함되지 않도록 합니다.",
     "참여 인원과 협동·창의·단합·완성도 등을 바탕으로 순위를 결정합니다.",
     "교직원 투표로 학년별 최우수·우수·장려 1학급씩 시상하며 종합점수에는 포함하지 않습니다."
   ]},
-  {cat:"순환",name:"8자 줄넘기",people:"14명",type:"결선 · 기록 경기",rules:[
+  {icon:"🪢",accent:"green",cat:"순환",name:"8자 줄넘기",people:"14명",type:"결선 · 기록 경기",rules:[
     "남학생 6명·여학생 6명과 줄잡이 2명으로 구성합니다.",
     "학생 2명이 줄을 돌리고 12명은 8자 모양으로 1명씩 줄을 넘습니다.",
     "줄 길이는 학급별 자유이며 시작 신호와 함께 줄을 돌리기 시작합니다.",
@@ -38,7 +38,7 @@ const eventRules = [
     "시작 전 연습 1회를 실시하며 1·2·3·4반 1조 / 5·6·7·8반 2조로 진행합니다.",
     "기록이 같으면 공동 순위로 처리합니다."
   ]},
-  {cat:"순환",name:"슈팅 릴레이",people:"14명",type:"결선 · 기록 경기",rules:[
+  {icon:"🏀",accent:"orange",cat:"순환",name:"슈팅 릴레이",people:"14명",type:"결선 · 기록 경기",rules:[
     "남학생 6명·여학생 6명, 후보 2명으로 구성합니다.",
     "야외 농구장에서 2학급씩 동시에 진행합니다.",
     "지정 라인에서 농구 슛 성공 횟수로 순위를 결정하며 라인을 밟거나 넘으면 무효입니다.",
@@ -46,14 +46,14 @@ const eventRules = [
     "1회 99초씩 총 2회 실시하여 성공 횟수를 합산합니다.",
     "시작 전 연습 1분을 실시하며 기록이 같으면 공동 순위로 처리합니다."
   ]},
-  {cat:"순환",name:"바운드 배구",people:"20명",type:"결선 경기",rules:[
+  {icon:"🏐",accent:"purple",cat:"순환",name:"바운드 배구",people:"20명",type:"결선 경기",rules:[
     "남학생 8명·여학생 8명, 후보 남녀 각 2명으로 구성합니다.",
     "전반 12분은 여학생, 후반 12분은 남학생이 경기합니다.",
     "일반 배구 규칙을 기본으로 하되 바운드를 허용합니다.",
     "서브는 코트 가운데에서 두 손으로 던져 주며 회전·지나치게 길거나 짧은 공격성 서브는 금지합니다.",
     "전·후반 점수를 합산하여 승부를 결정합니다."
   ]},
-  {cat:"단체",name:"2인 3각",people:"16명",type:"학년별 기록 경기",rules:[
+  {icon:"👫",accent:"blue",cat:"단체",name:"2인 3각",people:"16명",type:"학년별 기록 경기",rules:[
     "남학생 8명·여학생 8명, 2인 1조 × 8팀으로 구성합니다.",
     "학년별 4개 학급이 동시에 진행하며 1·2·3·4반 / 5·6·7·8반으로 나누어 실시합니다.",
     "여-남-여-남-여-남-여-남 순서로 진행합니다.",
@@ -62,7 +62,7 @@ const eventRules = [
     "반환점을 정상적으로 돌지 않거나 배턴 전달 전에 다음 조가 출발하면 반칙 처리합니다.",
     "마지막 조가 결승선을 통과한 기록을 0.1초 단위까지 측정하여 순위를 결정합니다."
   ]},
-  {cat:"단체",name:"달리는 줄다리기",people:"학급 전원",type:"토너먼트 · 3판 2선승",rules:[
+  {icon:"🧑‍🤝‍🧑",accent:"green",cat:"단체",name:"달리는 줄다리기",people:"학급 전원",type:"토너먼트 · 3판 2선승",rules:[
     "예선을 통과한 학년별 4팀이 토너먼트로 진행합니다.",
     "학급 전원이 참여하되 경기 시 인원이 적은 반과 동일하게 맞추며 남녀 비율도 맞춥니다.",
     "한 경기 시간은 1분이며 3판 2선승제로 진행합니다.",
@@ -70,26 +70,26 @@ const eventRules = [
     "휘슬이 울리면 여학생은 줄을 당기고 남학생은 자신의 줄 표시까지 달려와 줄을 당깁니다.",
     "남학생이 달려오는 방향은 오른쪽으로 통일합니다."
   ]},
-  {cat:"이벤트",name:"미션 이어달리기",people:"6명",type:"이벤트 경기",rules:[
+  {icon:"🏃",accent:"orange",cat:"이벤트",name:"미션 이어달리기",people:"6명",type:"이벤트 경기",rules:[
     "남학생 3명·여학생 3명으로 구성합니다.",
     "미션 6개를 차례로 클리어합니다.",
     "남-여-남-여-남-여 순서로 진행합니다.",
     "출발 지점과 골인 지점은 조회대 앞쪽이며 각 주자가 반바퀴씩 달립니다."
   ]},
-  {cat:"단체",name:"이어달리기",people:"8명",type:"결선 경기",rules:[
+  {icon:"🏁",accent:"green",cat:"단체",name:"이어달리기",people:"8명",type:"결선 경기",rules:[
     "남학생 4명·여학생 4명으로 구성합니다.",
     "여-남-여-남-여-남-여-남 순서로 진행합니다.",
     "본부석 조회대 앞쪽에서 출발하여 각 주자가 반바퀴씩 달립니다.",
     "마지막 주자는 결승선까지 달리며 골인 지점은 공원 쪽 수돗가(2학년 응원석)입니다."
   ]},
-  {cat:"사전",name:"축구(남)",people:"9명",type:"사전 경기",rules:[
+  {icon:"⚽",accent:"purple",cat:"사전",name:"축구(남)",people:"9명",type:"사전 경기",rules:[
     "9명으로 참가하며 교체선수 1명을 포함합니다.",
     "사전경기로 진행하지만 경기 결과는 종합점수에 포함합니다.",
     "예선은 전·후반 구분 없이 15분 경기로 진행합니다.",
     "결승은 전반 10분, 후반 10분으로 진행합니다.",
     "무승부일 경우 키커 5명의 승부차기로 승부를 결정합니다."
   ]},
-  {cat:"사전",name:"피구(여)",people:"학급별",type:"사전 경기",rules:[
+  {icon:"🔴",accent:"red",cat:"사전",name:"피구(여)",people:"학급별",type:"사전 경기",rules:[
     "인원이 적은 학급을 기준으로 참가 인원을 동일하게 맞추며 외야는 1명입니다.",
     "사전경기로 진행하지만 경기 결과는 종합점수에 포함합니다.",
     "5분씩 3세트로 진행하며 한 팀이 2세트를 먼저 이기면 종료합니다.",
@@ -214,7 +214,26 @@ renderScores();
 ruleFilter.innerHTML=['전체','사전','순환','단체','이벤트','평가'].map((x,i)=>`<button class="${i===0?'active':''}" data-rule="${x}">${x}</button>`).join('');
 function renderRules(f='전체'){
   let arr=f==='전체'?eventRules:eventRules.filter(x=>x.cat===f);
-  ruleList.innerHTML=arr.map(x=>`<article class="rule-card"><h3>${x.name}</h3><div class="rule-meta"><span>${x.cat}</span><span>참가 ${x.people}</span><span>${x.type}</span></div><ul>${x.rules.map(r=>`<li>${r}</li>`).join('')}</ul></article>`).join('');
+  ruleList.innerHTML=arr.map((x,i)=>`
+    <article class="rule-card rule-${x.accent||'blue'}">
+      <div class="rule-card-top">
+        <div class="rule-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="rule-title-wrap">
+          <div class="rule-kicker">${x.cat}</div>
+          <h3>${x.name}</h3>
+        </div>
+        <div class="rule-illustration" aria-hidden="true">${x.icon||'🏅'}</div>
+      </div>
+      <div class="rule-meta">
+        <span>👥 참가 ${x.people}</span>
+        <span>🎯 ${x.type}</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-body-title">경기 방법 및 규칙</div>
+        <ul>${x.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
+      </div>
+    </article>
+  `).join('');
 }
 document.querySelectorAll('#ruleFilter button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#ruleFilter button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderRules(b.dataset.rule)});renderRules();
 
