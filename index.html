@@ -44,7 +44,7 @@
     <div class="hero-grid">
       <article class="hero-card">
         <div class="hero-tag">2026 ALL PLAY</div>
-        <h2>경덕 체육한마당,<br><strong>지금 필요한 정보만 빠르게.</strong></h2>
+        <h2>경덕 체육한마당,<br><strong class="hero-focus">지금 필요한 정보만 빠르게.</strong></h2>
         <p>일정, 점수, 대진, 참가자, 경기 규칙과 본부 공지를 한 곳에서 확인하세요.</p>
         <div class="hero-btns">
           <button data-go="schedule">오늘 일정 보기</button>
@@ -85,6 +85,20 @@
       <button class="quick q7" data-go="songs"><span>🎵</span><b>신청곡</b><small>응원곡 신청</small></button>
       <button class="quick q8" data-go="media"><span>📸</span><b>사진·영상 콘테스트</b><small>멋진 순간 공유</small></button>
     </div>
+
+    
+<div class="home-prelim">
+  <div class="home-prelim-head">
+    <div><small>PRELIMINARY</small><h3>예선 진행 일정</h3></div>
+    <button data-go="brackets">대진·결과 보기 →</button>
+  </div>
+  <div class="home-prelim-grid">
+    <div><time>9.3 목</time><b>축구 · 피구</b><small>전 학년 준결승</small></div>
+    <div><time>9.10 목</time><b>바운드 배구</b><small>전 학년 예선</small></div>
+    <div><time>9.17 목</time><b>바운드 배구</b><small>전 학년 준결승</small></div>
+    <div><time>9.30 수</time><b>달리는 줄다리기 · 이어달리기</b><small>전 학년 예선</small></div>
+  </div>
+</div>
 
     <div class="home-columns">
       <article class="panel">
@@ -138,6 +152,16 @@
 
   <section class="page" id="brackets">
     <div class="page-title blue"><div class="icon">🏟️</div><div><small>BRACKETS & RECORDS</small><h2>대진·기록</h2><p>사전 예선 진행 상황과 결선 진출 현황을 확인합니다.</p></div></div>
+    <div class="prelim-schedule-wrap">
+      <div class="prelim-title"><small>PRELIMINARY SCHEDULE</small><h3>예선 진행 일정</h3></div>
+      <div class="prelim-schedule">
+        <article><time>9. 3.(목)</time><b>축구 · 피구 준결승</b><span>1 · 2 · 3학년</span></article>
+        <article><time>9. 10.(목)</time><b>바운드 배구 예선</b><span>1 · 2 · 3학년</span></article>
+        <article><time>9. 17.(목)</time><b>바운드 배구 준결승</b><span>1 · 2 · 3학년</span></article>
+        <article><time>9. 30.(수)</time><b>달리는 줄다리기 · 이어달리기 예선</b><span>1 · 2 · 3학년</span></article>
+      </div>
+    </div>
+    <div class="subsection-title"><b>종목별 진행 및 결과</b><small>경기 결과는 진행 후 업데이트됩니다.</small></div>
     <div class="filter-row" id="bracketFilter"></div>
     <div id="bracketList" class="bracket-list"></div>
   </section>

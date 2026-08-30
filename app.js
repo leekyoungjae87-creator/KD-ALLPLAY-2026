@@ -38,6 +38,7 @@ const eventRules = [
 
 const scoreEvents = ["축구","피구","바운드배구","8자줄넘기","슈팅릴레이","2인3각","달리는줄다리기","미션이어달리기","이어달리기","학급깃발"];
 const prelimEvents = ["축구(남)","피구(여)","바운드 배구","달리는 줄다리기","이어달리기"];
+const prelimSchedule = {"축구(남)": "9. 3.(목) · 전 학년 준결승", "피구(여)": "9. 3.(목) · 전 학년 준결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선", "이어달리기": "9. 30.(수) · 전 학년 예선"};
 const ops = [
   ["응원 퍼포먼스","전 교직원 투표","각 학년 체육교사 지원"],
   ["학급 깃발","전 교직원 투표","각 학년 체육교사 지원"],
@@ -141,7 +142,7 @@ document.querySelectorAll('#ruleFilter button').forEach(b=>b.onclick=()=>{docume
 bracketFilter.innerHTML=['전체',...prelimEvents].map((x,i)=>`<button class="${i===0?'active':''}" data-bracket="${x}">${x}</button>`).join('');
 function renderBrackets(f='전체'){
   let store=load(STORE.prelim,{}), arr=f==='전체'?prelimEvents:[f];
-  bracketList.innerHTML=arr.map(e=>`<article class="bracket-card"><h3>${e}</h3>${[1,2,3].map(g=>`<div class="bracket-row"><span>${g}학년</span><b>${store[`${e}_${g}`]||'진행 전'}</b></div>`).join('')}</article>`).join('');
+  bracketList.innerHTML=arr.map(e=>`<article class="bracket-card"><h3>${e}</h3><small>${prelimSchedule[e]||''}</small>${[1,2,3].map(g=>`<div class="bracket-row"><span>${g}학년</span><b>${store[`${e}_${g}`]||'진행 예정'}</b></div>`).join('')}</article>`).join('');
 }
 document.querySelectorAll('#bracketFilter button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#bracketFilter button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBrackets(b.dataset.bracket)});renderBrackets();
 
