@@ -141,3 +141,17 @@ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>nav(b.datas
 document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-grade]').forEach(x=>x.classList.remove('active'));b.classList.add('active');S.grade=Number(b.dataset.grade);renderScores()})
 let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBar').classList.add('show')});document.getElementById('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBar').classList.remove('show')};if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 ensure();renderSchedule();renderScores();renderPoints();renderEvents();setupClassSelector();renderClassPage();renderSongs();renderMedia();renderNotices();setupAdmin();setupFlags();setupStaffVote();renderClock();setInterval(renderClock,30000);
+
+function renderSimpleDday(){
+  const el=document.getElementById('ddayNumber');
+  const msg=document.getElementById('ddayMessage');
+  if(!el)return;
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const target=new Date(2026,9,1);
+  const diff=Math.ceil((target-today)/86400000);
+  if(diff>0){el.textContent=`D-${diff}`;msg.textContent='체육한마당을 기다리는 중!';}
+  else if(diff===0){el.textContent='D-DAY';msg.textContent='오늘은 경덕 ALL PLAY!';}
+  else{el.textContent='ALL PLAY';msg.textContent='함께 만든 멋진 하루를 기억해요!';}
+}
+renderSimpleDday();

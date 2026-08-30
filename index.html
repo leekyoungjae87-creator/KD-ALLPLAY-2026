@@ -12,29 +12,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero clean-hero">
-    <div class="hero-deco deco-a"></div>
-    <div class="hero-deco deco-b"></div>
-    <div class="hero-deco deco-c"></div>
-    <div class="hero-confetti confetti-1">✦</div>
-    <div class="hero-confetti confetti-2">●</div>
-    <div class="hero-confetti confetti-3">✺</div>
-    <div class="hero-confetti confetti-4">◆</div>
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <span class="hero-eyebrow">2026 KYONGDUK SPORTS FESTIVAL</span>
-        <h1><span>경덕</span> <b>ALL</b> <em>PLAY</em></h1>
-        <p class="hero-sub">모두가 함께, 모두가 빛나는 하루</p>
-        <p class="hero-line">우리의 열정, 하나의 무대에서!</p>
-        <div class="hero-meta">
-          <span>📅 2026. 10. 1.(목) 08:30~16:00</span>
-          <span>📍 본교 운동장 · 경덕관</span>
-        </div>
+  <header class="hero compact-hero">
+    <div class="compact-hero-inner">
+      <div>
+        <span class="compact-kicker">2026 경덕중학교</span>
+        <h1>ALL <em>PLAY</em> 체육한마당</h1>
+        <p>모두가 함께, 모두가 빛나는 하루</p>
       </div>
-      <div class="hero-mini-art" aria-hidden="true">
-        <div class="mini-card mini-card-1">🏆<small>도전</small></div>
-        <div class="mini-card mini-card-2">🎉<small>축제</small></div>
-        <div class="mini-card mini-card-3">🤝<small>함께</small></div>
+      <div class="compact-meta">
+        <span>📅 2026. 10. 1.(목)</span>
+        <span>⏰ 08:30~16:00</span>
+        <span>📍 운동장 · 경덕관</span>
       </div>
     </div>
   </header>
@@ -42,14 +30,14 @@
   <nav class="nav" id="nav">
     <button class="nav-btn active" data-section="home">홈</button>
     <button class="nav-btn" data-section="live">LIVE</button>
-    <button class="nav-btn" data-section="schedule">시간표</button>
-    <button class="nav-btn" data-section="scores">점수·순위</button>
-    <button class="nav-btn" data-section="events">종목안내</button>
-    <button class="nav-btn" data-section="class">학급페이지</button>
+    <button class="nav-btn" data-section="schedule">일정</button>
+    <button class="nav-btn" data-section="scores">순위</button>
+    <button class="nav-btn" data-section="events">종목</button>
+    <button class="nav-btn" data-section="class">우리 반</button>
     <button class="nav-btn staff-nav" data-section="staffvote">🔒 교직원 투표</button>
     <button class="nav-btn" data-section="songs">신청곡</button>
-    <button class="nav-btn" data-section="gallery">사진 및 영상 컨테스트</button>
-    <button class="nav-btn" data-section="notice">본부공지</button>
+    <button class="nav-btn" data-section="gallery">사진·영상 콘테스트</button>
+    <button class="nav-btn" data-section="notice">공지</button>
     <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
 
@@ -93,8 +81,8 @@
 
       
       <div class="section-head compact">
-        <div><span class="kicker">OFFICIAL POINTS</span><h2>종목별 배점표</h2></div>
-        <span class="pill">계획서 기준</span>
+        <div><span class="kicker">OFFICIAL POINTS</span><h2>종목 배점</h2></div>
+        
       </div>
       <div id="homePointTable" class="table-wrap point-highlight"></div>
 
@@ -105,6 +93,24 @@
           <p>모든 학생이 함께 뛰고, 응원하고, 만들고, 즐기는 체육한마당입니다.</p>
         </div>
         <button class="btn primary" data-go="events">종목 둘러보기</button>
+      </div>
+    </section>
+
+    
+    <section id="dday" class="page">
+      <div class="section-visual"><span class="section-visual-icon">⏳</span><span>D-DAY</span></div>
+      <div class="section-head">
+        <div><span class="kicker">COUNTDOWN</span><h2>체육한마당까지</h2></div>
+      </div>
+      <div class="dday-box">
+        <div class="dday-number" id="ddayNumber">D-DAY</div>
+        <div class="dday-date">2026. 10. 1.(목) 08:30~16:00</div>
+        <div class="dday-place">본교 운동장 · 경덕관</div>
+        <div class="dday-message" id="ddayMessage">모두가 함께, 모두가 빛나는 하루!</div>
+      </div>
+      <div class="dday-links">
+        <button class="btn primary" data-go="schedule">전체 일정 보기</button>
+        <button class="btn ghost" data-go="events">종목 확인하기</button>
       </div>
     </section>
 
@@ -296,7 +302,7 @@
             <small>현재 버전은 사진을 이 브라우저에 저장합니다. 실시간 공유형은 추후 데이터베이스 연결 시 적용됩니다.</small>
           </article>
           <article class="feature">
-            <h3>본부 공지</h3>
+            <h3>공지</h3>
             <input id="noticeTitle" placeholder="공지 제목">
             <textarea id="noticeBody" placeholder="공지 내용"></textarea>
             <button class="btn primary wide" id="saveNotice">공지 등록</button>
