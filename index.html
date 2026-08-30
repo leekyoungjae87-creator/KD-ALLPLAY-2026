@@ -13,6 +13,14 @@
 </head>
 <body>
   <header class="hero">
+    <div class="sports-scene" aria-hidden="true">
+      <span class="sport-figure f1">⚽</span>
+      <span class="sport-figure f2">🏃</span>
+      <span class="sport-figure f3">🏐</span>
+      <span class="sport-figure f4">🏀</span>
+      <span class="sport-figure f5">🤸</span>
+      <span class="sport-figure f6">🏃‍♀️</span>
+    </div>
     <div class="confetti c1"></div><div class="confetti c2"></div><div class="confetti c3"></div>
     <div class="hero-inner">
       <div class="brand-row">
@@ -48,7 +56,7 @@
     <button class="nav-btn" data-section="scores">점수·순위</button>
     <button class="nav-btn" data-section="events">종목안내</button>
     <button class="nav-btn" data-section="class">학급페이지</button>
-    <button class="nav-btn" data-section="vote">교직원투표</button>
+    <button class="nav-btn" data-section="flags">학급 깃발</button>
     <button class="nav-btn" data-section="songs">신청곡</button>
     <button class="nav-btn" data-section="gallery">사진·영상</button>
     <button class="nav-btn" data-section="notice">본부공지</button>
@@ -92,6 +100,13 @@
         <div class="quick"><b>🚩 학급 깃발</b><span>9.22.(화) 점심시간까지</span></div>
         <div class="quick"><b>🦺 안전교육</b><span>9.30.(수) 6교시</span></div>
       </div>
+
+      
+      <div class="section-head compact">
+        <div><span class="kicker">OFFICIAL POINTS</span><h2>종목별 배점표</h2></div>
+        <span class="pill">계획서 기준</span>
+      </div>
+      <div id="homePointTable" class="table-wrap point-highlight"></div>
 
       <div class="festival-banner">
         <div>
@@ -160,18 +175,18 @@
       <div id="classPage"></div>
     </section>
 
-    <section id="vote" class="page">
+    <section id="flags" class="page">
       <div class="section-head">
-        <div><span class="kicker">TEACHER VOTE</span><h2>응원 퍼포먼스 교직원 투표</h2></div>
+        <div><span class="kicker">CLASS FLAGS</span><h2>학급 깃발 갤러리</h2></div>
+        <span class="pill">우리 반의 색을 보여주세요</span>
       </div>
-      <div class="rule-banner">평가기준: 참여도 · 협동성 · 창의성 · 완성도 · 호응도, 각 20점 / 학년별 최우수·우수·장려 시상</div>
-      <div class="selector-card">
-        <select id="voteGrade"></select>
-        <select id="voteClass"></select>
+      <div class="flag-intro">
+        <div>
+          <b>🚩 2026 경덕 ALL PLAY 학급 깃발</b>
+          <p>학급의 개성과 단합을 담은 깃발을 한곳에서 볼 수 있습니다. 관리자 화면에서 사진을 등록하면 이 탭에 표시됩니다.</p>
+        </div>
       </div>
-      <div id="voteForm" class="vote-grid"></div>
-      <button class="btn primary wide" id="submitVote">투표 저장</button>
-      <div id="voteMessage" class="result-box">현재는 브라우저 저장 방식입니다.</div>
+      <div id="flagGallery" class="flag-gallery"></div>
     </section>
 
     <section id="songs" class="page">
@@ -217,7 +232,7 @@
       <div id="adminLogin" class="form-card">
         <input id="adminPw" type="password" placeholder="관리자 비밀번호">
         <button class="btn primary" id="adminLoginBtn">로그인</button>
-        <small>테스트 비밀번호: allplay2026</small>
+        
       </div>
       <div id="adminPanel" class="hidden">
         <div class="grid two">
@@ -228,6 +243,16 @@
             <select id="adminEvent"></select>
             <input id="adminScore" type="number" placeholder="점수">
             <button class="btn primary wide" id="saveScore">점수 반영</button>
+          </article>
+
+          <article class="feature">
+            <h3>학급 깃발 등록</h3>
+            <select id="flagGrade"></select>
+            <select id="flagClass"></select>
+            <input id="flagImage" type="file" accept="image/*">
+            <input id="flagCaption" placeholder="깃발 한줄 소개(선택)">
+            <button class="btn primary wide" id="saveFlag">깃발 사진 등록</button>
+            <small>현재 버전은 사진을 이 브라우저에 저장합니다. 실시간 공유형은 추후 데이터베이스 연결 시 적용됩니다.</small>
           </article>
           <article class="feature">
             <h3>본부 공지</h3>

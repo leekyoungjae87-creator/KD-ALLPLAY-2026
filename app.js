@@ -39,7 +39,7 @@ const eventRules=[
 ['축구(남)','9명',['교체선수 1명','사전경기','예선 15분','결승 전·후반 각 10분','무승부 시 승부차기 5명']],
 ['피구(여)','학급별 조정',['적은 반 기준으로 인원 맞춤','외야 1명','5분 3세트, 2선승','패스 3회까지','더블 아웃 없음']]
 ];
-const S={grade:1,scores:JSON.parse(localStorage.getItem('kd_final_scores')||'{}'),songs:JSON.parse(localStorage.getItem('kd_final_songs')||'[]'),media:JSON.parse(localStorage.getItem('kd_final_media')||'[]'),notices:JSON.parse(localStorage.getItem('kd_final_notices')||'[]'),votes:JSON.parse(localStorage.getItem('kd_final_votes')||'{}')};
+const S={grade:1,scores:JSON.parse(localStorage.getItem('kd_final_scores')||'{}'),songs:JSON.parse(localStorage.getItem('kd_final_songs')||'[]'),media:JSON.parse(localStorage.getItem('kd_final_media')||'[]'),notices:JSON.parse(localStorage.getItem('kd_final_notices')||'[]'),votes:JSON.parse(localStorage.getItem('kd_final_votes')||'{}'),flags:JSON.parse(localStorage.getItem('kd_final_flags')||'{}')};
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function ensure(){for(let g=1;g<=3;g++){S.scores[g]??={};for(let c=1;c<=classCounts[g];c++){S.scores[g][c]??={};events.forEach(e=>S.scores[g][c][e.key]??=0)}}saveScores()}
 function saveScores(){localStorage.setItem('kd_final_scores',JSON.stringify(S.scores))}
@@ -50,7 +50,7 @@ function renderClock(){const n=new Date(),d=eventDate-n;document.getElementById(
 function renderSchedule(){document.getElementById('scheduleList').innerHTML=schedule.map((s,i)=>`<div class="timeline-item"><b>${s[0]}–${s[1]}</b><div><b>${s[2]}</b><span>${s[4]}</span></div><div class="place">${s[3]}</div></div>`).join('')}
 function renderScores(){const g=S.grade;let rows=[];for(let c=1;c<=classCounts[g];c++)rows.push({c,t:total(g,c)});rows.sort((a,b)=>b.t-a.t);let last=null,r=0,rank={};rows.forEach((x,i)=>{if(x.t!==last){r=i+1;last=x.t}rank[x.c]=r});document.getElementById('scoreBoard').innerHTML=`<div class="table-wrap"><table><thead><tr><th>학급</th><th>총점</th><th>순위</th>${events.map(e=>`<th>${e.name}</th>`).join('')}</tr></thead><tbody>${Array.from({length:classCounts[g]},(_,i)=>i+1).map(c=>`<tr class="${rank[c]<=3?'rank'+rank[c]:''}"><td>${g}-${c}</td><td><b>${total(g,c)}</b></td><td>${rank[c]}위</td>${events.map(e=>`<td>${S.scores[g][c][e.key]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;renderLeaders();renderClassPage()}
 function renderLeaders(){document.getElementById('leaders').innerHTML=[1,2,3].map(g=>{let best={c:1,t:-1};for(let c=1;c<=classCounts[g];c++){const t=total(g,c);if(t>best.t)best={c,t}}return `<div class="leader"><small>${g}학년</small><b>${g}-${best.c}</b><span>${best.t}점 · 현재 선두</span></div>`}).join('')}
-function renderPoints(){document.getElementById('pointTable').innerHTML=`<table><thead><tr><th>종목</th><th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>그 외</th></tr></thead><tbody>${events.map(e=>`<tr><td>${e.name}</td>${e.pts.map(p=>`<td>${p||'-'}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+function renderPoints(){const markup=`<table><thead><tr><th>종목</th><th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>그 외</th></tr></thead><tbody>${events.map(e=>`<tr><td>${e.name}</td>${e.pts.map(p=>`<td>${p||'-'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;document.getElementById('pointTable').innerHTML=markup;document.getElementById('homePointTable').innerHTML=markup}
 function renderEvents(){document.getElementById('eventGrid').innerHTML=eventRules.map(r=>`<article class="feature event-card"><span class="tag">${r[1]}</span><h3>${r[0]}</h3><ul>${r[2].map(x=>`<li>${x}</li>`).join('')}</ul></article>`).join('')}
 function setupClassSelector(){const g=document.getElementById('classGrade');g.innerHTML=[1,2,3].map(x=>`<option value="${x}">${x}학년</option>`).join('');g.onchange=()=>setClassNos();setClassNos();document.getElementById('showClassBtn').onclick=renderClassPage}
 function setClassNos(){const g=Number(document.getElementById('classGrade').value||1);document.getElementById('classNo').innerHTML=Array.from({length:classCounts[g]},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')}
@@ -62,6 +62,31 @@ document.getElementById('submitSong').onclick=()=>{const title=document.getEleme
 function renderMedia(){document.getElementById('mediaList').innerHTML=S.media.length?S.media.slice().reverse().map(m=>`<div class="stack-item"><div><b>📷 ${esc(m.who)}</b><p>${esc(m.memo)}</p></div><a href="${esc(m.link)}" target="_blank">열기</a></div>`).join(''):'<div class="result-box">등록된 사진·영상 제보가 없습니다.</div>'}
 document.getElementById('submitMedia').onclick=()=>{const who=document.getElementById('mediaClass').value.trim(),link=document.getElementById('mediaLink').value.trim(),memo=document.getElementById('mediaMemo').value.trim();if(!link)return alert('공유 링크를 입력해 주세요.');S.media.push({who:who||'익명',link,memo});localStorage.setItem('kd_final_media',JSON.stringify(S.media));renderMedia()}
 function renderNotices(){const data=S.notices.length?S.notices:[{title:'운영본부 안내',body:'경기 10분 전 해당 경기장 주변에서 대기해 주세요.',time:'기본 공지'},{title:'ALL PLAY 안전수칙',body:'준비운동, 운동화 착용, 심판 및 진행요원의 안내를 지켜 주세요.',time:'기본 공지'}];document.getElementById('noticeList').innerHTML=data.slice().reverse().map(n=>`<div class="stack-item"><div><b>📢 ${esc(n.title)}</b><p>${esc(n.body)}</p></div><small>${esc(n.time)}</small></div>`).join('')}
+
+function setupFlags(){
+  const fg=document.getElementById('flagGrade');
+  fg.innerHTML=[1,2,3].map(x=>`<option value="${x}">${x}학년</option>`).join('');
+  fg.onchange=setFlagClasses; setFlagClasses(); renderFlags();
+}
+function setFlagClasses(){
+  const g=Number(document.getElementById('flagGrade').value||1);
+  document.getElementById('flagClass').innerHTML=Array.from({length:classCounts[g]},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('');
+}
+function renderFlags(){
+  const box=document.getElementById('flagGallery');
+  const items=Object.entries(S.flags).sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}));
+  box.innerHTML=items.length?items.map(([k,v])=>`<article class="flag-card"><img src="${v.image}" alt="${k} 학급 깃발"><div class="flag-info"><b>${k}</b><p>${esc(v.caption||'경덕 ALL PLAY 학급 깃발')}</p></div></article>`).join(''):'<div class="flag-empty"><b>🚩 아직 등록된 학급 깃발이 없습니다.</b><br><small>관리자 화면에서 깃발 사진을 등록하면 이곳에 나타납니다.</small></div>';
+}
+document.getElementById('saveFlag').onclick=()=>{
+  const file=document.getElementById('flagImage').files[0];
+  if(!file)return alert('깃발 사진을 선택해 주세요.');
+  if(file.size>1500000)return alert('사진 용량은 1.5MB 이하로 줄여서 등록해 주세요.');
+  const g=document.getElementById('flagGrade').value,c=document.getElementById('flagClass').value,key=`${g}-${c}`;
+  const reader=new FileReader();
+  reader.onload=()=>{S.flags[key]={image:reader.result,caption:document.getElementById('flagCaption').value.trim()};localStorage.setItem('kd_final_flags',JSON.stringify(S.flags));renderFlags();alert(`${key} 깃발을 등록했습니다.`)};
+  reader.readAsDataURL(file);
+}
+
 function setupAdmin(){const g=document.getElementById('adminGrade');g.innerHTML=[1,2,3].map(x=>`<option value="${x}">${x}학년</option>`).join('');const e=document.getElementById('adminEvent');e.innerHTML=events.map(x=>`<option value="${x.key}">${x.name}</option>`).join('');g.onchange=setAdminClasses;setAdminClasses()}
 function setAdminClasses(){const g=Number(document.getElementById('adminGrade').value||1);document.getElementById('adminClass').innerHTML=Array.from({length:classCounts[g]},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')}
 document.getElementById('adminLoginBtn').onclick=()=>{if(document.getElementById('adminPw').value==='allplay2026'){document.getElementById('adminLogin').classList.add('hidden');document.getElementById('adminPanel').classList.remove('hidden')}else alert('비밀번호가 다릅니다.')}
@@ -70,4 +95,4 @@ document.getElementById('saveNotice').onclick=()=>{const title=document.getEleme
 document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>nav(b.dataset.section));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>nav(b.dataset.go));function nav(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===id));window.scrollTo({top:document.getElementById('nav').offsetTop,behavior:'smooth'})}
 document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-grade]').forEach(x=>x.classList.remove('active'));b.classList.add('active');S.grade=Number(b.dataset.grade);renderScores()})
 let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBar').classList.add('show')});document.getElementById('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBar').classList.remove('show')};if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
-ensure();renderSchedule();renderScores();renderPoints();renderEvents();setupClassSelector();renderClassPage();setupVote();renderSongs();renderMedia();renderNotices();setupAdmin();renderClock();setInterval(renderClock,30000);
+ensure();renderSchedule();renderScores();renderPoints();renderEvents();setupClassSelector();renderClassPage();renderSongs();renderMedia();renderNotices();setupAdmin();setupFlags();renderClock();setInterval(renderClock,30000);
