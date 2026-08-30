@@ -86,7 +86,7 @@ document.getElementById('saveFlag').onclick=()=>{
 }
 
 
-const STAFF_PASS='allplay2026';
+const STAFF_PASS='경덕26**';
 
 function fillClassSelect(gradeEl,classEl){
   const g=Number(gradeEl.value||1);

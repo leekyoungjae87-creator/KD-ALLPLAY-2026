@@ -12,12 +12,30 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero hero-photo-banner">
-    <img class="hero-photo" src="assets/allplay-hero-reference.webp"
-         alt="2026 경덕 ALL PLAY 체육한마당 - 달리기, 줄넘기, 배구, 줄다리기가 어우러진 스포츠 축제 배너">
-    <div class="sr-only">
-      <h1>2026 경덕 ALL PLAY 체육한마당</h1>
-      <p>모두가 함께, 모두가 빛나는 하루. 우리의 열정, 하나의 무대에서.</p>
+  <header class="hero clean-hero">
+    <div class="hero-deco deco-a"></div>
+    <div class="hero-deco deco-b"></div>
+    <div class="hero-deco deco-c"></div>
+    <div class="hero-confetti confetti-1">✦</div>
+    <div class="hero-confetti confetti-2">●</div>
+    <div class="hero-confetti confetti-3">✺</div>
+    <div class="hero-confetti confetti-4">◆</div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">2026 KYONGDUK SPORTS FESTIVAL</span>
+        <h1><span>경덕</span> <b>ALL</b> <em>PLAY</em></h1>
+        <p class="hero-sub">모두가 함께, 모두가 빛나는 하루</p>
+        <p class="hero-line">우리의 열정, 하나의 무대에서!</p>
+        <div class="hero-meta">
+          <span>📅 2026. 10. 1.(목) 08:30~16:00</span>
+          <span>📍 본교 운동장 · 경덕관</span>
+        </div>
+      </div>
+      <div class="hero-mini-art" aria-hidden="true">
+        <div class="mini-card mini-card-1">🏆<small>도전</small></div>
+        <div class="mini-card mini-card-2">🎉<small>축제</small></div>
+        <div class="mini-card mini-card-3">🤝<small>함께</small></div>
+      </div>
     </div>
   </header>
 
@@ -30,7 +48,7 @@
     <button class="nav-btn" data-section="class">학급페이지</button>
     <button class="nav-btn staff-nav" data-section="staffvote">🔒 교직원 투표</button>
     <button class="nav-btn" data-section="songs">신청곡</button>
-    <button class="nav-btn" data-section="gallery">사진·영상</button>
+    <button class="nav-btn" data-section="gallery">사진 및 영상 컨테스트</button>
     <button class="nav-btn" data-section="notice">본부공지</button>
     <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
@@ -91,6 +109,7 @@
     </section>
 
     <section id="live" class="page">
+      <div class="section-visual"><span class="section-visual-icon">📣</span><span>LIVE</span></div>
       <div class="section-head">
         <div><span class="kicker">LIVE CENTER</span><h2>오늘의 경덕 LIVE</h2></div>
         <span class="pill danger">● LIVE</span>
@@ -105,6 +124,7 @@
     </section>
 
     <section id="schedule" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🗓️</span><span>SCHEDULE</span></div>
       <div class="section-head">
         <div><span class="kicker">TIMETABLE</span><h2>전체 일정</h2></div>
         <span class="pill">10.01 THU</span>
@@ -113,6 +133,7 @@
     </section>
 
     <section id="scores" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🏆</span><span>SCORE</span></div>
       <div class="section-head">
         <div><span class="kicker">SCORE BOARD</span><h2>학년별 종합점수</h2></div>
         <span class="pill danger">● LIVE</span>
@@ -128,6 +149,7 @@
     </section>
 
     <section id="events" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🎯</span><span>EVENT</span></div>
       <div class="section-head">
         <div><span class="kicker">GAME GUIDE</span><h2>종목별 안내</h2></div>
       </div>
@@ -136,6 +158,7 @@
     </section>
 
     <section id="class" class="page">
+      <div class="section-visual"><span class="section-visual-icon">👕</span><span>CLASS</span></div>
       <div class="section-head">
         <div><span class="kicker">MY CLASS</span><h2>학급 페이지</h2></div>
       </div>
@@ -148,6 +171,7 @@
     </section>
 
     <section id="staffvote" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🗳️</span><span>STAFF</span></div>
       <div class="section-head">
         <div><span class="kicker">STAFF ONLY</span><h2>🔒 교직원 투표</h2></div>
         <span class="pill staff-pill">교직원 전용</span>
@@ -205,6 +229,7 @@
     </section>
 
     <section id="songs" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🎵</span><span>MUSIC</span></div>
       <div class="section-head">
         <div><span class="kicker">ALL PLAY RADIO</span><h2>신청곡</h2></div>
         <span class="pill" id="songCount">0곡</span>
@@ -225,7 +250,7 @@
       </div>
       <div class="form-card">
         <input id="mediaClass" placeholder="학년·반 또는 이름">
-        <input id="mediaLink" placeholder="사진/영상 공유 링크">
+        <input id="mediaLink" placeholder="사진 및 영상 공유 링크">
         <textarea id="mediaMemo" placeholder="짧은 설명"></textarea>
         <button class="btn primary wide" id="submitMedia">제보 등록</button>
       </div>
@@ -241,6 +266,7 @@
     </section>
 
     <section id="admin" class="page">
+      <div class="section-visual"><span class="section-visual-icon">🔐</span><span>ADMIN</span></div>
       <div class="section-head">
         <div><span class="kicker">CONTROL ROOM</span><h2>관리자 운영판</h2></div>
       </div>
