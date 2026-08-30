@@ -2,21 +2,8 @@
   "name": "2026 경덕 ALL PLAY 체육한마당",
   "short_name": "경덕 ALL PLAY",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#fff8ef",
-  "theme_color": "#F4B184",
-  "description": "2026 경덕중학교 ALL PLAY 체육한마당 공식 웹앱",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "background_color": "#f4f8fc",
+  "theme_color": "#17345f",
+  "icons": []
 }
