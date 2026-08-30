@@ -1,168 +1,229 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#17345f">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#234a7b" />
   <title>2026 경덕 ALL PLAY 체육한마당</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<header class="top">
-  <div class="brand">
-    <div class="eyebrow">2026 경덕중학교</div>
-    <h1>경덕 <span>ALL PLAY</span> 체육한마당</h1>
-    <p>모두가 함께, 모두가 빛나는 하루</p>
-  </div>
-  <div class="event-meta">
-    <b>2026. 10. 1.(목)</b>
-    <span>08:30~16:00 · 운동장 / 경덕관</span>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="school-mark">KD</div>
+    <div class="brand-copy">
+      <small>2026 KYONGDUG MIDDLE SCHOOL</small>
+      <h1>경덕 ALL PLAY <span>체육한마당</span></h1>
+      <p>모두가 함께, 모두가 빛나는 하루</p>
+    </div>
+    <div class="event-chip">
+      <b>2026. 10. 1.(목)</b>
+      <span>08:30~16:00 · 운동장 / 경덕관</span>
+    </div>
   </div>
 </header>
 
-<nav class="nav" id="nav">
+<nav class="main-nav" id="mainNav">
   <button class="active" data-page="home">홈</button>
-  <button data-page="dday">D-DAY</button>
   <button data-page="schedule">일정</button>
-  <button data-page="scores">실시간 점수</button>
-  <button data-page="prelim">대진·결과</button>
-  <button data-page="rules">종목·규칙</button>
-  <button data-page="participants">참가자·우리 반</button>
+  <button data-page="live">실시간 점수</button>
+  <button data-page="rules">경기 규칙</button>
+  <button data-page="brackets">대진·기록</button>
+  <button data-page="participants">참가자</button>
+  <button data-page="flags">학급 깃발</button>
   <button data-page="operations">운영·심판</button>
   <button data-page="songs">신청곡</button>
   <button data-page="media">사진·영상</button>
-  <button data-page="notices">본부공지</button>
+  <button data-page="board">본부 게시판</button>
   <button data-page="staff">교직원</button>
 </nav>
 
-<main>
-<section id="home" class="page active">
-  <div class="home-hero">
-    <div class="hero-copy">
-      <span class="pill">KYONGDUG SPORTS FESTIVAL</span>
-      <h2>오늘의 체육한마당을<br><em>한 곳에서</em> 확인하세요.</h2>
-      <p>일정, 점수, 대진, 경기 규칙과 우리 반 정보를 빠르게 확인할 수 있습니다.</p>
-      <div class="hero-actions">
-        <button data-go="schedule">오늘 일정</button>
-        <button class="ghost" data-go="scores">실시간 순위</button>
+<main class="shell">
+  <section class="page active" id="home">
+    <div class="hero-grid">
+      <article class="hero-card">
+        <div class="hero-tag">2026 ALL PLAY</div>
+        <h2>경덕 체육한마당,<br><strong>지금 필요한 정보만 빠르게.</strong></h2>
+        <p>일정, 점수, 대진, 참가자, 경기 규칙과 본부 공지를 한 곳에서 확인하세요.</p>
+        <div class="hero-btns">
+          <button data-go="schedule">오늘 일정 보기</button>
+          <button class="outline" data-go="live">실시간 순위</button>
+        </div>
+      </article>
+
+      <article class="countdown-card" data-go="countdown">
+        <div class="count-label">체육한마당까지</div>
+        <div class="count-main" id="homeDday">D-DAY</div>
+        <div class="count-sub" id="homeCountSub">남은 시간을 계산 중입니다.</div>
+        <div class="mini-clock">
+          <span><b id="homeH">00</b>시간</span>
+          <span><b id="homeM">00</b>분</span>
+          <span><b id="homeS">00</b>초</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="now-strip">
+      <div class="now-box"><span class="dot red"></span><small>NOW</small><b id="nowProgram">행사 준비 중</b></div>
+      <div class="now-box"><span class="dot green"></span><small>NEXT</small><b id="nextProgram">10월 1일 08:30 개회식</b></div>
+      <div class="now-box"><span class="dot blue"></span><small>NOTICE</small><b>선수는 경기 10분 전 대기</b></div>
+    </div>
+
+    <div class="section-heading">
+      <div><small>QUICK ACCESS</small><h3>학생 바로가기</h3></div>
+      <p>가장 많이 찾는 메뉴입니다.</p>
+    </div>
+
+    <div class="quick-cards">
+      <button class="quick q1" data-go="countdown"><span>⏳</span><b>체육대회까지</b><small>실시간 D-DAY</small></button>
+      <button class="quick q2" data-go="brackets"><span>🏟️</span><b>예선 진행 및 결과</b><small>대진표 · 경기결과</small></button>
+      <button class="quick q3" data-go="schedule"><span>📅</span><b>오늘 일정</b><small>시간대별 프로그램</small></button>
+      <button class="quick q4" data-go="live"><span>🏆</span><b>실시간 순위</b><small>학년별 종합점수</small></button>
+      <button class="quick q5" data-go="rules"><span>🎯</span><b>종목·규칙</b><small>참가인원 · 경기방법</small></button>
+      <button class="quick q6" data-go="participants"><span>👕</span><b>우리 반 / 참가자</b><small>선수 찾기 · 반 정보</small></button>
+      <button class="quick q7" data-go="songs"><span>🎵</span><b>신청곡</b><small>응원곡 신청</small></button>
+      <button class="quick q8" data-go="media"><span>📸</span><b>사진·영상 콘테스트</b><small>멋진 순간 공유</small></button>
+    </div>
+
+    <div class="home-columns">
+      <article class="panel">
+        <div class="panel-head"><div><small>LIVE RANKING</small><h3>현재 학년별 선두</h3></div><button data-go="live">전체보기</button></div>
+        <div id="leaderBoard" class="leaders"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><small>HEADQUARTERS</small><h3>최근 본부공지</h3></div><button data-go="board">전체보기</button></div>
+        <div id="homeBoard" class="home-board"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="page" id="countdown">
+    <div class="page-title sky"><div class="icon">⏳</div><div><small>COUNTDOWN</small><h2>D-DAY</h2><p>현재 시각부터 체육한마당 시작까지 실시간으로 카운트합니다.</p></div></div>
+    <div class="countdown-full">
+      <div class="dday-text" id="ddayText">D-DAY</div>
+      <div class="time-grid">
+        <div><b id="days">00</b><span>일</span></div>
+        <div><b id="hours">00</b><span>시간</span></div>
+        <div><b id="minutes">00</b><span>분</span></div>
+        <div><b id="seconds">00</b><span>초</span></div>
+      </div>
+      <h3>2026년 10월 1일 목요일 08:30</h3>
+      <p>경덕중학교 운동장 · 경덕관</p>
+    </div>
+  </section>
+
+  <section class="page" id="schedule">
+    <div class="page-title mint"><div class="icon">📅</div><div><small>PROGRAM</small><h2>체육한마당 일정</h2><p>계획서의 당일 세부 운영 일정입니다.</p></div></div>
+    <div id="scheduleList" class="timeline"></div>
+  </section>
+
+  <section class="page" id="live">
+    <div class="page-title peach"><div class="icon">🏆</div><div><small>LIVE SCORE</small><h2>실시간 점수·순위</h2><p>학년별 종합 점수와 종목별 점수를 확인합니다.</p></div></div>
+    <div class="grade-tabs" id="gradeTabs">
+      <button class="active" data-grade="1">1학년</button>
+      <button data-grade="2">2학년</button>
+      <button data-grade="3">3학년</button>
+    </div>
+    <div class="rank-cards" id="rankCards"></div>
+    <div class="table-wrap" id="scoreTable"></div>
+    <div class="info-note">※ 현재 프로토타입은 기기별 브라우저 저장 방식입니다. 실제 행사 운영 시 실시간 DB 연동이 필요합니다.</div>
+  </section>
+
+  <section class="page" id="rules">
+    <div class="page-title lavender"><div class="icon">🎯</div><div><small>RULE BOOK</small><h2>경기 규칙</h2><p>참가 인원, 경기 방식, 핵심 규정을 종목별로 확인하세요.</p></div></div>
+    <div class="filter-row" id="ruleFilter"></div>
+    <div class="rule-list" id="ruleList"></div>
+  </section>
+
+  <section class="page" id="brackets">
+    <div class="page-title blue"><div class="icon">🏟️</div><div><small>BRACKETS & RECORDS</small><h2>대진·기록</h2><p>사전 예선 진행 상황과 결선 진출 현황을 확인합니다.</p></div></div>
+    <div class="filter-row" id="bracketFilter"></div>
+    <div id="bracketList" class="bracket-list"></div>
+  </section>
+
+  <section class="page" id="participants">
+    <div class="page-title teal"><div class="icon">👕</div><div><small>PARTICIPANTS</small><h2>참가자 · 우리 반</h2><p>학생 번호와 이름으로 참가 종목을 찾거나, 우리 반 정보를 확인하세요.</p></div></div>
+    <div class="participant-tools">
+      <div class="search-panel">
+        <h3>🔎 내 경기 찾기</h3>
+        <p>학번과 이름을 입력하세요.</p>
+        <div class="search-form"><input id="studentNo" placeholder="학번 예: 30401"><input id="studentName" placeholder="이름"><button id="findStudent">찾기</button></div>
+        <div id="studentResult" class="search-result">참가자 명단이 등록되면 검색할 수 있습니다.</div>
+      </div>
+      <div class="search-panel">
+        <h3>🏫 우리 반 보기</h3>
+        <p>학년과 반을 선택하세요.</p>
+        <div class="search-form"><select id="classGrade"></select><select id="classNo"></select><button id="showClass">보기</button></div>
+        <div id="classResult" class="search-result"></div>
       </div>
     </div>
-    <div class="count-card" data-go="dday">
-      <small>체육한마당까지</small>
-      <strong id="homeDday">D-DAY</strong>
-      <span id="homeCountdownText">남은 시간을 확인하세요</span>
+  </section>
+
+  <section class="page" id="flags">
+    <div class="page-title yellow"><div class="icon">🚩</div><div><small>CLASS FLAGS</small><h2>학급 깃발</h2><p>학급의 개성과 단합을 담은 깃발을 만나보세요.</p></div></div>
+    <div class="grade-tabs" id="flagTabs"><button class="active" data-fgrade="1">1학년</button><button data-fgrade="2">2학년</button><button data-fgrade="3">3학년</button></div>
+    <div id="flagGallery" class="flag-gallery"></div>
+  </section>
+
+  <section class="page" id="operations">
+    <div class="page-title gray"><div class="icon">🧑‍⚖️</div><div><small>OPERATIONS</small><h2>운영 · 심판</h2><p>종목별 진행 및 심판 정보를 확인합니다.</p></div></div>
+    <div class="search-form ops-search"><input id="opsSearch" placeholder="종목 또는 역할 검색"></div>
+    <div id="opsList" class="ops-list"></div>
+  </section>
+
+  <section class="page" id="songs">
+    <div class="page-title pink"><div class="icon">🎵</div><div><small>SONG REQUEST</small><h2>신청곡</h2><p>체육한마당에서 듣고 싶은 노래를 신청하세요.</p></div></div>
+    <form id="songForm" class="submit-card">
+      <input id="songClass" placeholder="학년-반 예: 3-4" required>
+      <input id="songTitle" placeholder="곡명 / 가수" required>
+      <textarea id="songMsg" placeholder="신청 메시지 (선택)"></textarea>
+      <button>신청하기</button>
+    </form>
+    <div id="songList" class="post-list"></div>
+  </section>
+
+  <section class="page" id="media">
+    <div class="page-title coral"><div class="icon">📸</div><div><small>PHOTO & VIDEO CONTEST</small><h2>사진·영상 콘테스트</h2><p>체육한마당의 멋진 순간을 공유하세요.</p></div></div>
+    <form id="mediaForm" class="submit-card">
+      <input id="mediaClass" placeholder="학년-반" required>
+      <input id="mediaLink" placeholder="공유 링크" required>
+      <textarea id="mediaDesc" placeholder="사진/영상 설명"></textarea>
+      <button>제출하기</button>
+    </form>
+    <div id="mediaList" class="post-list"></div>
+  </section>
+
+  <section class="page" id="board">
+    <div class="page-title navy"><div class="icon">📢</div><div><small>HEADQUARTERS BOARD</small><h2>본부 게시판</h2><p>당일 변경사항과 경기 안내를 가장 먼저 확인하세요.</p></div></div>
+    <div id="boardList" class="board-list"></div>
+  </section>
+
+  <section class="page" id="staff">
+    <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF ONLY</small><h2>교직원 전용</h2><p>응원 퍼포먼스·학급 깃발 투표와 간단한 운영 입력 화면입니다.</p></div></div>
+    <div id="staffLogin" class="login-card">
+      <input type="password" id="staffPw" placeholder="교직원 비밀번호">
+      <button id="staffLoginBtn">로그인</button>
     </div>
-  </div>
-
-  <div class="status-row">
-    <article><span>🔥</span><small>NOW</small><b id="nowEvent">행사 준비 중</b></article>
-    <article><span>⏭️</span><small>NEXT</small><b id="nextEvent">10월 1일 08:30 개회식</b></article>
-    <article><span>📢</span><small>NOTICE</small><b id="homeNotice">선수는 경기 10분 전 대기</b></article>
-  </div>
-
-  <div class="section-title">
-    <div><span>QUICK MENU</span><h3>학생 핵심 메뉴</h3></div>
-    <p>필요한 정보를 바로 찾으세요.</p>
-  </div>
-  <div class="quick-grid">
-    <button class="q q1" data-go="dday"><i>⏳</i><b>체육대회까지</b><small>실시간 D-DAY</small></button>
-    <button class="q q2" data-go="prelim"><i>🏟️</i><b>예선 진행 및 결과</b><small>대진·승패 확인</small></button>
-    <button class="q q3" data-go="schedule"><i>📅</i><b>오늘 일정</b><small>시간별 프로그램</small></button>
-    <button class="q q4" data-go="scores"><i>🏆</i><b>실시간 순위</b><small>학년별 종합점수</small></button>
-    <button class="q q5" data-go="rules"><i>🎯</i><b>종목·규칙</b><small>경기방법·참가인원</small></button>
-    <button class="q q6" data-go="participants"><i>👕</i><b>우리 반</b><small>반별 참가·점수</small></button>
-    <button class="q q7" data-go="songs"><i>🎵</i><b>신청곡</b><small>듣고 싶은 음악</small></button>
-    <button class="q q8" data-go="media"><i>📸</i><b>사진·영상 콘테스트</b><small>멋진 순간 공유</small></button>
-  </div>
-
-  <div class="home-bottom">
-    <button data-go="operations">🧑‍⚖️ 운영·심판 안내</button>
-    <button data-go="notices">📢 본부공지</button>
-    <button data-go="staff">🔒 교직원 전용</button>
-  </div>
-</section>
-
-<section id="dday" class="page">
-  <div class="page-head yellow"><span>⏳</span><div><small>COUNTDOWN</small><h2>체육한마당까지</h2><p>행사 시작 시각까지 실시간으로 계산합니다.</p></div></div>
-  <div class="dday-panel">
-    <div id="ddayBig" class="dday-big">D-DAY</div>
-    <div class="timer">
-      <div><b id="days">00</b><span>일</span></div>
-      <div><b id="hours">00</b><span>시간</span></div>
-      <div><b id="minutes">00</b><span>분</span></div>
-      <div><b id="seconds">00</b><span>초</span></div>
+    <div id="staffArea" class="staff-area hidden">
+      <div class="staff-menu">
+        <button data-staff-view="performance">🎉 응원 퍼포먼스 투표</button>
+        <button data-staff-view="flagvote">🚩 학급 깃발 투표</button>
+        <button data-staff-view="preliminput">🏟️ 예선 결과 입력</button>
+        <button data-staff-view="scoreinput">🏆 점수 입력</button>
+        <button data-staff-view="noticeinput">📢 공지 등록</button>
+      </div>
+      <div id="staffContent" class="staff-content">
+        <h3>교직원 운영 메뉴</h3><p>위 메뉴를 선택하세요.</p>
+      </div>
     </div>
-    <h3>2026. 10. 1.(목) 08:30</h3>
-    <p>본교 운동장 · 경덕관</p>
-  </div>
-</section>
-
-<section id="schedule" class="page">
-  <div class="page-head green"><span>📅</span><div><small>PROGRAM</small><h2>오늘 일정</h2><p>계획서의 당일 운영 일정입니다.</p></div></div>
-  <div id="scheduleList" class="timeline"></div>
-</section>
-
-<section id="scores" class="page">
-  <div class="page-head orange"><span>🏆</span><div><small>LIVE SCORE</small><h2>실시간 점수·순위</h2><p>학년별 학급 종합점수를 확인합니다.</p></div></div>
-  <div class="tabs" id="scoreTabs"><button class="active" data-grade="1">1학년</button><button data-grade="2">2학년</button><button data-grade="3">3학년</button></div>
-  <div id="scoreTable"></div>
-  <p class="note">※ 현재 버전의 점수는 이 기기 브라우저에 저장됩니다.</p>
-</section>
-
-<section id="prelim" class="page">
-  <div class="page-head blue"><span>🏟️</span><div><small>BRACKET & RESULTS</small><h2>예선 진행 및 결과</h2><p>사전경기와 결선 진출 현황을 종목별로 확인합니다.</p></div></div>
-  <div class="filter" id="prelimFilter"></div>
-  <div id="prelimCards" class="result-grid"></div>
-</section>
-
-<section id="rules" class="page">
-  <div class="page-head purple"><span>🎯</span><div><small>EVENT GUIDE</small><h2>종목·규칙</h2><p>참가인원과 핵심 경기방법을 빠르게 확인하세요.</p></div></div>
-  <div id="ruleCards" class="rule-grid"></div>
-</section>
-
-<section id="participants" class="page">
-  <div class="page-head teal"><span>👕</span><div><small>MY CLASS</small><h2>참가자·우리 반</h2><p>학년과 반을 선택해 우리 반 정보를 확인합니다.</p></div></div>
-  <div class="selector"><select id="gradeSelect"></select><select id="classSelect"></select><button id="showClass">확인</button></div>
-  <div id="classDashboard" class="class-dashboard"></div>
-</section>
-
-<section id="operations" class="page">
-  <div class="page-head slate"><span>🧑‍⚖️</span><div><small>OPERATION</small><h2>운영·심판</h2><p>종목별 심판과 운영 정보를 안내합니다.</p></div></div>
-  <div id="opsCards" class="ops-grid"></div>
-</section>
-
-<section id="songs" class="page">
-  <div class="page-head pink"><span>🎵</span><div><small>SONG REQUEST</small><h2>신청곡</h2><p>체육한마당에서 듣고 싶은 노래를 남겨주세요.</p></div></div>
-  <form id="songForm" class="form-card"><input id="songClass" placeholder="학년-반 예: 3-4"><input id="songTitle" placeholder="곡명 / 가수"><button>신청하기</button></form>
-  <div id="songList" class="simple-list"></div>
-</section>
-
-<section id="media" class="page">
-  <div class="page-head coral"><span>📸</span><div><small>PHOTO & VIDEO</small><h2>사진·영상 콘테스트</h2><p>체육한마당의 멋진 순간을 공유하세요.</p></div></div>
-  <form id="mediaForm" class="form-card"><input id="mediaClass" placeholder="학년-반"><input id="mediaLink" placeholder="사진/영상 공유 링크"><textarea id="mediaDesc" placeholder="간단한 설명"></textarea><button>제출하기</button></form>
-  <div id="mediaList" class="simple-list"></div>
-</section>
-
-<section id="notices" class="page">
-  <div class="page-head navy"><span>📢</span><div><small>HEADQUARTERS</small><h2>본부공지</h2><p>당일 변경사항과 중요한 안내를 확인하세요.</p></div></div>
-  <div id="noticeList" class="notice-list"></div>
-</section>
-
-<section id="staff" class="page">
-  <div class="page-head gold"><span>🔒</span><div><small>STAFF ONLY</small><h2>교직원 전용</h2><p>응원 퍼포먼스·학급 깃발 투표 및 간단한 결과 입력용입니다.</p></div></div>
-  <div id="staffLogin" class="login-box"><input id="staffPw" type="password" placeholder="교직원 비밀번호"><button id="staffLoginBtn">입장</button></div>
-  <div id="staffArea" class="hidden">
-    <div class="staff-grid">
-      <div class="staff-card"><h3>응원 퍼포먼스 투표</h3><p>참여도·협동성·창의성·완성도·호응도</p><button>투표 화면 준비</button></div>
-      <div class="staff-card"><h3>학급 깃발 투표</h3><p>학년별 학급 깃발 평가</p><button>투표 화면 준비</button></div>
-      <div class="staff-card"><h3>결과 입력</h3><p>예선 및 종목별 결과 기록</p><button>입력 화면 준비</button></div>
-    </div>
-  </div>
-</section>
+  </section>
 </main>
 
-<footer>2026 경덕 ALL PLAY · 모두가 함께, 모두가 빛나는 하루</footer>
+<footer>
+  <b>2026 경덕 ALL PLAY 체육한마당</b>
+  <span>모두가 함께, 모두가 빛나는 하루</span>
+</footer>
 <script src="app.js"></script>
 </body>
 </html>
