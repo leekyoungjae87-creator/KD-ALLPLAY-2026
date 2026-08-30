@@ -27,19 +27,23 @@
   </div>
 </header>
 
+  
   <nav class="nav" id="nav">
     <button class="nav-btn active" data-section="home">홈</button>
+    <button class="nav-btn nav-dday" data-section="dday">⏳ D-DAY</button>
+    <button class="nav-btn nav-prelim" data-section="prelim">📋 예선 결과</button>
     <button class="nav-btn" data-section="live">LIVE</button>
     <button class="nav-btn" data-section="schedule">일정</button>
     <button class="nav-btn" data-section="scores">순위</button>
-    <button class="nav-btn" data-section="events">종목</button>
+    <button class="nav-btn" data-section="events">종목·규칙</button>
     <button class="nav-btn" data-section="class">우리 반</button>
-    <button class="nav-btn staff-nav" data-section="staffvote">🔒 교직원 투표</button>
     <button class="nav-btn" data-section="songs">신청곡</button>
     <button class="nav-btn" data-section="gallery">사진·영상 콘테스트</button>
     <button class="nav-btn" data-section="notice">공지</button>
+    <button class="nav-btn staff-nav" data-section="staffvote">🔒 교직원 투표</button>
     <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
+
 
   <main>
     <section id="home" class="page active">
@@ -72,6 +76,72 @@
       <div class="section-head compact">
         <div><span class="kicker">QUICK GUIDE</span><h2>꼭 확인할 것</h2></div>
       </div>
+
+      <div class="student-dashboard-head">
+        <div>
+          <span class="kicker">학생용 바로가기</span>
+          <h2>무엇을 찾고 있나요?</h2>
+          <p>필요한 메뉴를 누르면 바로 확인할 수 있어요.</p>
+        </div>
+      </div>
+
+      <div class="student-core-menu">
+        <button class="core-card c-dday" data-go="dday">
+          <span class="core-icon">⏳</span>
+          <b>체육대회까지</b>
+          <strong id="homeDday">D-DAY</strong>
+          <small>며칠 남았는지 확인</small>
+        </button>
+        <button class="core-card c-prelim" data-go="prelim">
+          <span class="core-icon">📋</span>
+          <b>예선 진행 결과</b>
+          <strong>RESULT</strong>
+          <small>종목별 예선 결과 보기</small>
+        </button>
+        <button class="core-card c-schedule" data-go="schedule">
+          <span class="core-icon">📅</span>
+          <b>오늘 일정</b>
+          <strong>SCHEDULE</strong>
+          <small>시간별 일정 확인</small>
+        </button>
+        <button class="core-card c-score" data-go="scores">
+          <span class="core-icon">🏆</span>
+          <b>실시간 순위</b>
+          <strong>RANKING</strong>
+          <small>우리 반 현재 순위</small>
+        </button>
+        <button class="core-card c-events" data-go="events">
+          <span class="core-icon">🎯</span>
+          <b>종목·규칙</b>
+          <strong>RULE</strong>
+          <small>경기 방법 빠르게 보기</small>
+        </button>
+        <button class="core-card c-class" data-go="class">
+          <span class="core-icon">👕</span>
+          <b>우리 반</b>
+          <strong>MY CLASS</strong>
+          <small>반별 점수 확인</small>
+        </button>
+        <button class="core-card c-song" data-go="songs">
+          <span class="core-icon">🎵</span>
+          <b>신청곡</b>
+          <strong>MUSIC</strong>
+          <small>듣고 싶은 노래 신청</small>
+        </button>
+        <button class="core-card c-gallery" data-go="gallery">
+          <span class="core-icon">📸</span>
+          <b>사진·영상 콘테스트</b>
+          <strong>CONTEST</strong>
+          <small>멋진 순간을 공유</small>
+        </button>
+      </div>
+
+      <div class="student-small-links">
+        <button data-go="live">🔥 지금 진행</button>
+        <button data-go="notice">📢 공지사항</button>
+        <button data-go="staffvote">🔒 교직원 투표</button>
+      </div>
+
       <div class="quick-grid">
         <div class="quick"><b>👥 선수명단</b><span>9.11.(금) 점심시간까지</span></div>
         <div class="quick"><b>🎵 퍼포먼스 음원</b><span>9.18.(금) 점심시간까지</span></div>
@@ -98,7 +168,7 @@
 
     
     
-<section id="dday" class="page">
+<section id="dday" class="page tone-dday">
   <div class="section-visual"><span class="section-visual-icon">⏳</span><span>D-DAY</span></div>
   <div class="section-head">
     <div>
@@ -122,7 +192,31 @@
 </section>
 
 
-    <section id="live" class="page">
+    
+    <section id="prelim" class="page tone-prelim">
+      <div class="section-visual prelim-visual"><span class="section-visual-icon">📋</span><span>PRELIMINARY</span></div>
+      <div class="section-head">
+        <div>
+          <span class="kicker">예선 진행 상황</span>
+          <h2>예선 진행 결과</h2>
+          <p>사전 예선 종목의 진행 상황과 결과를 한눈에 확인하세요.</p>
+        </div>
+      </div>
+
+      <div class="prelim-filter">
+        <button class="prelim-chip active" data-prelim="all">전체</button>
+        <button class="prelim-chip" data-prelim="soccer">⚽ 축구</button>
+        <button class="prelim-chip" data-prelim="dodge">🔴 피구</button>
+        <button class="prelim-chip" data-prelim="volley">🏐 바운드 배구</button>
+        <button class="prelim-chip" data-prelim="tug">🪢 달리는 줄다리기</button>
+        <button class="prelim-chip" data-prelim="relay">🏃 이어달리기</button>
+      </div>
+
+      <div id="prelimResults" class="prelim-grid"></div>
+      <div class="prelim-note">※ 결과는 경기 종료 후 순차적으로 업데이트됩니다.</div>
+    </section>
+
+    <section id="live" class="page tone-live">
       <div class="section-visual"><span class="section-visual-icon">📣</span><span>LIVE</span></div>
       <div class="section-head">
         <div><span class="kicker">LIVE CENTER</span><h2>오늘의 경덕 LIVE</h2></div>
@@ -137,7 +231,7 @@
       <div id="leaders" class="leader-grid"></div>
     </section>
 
-    <section id="schedule" class="page">
+    <section id="schedule" class="page tone-schedule">
       <div class="section-visual"><span class="section-visual-icon">🗓️</span><span>SCHEDULE</span></div>
       <div class="section-head">
         <div><span class="kicker">TIMETABLE</span><h2>전체 일정</h2></div>
@@ -146,7 +240,7 @@
       <div id="scheduleList" class="timeline"></div>
     </section>
 
-    <section id="scores" class="page">
+    <section id="scores" class="page tone-score">
       <div class="section-visual"><span class="section-visual-icon">🏆</span><span>SCORE</span></div>
       <div class="section-head">
         <div><span class="kicker">SCORE BOARD</span><h2>학년별 종합점수</h2></div>
@@ -162,7 +256,7 @@
       <div id="pointTable" class="table-wrap"></div>
     </section>
 
-    <section id="events" class="page">
+    <section id="events" class="page tone-events">
       <div class="section-visual"><span class="section-visual-icon">🎯</span><span>EVENT</span></div>
       <div class="section-head">
         <div><span class="kicker">GAME GUIDE</span><h2>종목별 안내</h2></div>
@@ -171,7 +265,7 @@
       <div id="eventGrid" class="grid two"></div>
     </section>
 
-    <section id="class" class="page">
+    <section id="class" class="page tone-class">
       <div class="section-visual"><span class="section-visual-icon">👕</span><span>CLASS</span></div>
       <div class="section-head">
         <div><span class="kicker">MY CLASS</span><h2>학급 페이지</h2></div>
@@ -184,7 +278,7 @@
       <div id="classPage"></div>
     </section>
 
-    <section id="staffvote" class="page">
+    <section id="staffvote" class="page tone-staff">
       <div class="section-visual"><span class="section-visual-icon">🗳️</span><span>STAFF</span></div>
       <div class="section-head">
         <div><span class="kicker">STAFF ONLY</span><h2>🔒 교직원 투표</h2></div>
@@ -242,7 +336,7 @@
       </div>
     </section>
 
-    <section id="songs" class="page">
+    <section id="songs" class="page tone-song">
       <div class="section-visual"><span class="section-visual-icon">🎵</span><span>MUSIC</span></div>
       <div class="section-head">
         <div><span class="kicker">ALL PLAY RADIO</span><h2>신청곡</h2></div>
@@ -258,7 +352,7 @@
       <div id="songList" class="stack"></div>
     </section>
 
-    <section id="gallery" class="page">
+    <section id="gallery" class="page tone-gallery">
       <div class="section-head">
         <div><span class="kicker">AFTER PLAY</span><h2>사진 · 영상 제보</h2></div>
       </div>
@@ -271,7 +365,7 @@
       <div id="mediaList" class="stack"></div>
     </section>
 
-    <section id="notice" class="page">
+    <section id="notice" class="page tone-notice">
       <div class="section-head">
         <div><span class="kicker">HQ NOTICE</span><h2>본부게시판</h2></div>
         <span class="pill danger">● 실시간 공지</span>
@@ -279,7 +373,7 @@
       <div id="noticeList" class="stack"></div>
     </section>
 
-    <section id="admin" class="page">
+    <section id="admin" class="page tone-admin">
       <div class="section-visual"><span class="section-visual-icon">🔐</span><span>ADMIN</span></div>
       <div class="section-head">
         <div><span class="kicker">CONTROL ROOM</span><h2>관리자 운영판</h2></div>

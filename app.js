@@ -211,3 +211,45 @@ function updateKrNow(){
 updateKrDday();
 updateKrNow();
 setInterval(updateKrNow,60000);
+
+
+const PRELIM_EVENTS = [
+  {key:'soccer', icon:'⚽', title:'축구(남)', rows:['1학년 예선','2학년 예선','3학년 예선']},
+  {key:'dodge', icon:'🔴', title:'피구(여)', rows:['1학년 예선','2학년 예선','3학년 예선']},
+  {key:'volley', icon:'🏐', title:'바운드 배구', rows:['1학년 예선','2학년 예선','3학년 예선']},
+  {key:'tug', icon:'🪢', title:'달리는 줄다리기', rows:['1학년 예선','2학년 예선','3학년 예선']},
+  {key:'relay', icon:'🏃', title:'이어달리기', rows:['1학년 예선','2학년 예선','3학년 예선']}
+];
+
+function getPrelimStore(){
+  try{return JSON.parse(localStorage.getItem('kd_prelim_results')||'{}')}catch(e){return {}}
+}
+function renderPrelim(filter='all'){
+  const box=document.getElementById('prelimResults');
+  if(!box)return;
+  const store=getPrelimStore();
+  const data=PRELIM_EVENTS.filter(x=>filter==='all'||x.key===filter);
+  box.innerHTML=data.map(ev=>{
+    const rows=ev.rows.map((label,i)=>{
+      const k=`${ev.key}_${i+1}`;
+      const val=store[k]||'진행 전';
+      return `<div class="prelim-row"><span>${label}</span><span class="prelim-result">${val}</span></div>`;
+    }).join('');
+    const done=ev.rows.some((_,i)=>store[`${ev.key}_${i+1}`]);
+    return `<article class="prelim-card">
+      <div class="prelim-card-top">
+        <div class="prelim-card-title">${ev.icon} ${ev.title}</div>
+        <span class="prelim-status ${done?'done':''}">${done?'진행 중/완료':'진행 전'}</span>
+      </div>
+      <div class="prelim-list">${rows}</div>
+    </article>`;
+  }).join('');
+}
+document.querySelectorAll('.prelim-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.prelim-chip').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    renderPrelim(btn.dataset.prelim);
+  });
+});
+renderPrelim();
