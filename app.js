@@ -141,22 +141,3 @@ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>nav(b.datas
 document.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-grade]').forEach(x=>x.classList.remove('active'));b.classList.add('active');S.grade=Number(b.dataset.grade);renderScores()})
 let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBar').classList.add('show')});document.getElementById('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBar').classList.remove('show')};if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
 ensure();renderSchedule();renderScores();renderPoints();renderEvents();setupClassSelector();renderClassPage();renderSongs();renderMedia();renderNotices();setupAdmin();setupFlags();setupStaffVote();renderClock();setInterval(renderClock,30000);
-
-function renderPosterDashboard(){
-  const d=document.getElementById('posterDday');
-  if(d){
-    const target=new Date('2026-10-01T00:00:00'), now=new Date();
-    const days=Math.ceil((target-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000);
-    d.textContent=days>0?`D-${days}`:days===0?'D-DAY':'ALL PLAY';
-  }
-  const box=document.getElementById('posterRanks');
-  if(box){
-    box.innerHTML=[1,2,3].map(g=>{
-      const arr=Array.from({length:classCounts[g]},(_,i)=>({c:i+1,t:total(g,i+1)})).sort((a,b)=>b.t-a.t).slice(0,3);
-      return `<div class="dash-grade"><b>${g}학년</b>${arr.map((x,i)=>`<span>${['🥇','🥈','🥉'][i]} ${x.c}반 <strong>${x.t}점</strong></span>`).join('')}</div>`
-    }).join('');
-  }
-}
-document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;document.querySelector(`[data-section="${id}"]`)?.click();window.scrollTo({top:0,behavior:'smooth'})});
-
-renderPosterDashboard();

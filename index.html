@@ -12,143 +12,12 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero">
-    
-    <div class="sports-scene" aria-hidden="true">
-      <svg class="hero-sports-art" viewBox="0 0 1600 620" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="skyG" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#dbeff3"/>
-            <stop offset="45%" stop-color="#f7e8d2"/>
-            <stop offset="100%" stop-color="#f2c8b8"/>
-          </linearGradient>
-          <linearGradient id="fieldG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#b8d7c7"/>
-            <stop offset="100%" stop-color="#8eb9a2"/>
-          </linearGradient>
-          <filter id="softShadow">
-            <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#6d7d77" flood-opacity=".18"/>
-          </filter>
-        </defs>
-
-        <!-- sky / festival field -->
-        <rect width="1600" height="620" fill="url(#skyG)"/>
-        <circle cx="1360" cy="90" r="58" fill="#f5c96d" opacity=".7"/>
-        <path d="M0 420 Q300 355 610 405 T1200 390 T1600 405 V620 H0Z" fill="url(#fieldG)"/>
-        <path d="M0 505 Q420 455 800 515 T1600 490" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="5"/>
-        <path d="M0 555 Q420 505 800 565 T1600 540" fill="none" stroke="#ffffff" stroke-opacity=".38" stroke-width="4"/>
-
-        <!-- flags / festival -->
-        <path d="M160 115 Q520 55 880 115 T1460 92" fill="none" stroke="#ffffff" stroke-width="3" opacity=".75"/>
-        <g opacity=".9">
-          <path d="M270 92 l26 9 -20 18 z" fill="#e69379"/>
-          <path d="M410 78 l28 8 -20 20 z" fill="#e5c568"/>
-          <path d="M555 77 l28 10 -22 19 z" fill="#80b7b7"/>
-          <path d="M705 93 l28 10 -22 18 z" fill="#d6a3b8"/>
-          <path d="M865 108 l26 10 -20 18 z" fill="#e69379"/>
-          <path d="M1040 105 l28 9 -21 19 z" fill="#e5c568"/>
-          <path d="M1225 94 l27 10 -22 18 z" fill="#80b7b7"/>
-        </g>
-
-        <!-- runner left -->
-        <g transform="translate(230 290)" stroke="#375d63" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
-          <circle cx="26" cy="-30" r="22" fill="#f2b59b" stroke="none"/>
-          <path d="M22 0 L58 72"/>
-          <path d="M45 42 L-5 68"/>
-          <path d="M46 42 L92 22"/>
-          <path d="M58 72 L10 132"/>
-          <path d="M58 72 L122 122"/>
-        </g>
-
-        <!-- jump rope center-left -->
-        <g transform="translate(525 270)" stroke="#745b65" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
-          <circle cx="0" cy="-40" r="21" fill="#f3b9a4" stroke="none"/>
-          <path d="M0 -10 L0 74"/>
-          <path d="M0 22 L-52 50"/>
-          <path d="M0 22 L50 44"/>
-          <path d="M0 74 L-34 140"/>
-          <path d="M0 74 L42 138"/>
-          <path d="M-55 45 Q-95 125 -35 176 Q30 210 78 148 Q102 90 49 40" stroke="#f5f0e8" stroke-width="6"/>
-        </g>
-
-        <!-- basketball player center -->
-        <g transform="translate(820 245)" stroke="#4f6670" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
-          <circle cx="5" cy="-42" r="22" fill="#efae8e" stroke="none"/>
-          <path d="M5 -10 L15 78"/>
-          <path d="M10 18 L-50 40"/>
-          <path d="M10 18 L74 -8"/>
-          <path d="M15 78 L-30 150"/>
-          <path d="M15 78 L68 145"/>
-          <circle cx="106" cy="-20" r="24" fill="#d48454" stroke="#b96a41" stroke-width="5"/>
-        </g>
-
-        <!-- volleyball player -->
-        <g transform="translate(1085 255)" stroke="#556f68" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#softShadow)">
-          <circle cx="0" cy="-42" r="22" fill="#f0b39a" stroke="none"/>
-          <path d="M0 -10 L-5 75"/>
-          <path d="M-2 12 L-62 -22"/>
-          <path d="M-2 12 L54 -28"/>
-          <path d="M-5 75 L-48 145"/>
-          <path d="M-5 75 L42 142"/>
-          <circle cx="72" cy="-70" r="21" fill="#faf7ef" stroke="#7aa0a0" stroke-width="5"/>
-          <path d="M60 -82 q14 14 25 4 M56 -64 q18 -5 28 6" stroke="#7aa0a0" stroke-width="3"/>
-        </g>
-
-        <!-- tug of war right -->
-        <g transform="translate(1300 335)" filter="url(#softShadow)">
-          <path d="M-110 35 L210 5" stroke="#f4eee5" stroke-width="10" stroke-linecap="round"/>
-          <g transform="translate(-65 0)" stroke="#6a5964" stroke-width="15" stroke-linecap="round" fill="none">
-            <circle cx="0" cy="-35" r="20" fill="#efb096" stroke="none"/>
-            <path d="M0 -5 L-12 65"/>
-            <path d="M-5 20 L-58 8"/>
-            <path d="M-8 24 L50 16"/>
-            <path d="M-12 65 L-58 120"/>
-            <path d="M-12 65 L34 112"/>
-          </g>
-          <g transform="translate(58 -8)" stroke="#54666d" stroke-width="15" stroke-linecap="round" fill="none">
-            <circle cx="0" cy="-35" r="20" fill="#f2b59b" stroke="none"/>
-            <path d="M0 -5 L-8 65"/>
-            <path d="M-3 20 L-52 10"/>
-            <path d="M-5 24 L48 14"/>
-            <path d="M-8 65 L-48 116"/>
-            <path d="M-8 65 L38 112"/>
-          </g>
-        </g>
-
-        <!-- motion streaks -->
-        <g stroke="#ffffff" stroke-linecap="round" opacity=".5">
-          <path d="M92 340 H190" stroke-width="8"/>
-          <path d="M125 375 H205" stroke-width="5"/>
-          <path d="M720 350 H770" stroke-width="6"/>
-          <path d="M1180 410 H1250" stroke-width="6"/>
-        </g>
-      </svg>
-    </div>
-    <div class="confetti c1"></div><div class="confetti c2"></div><div class="confetti c3"></div>
-    <div class="hero-inner">
-      <div class="brand-row">
-        <div class="brand-badge">ALL<br>PLAY</div>
-        <div>
-          <div class="eyebrow">2026 KYONGDUG SPORTS FESTIVAL</div>
-          <div class="school-name">경덕중학교</div>
-        </div>
-      </div>
-      <h1>모두가 참여하고<br><span>함께 빛나는 하루</span></h1>
-      <p>경덕 ALL PLAY 체육한마당</p>
-      <div class="hero-chips">
-        <span>📅 2026. 10. 1.(목) 08:30~16:00</span>
-        <span>📍 운동장 · 경덕관</span>
-        <span>🏫 1학년 7반 · 2학년 8반 · 3학년 7반</span>
-      </div>
-      <div class="hero-actions">
-        <button class="btn primary" data-go="live">LIVE 보기</button>
-        <button class="btn ghost" data-go="schedule">전체 일정</button>
-      </div>
-      <div class="status-strip">
-        <div><small>COUNTDOWN</small><b id="countdown">D-</b></div>
-        <div><small>NOW</small><b id="nowProgram">행사 전 준비기간</b></div>
-        <div><small>NEXT</small><b id="nextProgram">일정 확인</b></div>
-      </div>
+  <header class="hero hero-photo-banner">
+    <img class="hero-photo" src="assets/allplay-hero-reference.webp"
+         alt="2026 경덕 ALL PLAY 체육한마당 - 달리기, 줄넘기, 배구, 줄다리기가 어우러진 스포츠 축제 배너">
+    <div class="sr-only">
+      <h1>2026 경덕 ALL PLAY 체육한마당</h1>
+      <p>모두가 함께, 모두가 빛나는 하루. 우리의 열정, 하나의 무대에서.</p>
     </div>
   </header>
 
@@ -166,42 +35,7 @@
     <button class="nav-btn" data-section="admin">관리자</button>
   </nav>
 
-  
-<section class="poster-dashboard">
-  <div class="poster-card dday-card">
-    <div class="poster-card-head navy">체육한마당 D-DAY</div>
-    <div class="poster-card-body center">
-      <div class="big-dday" id="posterDday">D-DAY</div>
-      <b>2026. 10. 1.(목) 08:30~16:00</b>
-      <p>본교 운동장 및 경덕관</p>
-    </div>
-  </div>
-  <div class="poster-card rank-card">
-    <div class="poster-card-head green">실시간 종합 순위 <small>(학년별)</small></div>
-    <div class="poster-card-body" id="posterRanks"></div>
-  </div>
-  <div class="poster-card today-card">
-    <div class="poster-card-head orange">오늘의 주요 일정</div>
-    <div class="poster-card-body compact-schedule">
-      <div><b>08:30</b><span>개회식</span></div>
-      <div><b>09:00</b><span>학급 응원 퍼포먼스</span></div>
-      <div><b>09:30</b><span>순환 종목 경기</span></div>
-      <div><b>13:20</b><span>달리는 줄다리기</span></div>
-      <div><b>14:00</b><span>미션 이어달리기</span></div>
-      <div><b>14:30</b><span>이어달리기 결승</span></div>
-      <div><b>15:00</b><span>시상 및 폐회</span></div>
-    </div>
-  </div>
-</section>
-<section class="poster-quick">
-  <button data-go="events">🏆<b>종목 안내</b><span>경기 방법 및 규칙</span></button>
-  <button data-go="schedule">📅<b>전체 일정표</b><span>시간별 일정 확인</span></button>
-  <button data-go="notices">📣<b>본부 공지</b><span>공지사항 확인</span></button>
-  <button data-go="songs">🎵<b>신청곡</b><span>응원곡 신청하기</span></button>
-  <button data-go="media">📷<b>사진·영상 제보</b><span>행사 사진/영상 보내기</span></button>
-</section>
-
-<main>
+  <main>
     <section id="home" class="page active">
       <div class="section-head">
         <div><span class="kicker">BEFORE · LIVE · AFTER</span><h2>경덕 ALL PLAY 한눈에</h2></div>
@@ -229,18 +63,7 @@
         </article>
       </div>
 
-      
-<div class="staff-teaser">
-  <div class="staff-teaser-head"><b>📣 교직원 투표</b><span>🔒 교직원 전용</span></div>
-  <p>체육한마당의 멋진 순간을 함께 선정해 주세요.</p>
-  <div class="staff-teaser-grid">
-    <button class="staff-teaser-card" data-go="staffvote"><span>🚩</span><div><b>학급 깃발 투표</b><small>학년별 우수 학급 깃발 선정</small></div><strong>투표하기 →</strong></button>
-    <button class="staff-teaser-card green-card" data-go="staffvote"><span>📣</span><div><b>학급 응원 퍼포먼스 투표</b><small>참여·협동·창의·완성·호응 평가</small></div><strong>투표하기 →</strong></button>
-  </div>
-  <div class="staff-only-note">※ 투표는 교직원만 참여할 수 있으며 비밀번호 입력 후 이용합니다.</div>
-</div>
-
-<div class="section-head compact">
+      <div class="section-head compact">
         <div><span class="kicker">QUICK GUIDE</span><h2>꼭 확인할 것</h2></div>
       </div>
       <div class="quick-grid">
@@ -468,8 +291,5 @@
   </footer>
 
   <script src="app.js"></script>
-
-<div class="rally-banner">“ 함께 만들자! 최고의 하루! <em>경덕 ALL PLAY!</em> ”</div>
-
 </body>
 </html>
