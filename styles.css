@@ -1504,3 +1504,23 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:800px){.shirt-dashboard{grid-template-columns:1fr repeat(3,72px)}.shirt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.shirt-dashboard{grid-template-columns:repeat(3,1fr)}.shirt-dashboard-main{grid-column:1/-1}.shirt-stat{min-height:58px}.shirt-legend{flex-wrap:wrap}.shirt-legend small{width:100%;margin-left:0}.shirt-grade-block{padding:11px}.shirt-grid{gap:8px}.shirt-card{padding:11px;min-height:158px}}
 @media(max-width:390px){.shirt-card h4{font-size:9px}.shirt-color-line em{font-size:7px}.shirt-class-badge{font-size:13px}}
+
+/* v36 — 일정 탭 캘린더 글씨 한 단계 확대 */
+#schedule .calendar-head span{font-size:9px}
+#schedule .calendar-legend span{font-size:9px}
+#schedule .calendar-weekdays b{font-size:9px}
+#schedule .cal-day .date{font-size:9px}
+#schedule .cal-event{font-size:8px;line-height:1.4}
+#schedule .holiday-label{font-size:7px}
+#schedule .calendar-detail b{font-size:11px}
+#schedule .calendar-detail p{font-size:9px}
+@media(max-width:700px){
+  #schedule .calendar-head span{font-size:9px}
+  #schedule .calendar-legend span{font-size:8px}
+  #schedule .calendar-weekdays b{font-size:8px}
+  #schedule .cal-day .date{font-size:8px}
+  #schedule .cal-event{font-size:7px;line-height:1.4}
+  #schedule .holiday-label{font-size:7px}
+  #schedule .calendar-detail b{font-size:11px}
+  #schedule .calendar-detail p{font-size:9px}
+}
