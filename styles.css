@@ -1380,3 +1380,29 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   display:none !important;
   background:none !important;
 }
+
+
+/* v31 — 학급 응원퍼포먼스 */
+.performance-title{background:linear-gradient(135deg,#fff0f5 0%,#f5f0ff 52%,#edf6ff 100%)}
+.performance-title .icon{box-shadow:0 5px 14px rgba(95,78,132,.08)}
+.performance-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.performance-summary>div{background:#fff;border:1px solid #e8e8ef;border-radius:14px;padding:11px 10px;text-align:center;box-shadow:0 5px 14px rgba(44,57,75,.035)}
+.performance-summary strong{display:block;font-size:20px;color:#40566f;line-height:1}.performance-summary span{display:block;margin-top:5px;font-size:8px;font-weight:900;color:#8a94a0}
+.performance-guide{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:18px;background:linear-gradient(135deg,#fffafd,#f8f7ff);border:1px solid #ece7f0;border-radius:15px}
+.performance-guide>span{font-size:23px}.performance-guide b{font-size:9px;letter-spacing:.08em;color:#695a7a}.performance-guide p{font-size:8px;color:#8a8190;margin:3px 0 0}
+.performance-grade-block{margin-bottom:20px}
+.performance-grade-title{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.performance-grade-title>span{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#526d88,#40566f);color:#fff;font-size:15px;font-weight:1000;box-shadow:0 5px 12px rgba(55,76,99,.12)}
+.performance-grade-title b,.performance-grade-title small{display:block}.performance-grade-title b{font-size:13px;color:#40566f}.performance-grade-title small{font-size:8px;color:#8a95a0;margin-top:2px}
+.performance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.performance-card{position:relative;overflow:hidden;background:#fff;border:1px solid #e6e8ec;border-radius:16px;padding:13px;box-shadow:0 7px 18px rgba(45,64,83,.045)}
+.performance-card:before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:linear-gradient(90deg,#f4a6bd,#a99ad9,#78b6da)}
+.performance-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.performance-class{display:inline-flex;align-items:center;justify-content:center;min-width:43px;height:27px;padding:0 8px;border-radius:9px;background:#edf3f8;color:#3f5c77;font-size:11px;font-weight:1000}
+.performance-badge{font-size:7px;font-weight:1000;letter-spacing:.08em;padding:5px 7px;border-radius:999px;background:#fff0f5;color:#b85c7a}.performance-badge.fun{background:#fff6dc;color:#9c7620}.performance-badge.special{background:#f5efff;color:#755ca8}.performance-badge.energy{background:#ebf7ef;color:#43805a}
+.performance-card h3{margin:0 0 11px;font-size:12px;line-height:1.4;color:#2f475f;min-height:34px;display:flex;align-items:center;word-break:keep-all}
+.performance-card dl{margin:0}.performance-card dl>div{display:grid;grid-template-columns:72px 1fr;gap:7px;padding:7px 0;border-top:1px solid #f0f1f3;align-items:start}.performance-card dt{font-size:8px;font-weight:1000;color:#929ba5}.performance-card dd{margin:0;font-size:9px;font-weight:800;color:#536574;line-height:1.45;word-break:keep-all}
+.performance-card dl>div:nth-child(2) dd{color:#4b6990}
+.performance-note{font-size:8px;color:#87939e;background:#f7f9fb;border-radius:10px;padding:9px 11px}
+@media(max-width:800px){.performance-grid{grid-template-columns:1fr 1fr}.performance-summary{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:520px){.performance-grid{grid-template-columns:1fr}.performance-summary{grid-template-columns:repeat(2,1fr);gap:7px}.performance-card h3{min-height:auto}.performance-card{padding:12px}.performance-guide{align-items:flex-start}.performance-guide p{line-height:1.5}}
