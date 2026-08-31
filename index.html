@@ -33,9 +33,9 @@
   <button data-page="rules">📖 경기 규칙</button>
   <button data-page="brackets">⚽ 사전 경기·예선 일정 및 결과</button>
   <button data-page="participants">👕 참가자</button>
+  <button data-page="seating">🗺️ 자리배치도</button>
   <button data-page="shirts">👚 학급 반티</button>
-  <button data-page="performance">🎉 학급 응원퍼포먼스</button>
-  <button data-page="seating">🗺️ 학급별 자리배치도</button>
+  <button data-page="performance">🎉 응원 퍼포먼스</button>
   <button data-page="flags">🚩 학급 깃발</button>
   <button data-page="operations">🧑‍⚖️ 운영·심판</button>
   <button data-page="songs">🎵 신청곡</button>
@@ -92,7 +92,7 @@
       <button class="quick q7" data-go="songs"><span>🎵</span><b>신청곡</b><small>응원곡 신청</small></button>
       <button class="quick q8" data-go="media"><span>📸</span><b>사진·영상 콘테스트</b><small>멋진 순간 공유</small></button>
       <button class="quick q9" data-go="qna"><span>❓</span><b>체육한마당 Q&A</b><small>질문하고 답변 확인</small></button>
-      <button class="quick q10" data-go="seating"><span>🗺️</span><b>학급별 자리배치도</b><small>우리 반 위치 확인</small></button>
+      <button class="quick q10" data-go="seating"><span>🗺️</span><b>자리배치도</b><small>우리 반 위치 확인</small></button>
       <button class="quick q11" data-go="shirts"><span>👚</span><b>학급 반티</b><small>우리 반 반티 확인</small></button>
     </div>
 
@@ -562,7 +562,7 @@
       <div class="icon">🎉</div>
       <div>
         <small>CLASS CHEERING PERFORMANCE</small>
-        <h2>학급 응원퍼포먼스</h2>
+        <h2>응원 퍼포먼스</h2>
         <p>우리 반만의 색깔로 만드는 무대! 신청 학급과 퍼포먼스 정보를 확인하세요.</p>
       </div>
     </div>
@@ -579,55 +579,62 @@
       <div><b>CLASS PERFORMANCE LINE-UP</b><p>팀명 · 대표학생 · 음악 · 퍼포먼스 주제를 한눈에 확인할 수 있습니다.</p></div>
     </div>
 
+    <div class="performance-order">
+      <div class="performance-order-label"><span>🎤</span><div><b>공연 순서</b><small>학년 순서대로 진행합니다.</small></div></div>
+      <div class="performance-order-flow">
+        <span><em>①</em> 1학년</span><i>→</i><span><em>②</em> 2학년</span><i>→</i><span><em>③</em> 3학년</span>
+      </div>
+    </div>
+
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>1</span><div><b>1학년</b><small>3개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>1</span><div><b>1학년</b><small>공연 순서 ① · 3개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">1-1</span><span class="performance-badge">DANCE</span></div>
+          <div class="performance-card-top"><span class="performance-class">1-1</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
           <h3>1학년1반</h3>
-          <dl><div><dt>대표학생</dt><dd>정0율</dd></div><div><dt>음악</dt><dd>풍선</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>정0율</dd></div><div><dt>🎵 음악</dt><dd>풍선</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
         </article>
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">1-4</span><span class="performance-badge">DANCE</span></div>
+          <div class="performance-card-top"><span class="performance-class">1-4</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
           <h3>24공주</h3>
-          <dl><div><dt>대표학생</dt><dd>송0효</dd></div><div><dt>음악</dt><dd>7공주 - LOVE SONG</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>송0효</dd></div><div><dt>🎵 음악</dt><dd>7공주 - LOVE SONG</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
         </article>
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">1-6</span><span class="performance-badge">DANCE</span></div>
+          <div class="performance-card-top"><span class="performance-class">1-6</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
           <h3>HOTSIX</h3>
-          <dl><div><dt>대표학생</dt><dd>박0혁</dd></div><div><dt>음악</dt><dd>프리티걸</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>박0혁</dd></div><div><dt>🎵 음악</dt><dd>프리티걸</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
         </article>
       </div>
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>1개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>공연 순서 ② · 1개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">2-3</span><span class="performance-badge fun">FUN</span></div>
+          <div class="performance-card-top"><span class="performance-class">2-3</span><span class="performance-badge fun">FUN</span><span class="performance-ready">무대 준비</span></div>
           <h3>박준성</h3>
-          <dl><div><dt>대표학생</dt><dd>최0지</dd></div><div><dt>음악</dt><dd>롤리폴리, 와따밤</dd></div><div><dt>퍼포먼스 주제</dt><dd>재미</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>최0지</dd></div><div><dt>🎵 음악</dt><dd>롤리폴리, 와따밤</dd></div><div><dt>퍼포먼스 주제</dt><dd>재미</dd></div></dl>
         </article>
       </div>
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>3</span><div><b>3학년</b><small>3개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>3</span><div><b>3학년</b><small>공연 순서 ③ · 3개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">3-1</span><span class="performance-badge special">PRETTY</span></div>
+          <div class="performance-card-top"><span class="performance-class">3-1</span><span class="performance-badge special">PRETTY</span><span class="performance-ready">무대 준비</span></div>
           <h3>아자아자 1반이1등 안하면 누가하누ㅋㅋ</h3>
-          <dl><div><dt>대표학생</dt><dd>강0연</dd></div><div><dt>음악</dt><dd>프리티걸 - 카라</dd></div><div><dt>퍼포먼스 주제</dt><dd>pretty한 1반 &gt;.&lt;</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>강0연</dd></div><div><dt>🎵 음악</dt><dd>프리티걸 - 카라</dd></div><div><dt>퍼포먼스 주제</dt><dd>pretty한 1반 &gt;.&lt;</dd></div></dl>
         </article>
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">3-4</span><span class="performance-badge energy">ENERGY</span></div>
+          <div class="performance-card-top"><span class="performance-class">3-4</span><span class="performance-badge energy">ENERGY</span><span class="performance-ready">무대 준비</span></div>
           <h3>호랑이새끼들</h3>
-          <dl><div><dt>대표학생</dt><dd>신0원</dd></div><div><dt>음악</dt><dd>빨간맛</dd></div><div><dt>퍼포먼스 주제</dt><dd>화합과 에너지</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>신0원</dd></div><div><dt>🎵 음악</dt><dd>빨간맛</dd></div><div><dt>퍼포먼스 주제</dt><dd>화합과 에너지</dd></div></dl>
         </article>
         <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">3-6</span><span class="performance-badge">DANCE</span></div>
+          <div class="performance-card-top"><span class="performance-class">3-6</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
           <h3>짜요짜요</h3>
-          <dl><div><dt>대표학생</dt><dd>윤0린</dd></div><div><dt>음악</dt><dd>목욕송, 트와이스 TT</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
+          <dl><div><dt>대표학생</dt><dd>윤0린</dd></div><div><dt>🎵 음악</dt><dd>목욕송, 트와이스 TT</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
         </article>
       </div>
     </div>
@@ -640,7 +647,7 @@
       <div class="icon">🗺️</div>
       <div>
         <small>CLASS SEATING MAP</small>
-        <h2>학급별 자리배치도</h2>
+        <h2>자리배치도</h2>
         <p>우리 반 위치를 한눈에 확인하세요.</p>
       </div>
     </div>
