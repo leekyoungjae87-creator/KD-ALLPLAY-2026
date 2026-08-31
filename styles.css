@@ -1365,3 +1365,18 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 /* v25 student quick access additions */
 .quick.q10{background:linear-gradient(145deg,#f4f8ff,#ffffff);border-color:#dce7f2}
 .quick.q11{background:linear-gradient(145deg,#fff6f8,#ffffff);border-color:#f0dfe4}
+
+/* v30: top header simplified — background only, no decorative circles/shapes */
+.site-header{
+  background:linear-gradient(120deg,#edf5ff 0%,#f1faf5 55%,#fff8dc 100%) !important;
+  position:relative;
+  overflow:hidden;
+}
+.site-header::before,
+.site-header::after,
+.header-inner::before,
+.header-inner::after{
+  content:none !important;
+  display:none !important;
+  background:none !important;
+}
