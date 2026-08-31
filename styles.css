@@ -1414,3 +1414,23 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .performance-order-flow{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.performance-order-flow span{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border-radius:999px;background:#f4f7fa;color:#40566f;font-size:9px;font-weight:1000;white-space:nowrap}.performance-order-flow em{font-style:normal;color:#4d79a8;font-size:12px}.performance-order-flow i{font-style:normal;color:#a5afb9;font-weight:1000}
 .performance-card-top{justify-content:flex-start}.performance-card-top .performance-class{margin-right:auto}.performance-ready{font-size:7px;font-weight:1000;padding:5px 7px;border-radius:999px;background:#eef8f2;color:#4f8263;white-space:nowrap}
 @media(max-width:620px){.performance-order{align-items:flex-start;flex-direction:column;gap:10px}.performance-order-flow{justify-content:flex-start;width:100%;gap:5px}.performance-order-flow span{padding:6px 8px}.performance-order-flow i{font-size:8px}.performance-card-top{gap:5px}.performance-badge,.performance-ready{font-size:6.5px;padding:4px 6px}}
+
+
+/* v33 — 운영·심판 탭 카드형 디자인 */
+.ops-page-title{background:linear-gradient(135deg,#edf4fb,#eef8f4);border:1px solid #dbe8ef}
+.ops-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:0 0 12px}
+.ops-overview>div{background:#fff;border:1px solid #e1e8ee;border-radius:15px;padding:13px 14px;box-shadow:0 5px 14px #234a7b0a}
+.ops-overview span,.ops-overview b,.ops-overview small{display:block}.ops-overview span{font-size:21px;margin-bottom:5px}.ops-overview b{font-size:12px;color:#2b4561}.ops-overview small{font-size:9px;color:#8795a2;margin-top:2px}
+.ops-search{margin-bottom:12px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #dfe7ed;border-radius:13px;padding:7px 10px;box-shadow:0 4px 12px #234a7b08}
+.ops-search>span{font-size:14px;opacity:.72}.ops-search input{width:100%;max-width:none;border:0!important;padding:7px 2px!important;outline:none;background:transparent!important}
+.ops-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ops-card{position:relative;overflow:hidden;border:1px solid #e0e7ed;border-radius:16px;padding:14px 15px;background:#fff;box-shadow:0 6px 17px #234a7b0b}
+.ops-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#8fb5d8}
+.ops-card-top{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-bottom:12px}.ops-icon{width:40px;height:40px;border-radius:12px;background:#ffffffbd;display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:inset 0 0 0 1px #ffffffcc}
+.ops-title small{font-size:8px;letter-spacing:.12em;color:#8a98a5;font-weight:1000}.ops-title h3{margin:1px 0 0;color:#29435f;font-size:15px}.ops-status{font-size:8px;font-weight:1000;color:#4e6d88;background:#ffffffb8;border:1px solid #ffffffcc;border-radius:999px;padding:5px 8px}
+.ops-role,.ops-support{border-radius:11px;padding:9px 10px}.ops-role{background:#ffffffb8;border:1px solid #ffffffc7}.ops-support{margin-top:6px;background:#ffffff84;border:1px dashed #ffffffd1}
+.ops-role span,.ops-support span{display:block;font-size:8px;color:#788997;font-weight:900;margin-bottom:3px}.ops-role b{font-size:11px;color:#36506b}.ops-support small{font-size:10px;color:#5e7183}
+.ops-sky{background:#eef7ff}.ops-sky:before{background:#72a9d6}.ops-mint{background:#edf9f2}.ops-mint:before{background:#73b58a}.ops-peach{background:#fff5e9}.ops-peach:before{background:#d9a166}.ops-lavender{background:#f5f1ff}.ops-lavender:before{background:#9b87ca}.ops-teal{background:#edf9f8}.ops-teal:before{background:#6caeaa}.ops-yellow{background:#fff9e5}.ops-yellow:before{background:#d4ac4a}.ops-coral{background:#fff1ed}.ops-coral:before{background:#d58a78}.ops-blue{background:#edf4ff}.ops-blue:before{background:#789bd0}.ops-gold{background:#fff7df}.ops-gold:before{background:#c9a24a}
+.ops-empty{grid-column:1/-1;background:#fff;border:1px dashed #d6e0e8;border-radius:14px;padding:24px;text-align:center;color:#8795a2;font-size:10px}
+@media(max-width:860px){.ops-overview{grid-template-columns:1fr 1fr 1fr}.ops-list{grid-template-columns:1fr}}
+@media(max-width:500px){.ops-overview{grid-template-columns:1fr}.ops-overview>div{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}.ops-overview>div span{grid-row:1/3;margin:0}.ops-card{padding:13px}.ops-title h3{font-size:14px}}

@@ -266,8 +266,22 @@ function renderFlags(){
 document.querySelectorAll('#flagTabs button').forEach(b=>b.onclick=()=>{flagGrade=Number(b.dataset.fgrade);document.querySelectorAll('#flagTabs button').forEach(x=>x.classList.toggle('active',x===b));renderFlags()});renderFlags();
 
 function renderOps(query=''){
+  const iconMap={
+    '응원 퍼포먼스':'🎉','학급 깃발':'🚩','8자 줄넘기':'➰','슈팅 릴레이':'🏀',
+    '바운드 배구':'🏐','2인 3각':'👟','달리는 줄다리기':'🪢','미션 이어달리기':'🎯','이어달리기 결승':'🏃'
+  };
+  const toneMap=['sky','mint','peach','lavender','teal','yellow','coral','blue','gold'];
   let q=query.trim().toLowerCase(), arr=ops.filter(x=>!q||x.join(' ').toLowerCase().includes(q));
-  opsList.innerHTML=arr.map(x=>`<article class="ops-card"><h3>${x[0]}</h3><b>${x[1]}</b><small>${x[2]}</small></article>`).join('');
+  opsList.innerHTML=arr.length?arr.map((x,i)=>`
+    <article class="ops-card ops-${toneMap[ops.indexOf(x)%toneMap.length]}">
+      <div class="ops-card-top">
+        <div class="ops-icon">${iconMap[x[0]]||'🏅'}</div>
+        <div class="ops-title"><small>GAME ${String(ops.indexOf(x)+1).padStart(2,'0')}</small><h3>${x[0]}</h3></div>
+        <span class="ops-status">운영</span>
+      </div>
+      <div class="ops-role"><span>👤 주심·담당</span><b>${x[1]}</b></div>
+      <div class="ops-support"><span>🤝 지원·운영</span><small>${x[2]}</small></div>
+    </article>`).join(''):`<div class="ops-empty">검색 결과가 없습니다.</div>`;
 }
 opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
