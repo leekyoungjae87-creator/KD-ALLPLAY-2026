@@ -572,3 +572,63 @@ document.querySelectorAll('[data-cal-detail]').forEach(btn=>{
     detail.innerHTML=`<div class="calendar-detail-icon">📅</div><div><b>${escapeHtml(date)} · ${escapeHtml(title)}</b><p>${escapeHtml(desc)}</p></div>`;
   });
 });
+
+// v41 — 홈 NOW / NEXT
+(function(){
+  const daySchedule = [
+    ["08:15","08:30","집결"],
+    ["08:30","09:00","개회식·준비운동·안전교육"],
+    ["09:00","09:30","학급별 응원 퍼포먼스"],
+    ["09:30","10:05","순환경기 1"],
+    ["10:05","10:40","순환경기 2"],
+    ["10:40","11:15","순환경기 3"],
+    ["11:15","12:00","2인3각"],
+    ["12:00","13:00","점심시간·사제동행 농구 한판"],
+    ["13:00","13:20","집합 및 축하공연"],
+    ["13:20","14:00","달리는 줄다리기 준결승·결승"],
+    ["14:00","14:30","미션 이어달리기"],
+    ["14:30","15:00","이어달리기 결승"],
+    ["15:00","15:30","점수집계·시상·폐회·정리"]
+  ];
+  const eventDate = new Date(2026,9,1);
+  function mins(s){ const [h,m]=s.split(":").map(Number); return h*60+m; }
+  function setText(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+  function updateNowNext(){
+    const now=new Date();
+    const sameDay=now.getFullYear()===2026 && now.getMonth()===9 && now.getDate()===1;
+    if(!sameDay){
+      const before=now < eventDate;
+      setText("nowEventTime", before ? "2026. 10. 1.(목)" : "2026 체육한마당");
+      setText("nowEventTitle", before ? "체육한마당을 준비하고 있습니다" : "체육한마당이 종료되었습니다");
+      setText("nextEventTime", before ? "08:15" : "ALL PLAY");
+      setText("nextEventTitle", before ? "집결 · 체육한마당 시작" : "모두가 함께한 하루");
+      return;
+    }
+    const cur=now.getHours()*60+now.getMinutes();
+    let current=-1, next=-1;
+    for(let i=0;i<daySchedule.length;i++){
+      if(cur>=mins(daySchedule[i][0]) && cur<mins(daySchedule[i][1])){ current=i; next=i+1; break; }
+      if(cur<mins(daySchedule[i][0])){ next=i; break; }
+    }
+    if(current>=0){
+      const s=daySchedule[current];
+      setText("nowEventTime",`${s[0]} ~ ${s[1]}`);
+      setText("nowEventTitle",s[2]);
+    } else if(cur<mins(daySchedule[0][0])){
+      setText("nowEventTime","행사 시작 전");
+      setText("nowEventTitle","08:15 집결을 준비해주세요");
+    } else {
+      setText("nowEventTime","15:30 이후");
+      setText("nowEventTitle","오늘의 체육한마당 일정이 종료되었습니다");
+    }
+    if(next>=0 && next<daySchedule.length){
+      const s=daySchedule[next];
+      setText("nextEventTime",`${s[0]} ~ ${s[1]}`);
+      setText("nextEventTitle",s[2]);
+    } else {
+      setText("nextEventTime","FINISH");
+      setText("nextEventTitle","안전하게 마무리해주세요");
+    }
+  }
+  document.addEventListener("DOMContentLoaded",()=>{ updateNowNext(); setInterval(updateNowNext,30000); });
+})();
