@@ -382,7 +382,13 @@
   </section>
 
   <section class="page" id="brackets">
-    <div class="page-title blue"><div class="icon">🏟️</div><div><small>PRE-GAMES & PRELIMINARIES</small><h2>사전 경기 및 예선 일정 및 결과</h2><p>사전 경기 일정과 예선 진행 상황, 경기 결과를 한 곳에서 확인합니다.</p></div></div>
+    <div class="page-title blue prelim-page-title"><div class="icon">🏟️</div><div><small>PRE-GAMES & PRELIMINARIES</small><h2>사전 경기 · 예선 일정 및 결과</h2><p>사전 경기 일정부터 학년별 진행 결과까지 한눈에 확인하세요.</p></div></div>
+    <div class="prelim-dashboard">
+      <div class="prelim-dashboard-main"><span>🏁</span><div><small>ROAD TO FINAL</small><b>본선으로 가는 사전 경기</b><p>예선·준결승 결과가 확정되는 대로 이 화면에 업데이트됩니다.</p></div></div>
+      <div class="prelim-mini"><strong>5</strong><span>운영 종목</span></div>
+      <div class="prelim-mini"><strong>4</strong><span>경기 날짜</span></div>
+      <div class="prelim-mini"><strong>1·2·3</strong><span>전 학년</span></div>
+    </div>
     <div class="prelim-schedule-wrap">
       <div class="prelim-title"><small>PRELIMINARY SCHEDULE</small><h3>사전 경기 및 예선 일정</h3></div>
       <div class="prelim-schedule">
@@ -392,7 +398,7 @@
         <article><time>④ 9. 30.(수)</time><b>달리는 줄다리기 · 이어달리기 예선</b><span>1 · 2 · 3학년</span></article>
       </div>
     </div>
-    <div class="subsection-title"><b>사전 경기 및 예선 진행·결과</b><small>경기 결과는 진행 후 업데이트됩니다.</small></div>
+    <div class="prelim-result-head"><div><small>LIVE RESULTS</small><b>사전 경기 · 예선 진행 결과</b><p>종목 버튼을 눌러 필요한 결과만 빠르게 확인하세요.</p></div><span>🏆 결승 진출 현황</span></div>
     <div class="filter-row" id="bracketFilter"></div>
     <div id="bracketList" class="bracket-list"></div>
   </section>
@@ -590,9 +596,9 @@
     </div>
 
     <div class="performance-summary">
-      <div><strong>7</strong><span>신청 학급</span></div>
+      <div><strong>8</strong><span>신청 학급</span></div>
       <div><strong>3</strong><span>1학년</span></div>
-      <div><strong>1</strong><span>2학년</span></div>
+      <div><strong>2</strong><span>2학년</span></div>
       <div><strong>3</strong><span>3학년</span></div>
     </div>
 
@@ -630,12 +636,17 @@
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>공연 순서 ② · 1개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>공연 순서 ② · 2개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">2-3</span><span class="performance-badge fun">FUN</span><span class="performance-ready">무대 준비</span></div>
           <h3>박준성</h3>
           <dl><div><dt>대표학생</dt><dd>최0지</dd></div><div><dt>🎵 음악</dt><dd>롤리폴리, 와따밤</dd></div><div><dt>퍼포먼스 주제</dt><dd>재미</dd></div></dl>
+        </article>
+        <article class="performance-card">
+          <div class="performance-card-top"><span class="performance-class">2-5</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
+          <h3>2-5</h3>
+          <dl><div><dt>대표학생</dt><dd>이0예</dd></div><div><dt>🎵 음악</dt><dd>CHEER UP, BAD</dd></div><div><dt>퍼포먼스 주제</dt><dd>댄스</dd></div></dl>
         </article>
       </div>
     </div>
@@ -680,21 +691,28 @@
   </section>
 
   <section class="page" id="participants">
-    <div class="page-title teal"><div class="icon">👕</div><div><small>PARTICIPANTS</small><h2>참가자 · 우리 반</h2><p>학생 번호와 이름으로 참가 종목을 찾거나, 우리 반 정보를 확인하세요.</p></div></div>
-    <div class="participant-tools">
-      <div class="search-panel">
-        <h3>🔎 내 경기 찾기</h3>
+    <div class="page-title teal participant-page-title"><div class="icon">👟</div><div><small>MY PLAY & CLASS</small><h2>참가자 · 우리 반</h2><p>내가 뛰는 경기와 우리 반의 현재 정보를 빠르게 찾아보세요.</p></div></div>
+    <div class="participant-dashboard">
+      <div class="participant-dashboard-main"><span>🙋</span><div><small>ALL PLAY PARTICIPANTS</small><b>나는 어떤 경기에 나갈까?</b><p>학번·이름 검색과 학급 조회를 한 화면에서 이용할 수 있습니다.</p></div></div>
+      <div class="participant-step"><em>01</em><span>학번·이름 입력</span></div>
+      <div class="participant-step"><em>02</em><span>참가 종목 확인</span></div>
+      <div class="participant-step"><em>03</em><span>우리 반 순위 확인</span></div>
+    </div>
+    <div class="participant-tools participant-tools-v40">
+      <div class="search-panel participant-search-card">
+        <div class="participant-card-head"><span>🔎</span><div><small>MY EVENTS</small><h3>내 경기 찾기</h3></div></div>
         <p>학번과 이름을 입력하세요.</p>
         <div class="search-form"><input id="studentNo" placeholder="학번 예: 30401"><input id="studentName" placeholder="이름"><button id="findStudent">찾기</button></div>
         <div id="studentResult" class="search-result">참가자 명단이 등록되면 검색할 수 있습니다.</div>
       </div>
-      <div class="search-panel">
-        <h3>🏫 우리 반 보기</h3>
+      <div class="search-panel participant-class-card">
+        <div class="participant-card-head"><span>🏫</span><div><small>MY CLASS</small><h3>우리 반 보기</h3></div></div>
         <p>학년과 반을 선택하세요.</p>
         <div class="search-form"><select id="classGrade"></select><select id="classNo"></select><button id="showClass">보기</button></div>
         <div id="classResult" class="search-result"></div>
       </div>
     </div>
+    <div class="participant-note"><span>💡</span><div><b>참가자 명단은 확정 후 순차 반영됩니다.</b><small>명단이 등록되면 학번과 이름으로 종목을 바로 확인할 수 있습니다.</small></div></div>
   </section>
 
   <section class="page" id="flags">

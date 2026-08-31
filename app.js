@@ -261,7 +261,12 @@ document.querySelectorAll('#ruleFilter button').forEach(b=>b.onclick=()=>{docume
 bracketFilter.innerHTML=['전체',...prelimEvents].map((x,i)=>`<button class="${i===0?'active':''}" data-bracket="${x}">${x}</button>`).join('');
 function renderBrackets(f='전체'){
   let store=load(STORE.prelim,{}), arr=f==='전체'?prelimEvents:[f];
-  bracketList.innerHTML=arr.map(e=>`<article class="bracket-card"><h3>${e}</h3><small>${prelimSchedule[e]||''}</small>${[1,2,3].map(g=>`<div class="bracket-row"><span>${g}학년</span><b>${store[`${e}_${g}`]||'진행 예정'}</b></div>`).join('')}</article>`).join('');
+  const eventIcon={'축구(남)':'⚽','피구(여)':'🔴','바운드 배구':'🏐','달리는 줄다리기':'🪢','이어달리기':'🏃'};
+  bracketList.innerHTML=arr.map(e=>`<article class="bracket-card bracket-card-v40">
+    <div class="bracket-card-head"><span class="bracket-event-icon">${eventIcon[e]||'🏟️'}</span><div><small>PRE-GAME</small><h3>${e}</h3></div><em>진행 현황</em></div>
+    <div class="bracket-date">📅 ${prelimSchedule[e]||''}</div>
+    <div class="bracket-grade-results">${[1,2,3].map(g=>{let r=store[`${e}_${g}`]||'진행 예정';let done=r!=='진행 예정';return `<div class="bracket-row ${done?'is-done':''}"><span><i>${g}</i>${g}학년</span><b>${r}</b><em>${done?'결과':'대기'}</em></div>`}).join('')}</div>
+  </article>`).join('');
 }
 document.querySelectorAll('#bracketFilter button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#bracketFilter button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBrackets(b.dataset.bracket)});renderBrackets();
 
