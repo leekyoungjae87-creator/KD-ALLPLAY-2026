@@ -1505,22 +1505,11 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:560px){.shirt-dashboard{grid-template-columns:repeat(3,1fr)}.shirt-dashboard-main{grid-column:1/-1}.shirt-stat{min-height:58px}.shirt-legend{flex-wrap:wrap}.shirt-legend small{width:100%;margin-left:0}.shirt-grade-block{padding:11px}.shirt-grid{gap:8px}.shirt-card{padding:11px;min-height:158px}}
 @media(max-width:390px){.shirt-card h4{font-size:9px}.shirt-color-line em{font-size:7px}.shirt-class-badge{font-size:13px}}
 
-/* v36 — 일정 탭 캘린더 글씨 한 단계 확대 */
-#schedule .calendar-head span{font-size:9px}
-#schedule .calendar-legend span{font-size:9px}
-#schedule .calendar-weekdays b{font-size:9px}
-#schedule .cal-day .date{font-size:9px}
-#schedule .cal-event{font-size:8px;line-height:1.4}
-#schedule .holiday-label{font-size:7px}
-#schedule .calendar-detail b{font-size:11px}
-#schedule .calendar-detail p{font-size:9px}
-@media(max-width:700px){
-  #schedule .calendar-head span{font-size:9px}
-  #schedule .calendar-legend span{font-size:8px}
-  #schedule .calendar-weekdays b{font-size:8px}
-  #schedule .cal-day .date{font-size:8px}
-  #schedule .cal-event{font-size:7px;line-height:1.4}
-  #schedule .holiday-label{font-size:7px}
-  #schedule .calendar-detail b{font-size:11px}
-  #schedule .calendar-detail p{font-size:9px}
-}
+
+/* v38 — 관리자 직접 경기 결과 입력 */
+.score-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,#eef6ff,#f8fbff);border:1px solid #dbe9f6;margin-bottom:12px}
+.score-admin-head small{display:block;font-size:9px;font-weight:1000;letter-spacing:.1em;color:#6b8baa;margin-bottom:3px}.score-admin-head h3{margin:0;color:#234a7b;font-size:19px}.score-admin-head p{margin:5px 0 0;color:#718295;font-size:11px}.score-admin-head>span{background:#234a7b;color:#fff;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;white-space:nowrap}
+.score-admin-panel{display:grid;grid-template-columns:1fr 1.25fr 1fr .9fr;gap:9px;padding:16px;border:1px solid #e1e9ef;border-radius:16px;background:#fff}.score-admin-panel label{display:flex;flex-direction:column;gap:6px}.score-admin-panel label>span,.score-preview small{font-size:10px;font-weight:900;color:#667c91}.score-admin-panel select{width:100%;border:1px solid #d7e2eb;border-radius:10px;background:#f9fbfc;padding:10px;color:#263f59;font-weight:800}
+.score-preview{border-radius:12px;background:#f2faf5;border:1px solid #d6ebde;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;align-items:center}.score-preview strong{font-size:20px;color:#278461;margin-top:2px}.score-save-btn{grid-column:1/-1;border:0;border-radius:11px;background:#234a7b;color:#fff;padding:12px;font-weight:1000;font-size:12px;cursor:pointer}.score-save-btn:hover{filter:brightness(1.06)}
+.score-admin-foot{margin-top:10px;padding:11px 13px;border-radius:12px;background:#fff8e8;border:1px solid #f0e2b9;display:flex;gap:10px;align-items:center;font-size:10px;color:#7d704e}.score-admin-foot b{color:#8a6a1f;white-space:nowrap}.score-admin-foot span{color:#7d704e}
+@media(max-width:700px){.score-admin-head{padding:15px;flex-direction:column}.score-admin-panel{grid-template-columns:1fr 1fr}.score-preview{min-height:55px}.score-save-btn{grid-column:1/-1}.score-admin-foot{align-items:flex-start;flex-direction:column;gap:3px}}

@@ -99,6 +99,26 @@ const eventRules = [
 ];
 
 const scoreEvents = ["축구","피구","바운드배구","8자줄넘기","슈팅릴레이","2인3각","달리는줄다리기","미션이어달리기","이어달리기","학급깃발"];
+
+// v38 관리자 직접 결과 입력용 배점표
+const rankPoints = {
+  "축구":[50,40,30,20,10],
+  "피구":[50,40,30,20,10],
+  "바운드배구":[60,50,40,30,20],
+  "8자줄넘기":[60,50,40,30,20],
+  "슈팅릴레이":[60,50,40,30,20],
+  "2인3각":[80,70,60,50,40],
+  "달리는줄다리기":[120,100,80,60,40],
+  "미션이어달리기":[30,20,10,10,10],
+  "이어달리기":[120,100,80,60,40],
+  "학급깃발":[30,30,20,20,10]
+};
+function pointsForRank(eventName, rankKey){
+  const row=rankPoints[eventName]||[0,0,0,0,0];
+  const idx=Math.max(0,Math.min(4,Number(rankKey)-1));
+  return row[idx]||0;
+}
+
 const prelimEvents = ["축구(남)","피구(여)","바운드 배구","달리는 줄다리기","이어달리기"];
 const prelimSchedule = {"축구(남)": "9. 3.(목) · 전 학년 준결승", "피구(여)": "9. 3.(목) · 전 학년 준결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
 const ops = [
@@ -288,8 +308,8 @@ opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
 
 
-const SUPA_ENABLED = Boolean(window.KD_SUPABASE_URL && window.KD_SUPABASE_ANON_KEY && window.supabase);
-const kdSupa = SUPA_ENABLED ? window.supabase.createClient(window.KD_SUPABASE_URL, window.KD_SUPABASE_ANON_KEY) : null;
+const SUPA_ENABLED = false;
+const kdSupa = null;
 
 async function getQnaData(){
   if(SUPA_ENABLED){
@@ -328,7 +348,7 @@ qnaForm.onsubmit=async e=>{
   }
   e.target.reset();
   await renderQna();
-  alert(SUPA_ENABLED?'질문이 등록되었습니다. 선생님 화면에서도 확인할 수 있습니다.':'질문이 이 기기에 등록되었습니다. Supabase 연결 전에는 다른 기기와 공유되지 않습니다.');
+  alert('질문이 이 기기에 등록되었습니다.');
 };
 
 async function renderQna(){
@@ -372,13 +392,37 @@ function staffView(v){
     staffContent.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
   } else if(v==='scoreinput'){
-    staffContent.innerHTML=`<h3>점수 입력</h3><div class="staff-form"><select id="siClass">${[1,2,3].flatMap(g=>Array.from({length:classCount(g)},(_,i)=>`<option>${g}-${i+1}</option>`)).join('')}</select><select id="siEvent">${scoreEvents.map(x=>`<option>${x}</option>`).join('')}</select><input id="siScore" type="number" placeholder="점수"><button id="siSave">저장</button></div>`;
-    siSave.onclick=()=>{let s=getScores();s[siClass.value][siEvent.value]=Number(siScore.value||0);save(STORE.scores,s);renderScores();alert('저장했습니다.')};
+    staffContent.innerHTML=`
+      <div class="score-admin-head">
+        <div><small>ADMIN SCORE INPUT</small><h3>🏆 경기 결과 입력</h3><p>학급·종목·순위만 선택하면 배점표에 맞는 점수가 자동으로 입력됩니다.</p></div>
+        <span>관리자 직접 입력</span>
+      </div>
+      <div class="score-admin-panel">
+        <label><span>① 학급</span><select id="siClass">${[1,2,3].flatMap(g=>Array.from({length:classCount(g)},(_,i)=>`<option>${g}-${i+1}</option>`)).join('')}</select></label>
+        <label><span>② 종목</span><select id="siEvent">${scoreEvents.map(x=>`<option>${x}</option>`).join('')}</select></label>
+        <label><span>③ 순위</span><select id="siRank"><option value="1">1위</option><option value="2">2위</option><option value="3">3위</option><option value="4">4위</option><option value="5">5위 이하</option></select></label>
+        <div class="score-preview"><small>자동 입력 점수</small><strong id="siPointPreview">50점</strong></div>
+        <button id="siSave" class="score-save-btn">결과 저장 → 순위 반영</button>
+      </div>
+      <div class="score-admin-foot">
+        <b>✓ 승인 과정 없이 즉시 반영</b>
+        <span>잘못 입력한 경우 같은 학급·종목을 다시 선택해 저장하면 수정됩니다.</span>
+      </div>`;
+    const updatePreview=()=>{siPointPreview.textContent=pointsForRank(siEvent.value,siRank.value)+'점';};
+    siEvent.onchange=updatePreview; siRank.onchange=updatePreview; updatePreview();
+    siSave.onclick=()=>{
+      const pts=pointsForRank(siEvent.value,siRank.value);
+      let scores=getScores();
+      scores[siClass.value][siEvent.value]=pts;
+      save(STORE.scores,scores);
+      renderScores();
+      alert(`${siClass.value} · ${siEvent.value} · ${siRank.options[siRank.selectedIndex].text} → ${pts}점 반영 완료`);
+    };
   } else if(v==='noticeinput'){
     staffContent.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
-    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>${SUPA_ENABLED?'학생 질문이 모든 기기에서 실시간으로 공유됩니다.':'현재는 기기 내 저장 모드입니다. config.js에 Supabase 정보를 입력하면 다기기 공유가 활성화됩니다.'}</p><div id="staffQnaItems">불러오는 중...</div>`;
+    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>현재 기기에 등록된 질문과 답변을 관리합니다.</p><div id="staffQnaItems">불러오는 중...</div>`;
     getQnaData().then(a=>{
       staffQnaItems.innerHTML=a.length?a.map(x=>`<div class="staff-qna-card">
         <small>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.time||'')}</small>
@@ -403,17 +447,12 @@ function staffView(v){
   } else if(v==='performance'){
     staffContent.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
   } else if(v==='flagvote'){
-    staffContent.innerHTML=`<h3>학급 깃발 투표</h3><p>학년별 학급 깃발을 확인하고 평가하는 화면입니다.</p><div class="info-note">현재는 공개 갤러리 구조까지 구현되어 있으며, 다중 교직원 투표 합산은 DB 연동이 필요합니다.</div>`;
+    staffContent.innerHTML=`<h3>학급 깃발 투표</h3><p>학년별 학급 깃발을 확인하고 평가하는 화면입니다.</p><div class="info-note">깃발 사진은 촬영 후 웹앱 파일에 일괄 반영하는 방식으로 운영합니다. 투표 결과는 관리자가 최종 점수로 입력합니다.</div>`;
   }
 }
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 
-if(SUPA_ENABLED){
-  kdSupa.channel('qna-live')
-    .on('postgres_changes',{event:'*',schema:'public',table:'qna'},()=>renderQna())
-    .subscribe();
-}
 
 
 const WEATHER_EVENT_DATE='2026-10-01';
