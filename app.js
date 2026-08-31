@@ -203,8 +203,9 @@ function gradeRows(g){
 }
 function renderScores(){
   let rows=gradeRows(currentGrade);
-  rankCards.innerHTML=rows.slice(0,3).map((r,i)=>`<div class="rank-card"><span>${i+1}위</span><strong>${r.key}</strong><b>${r.total}점</b></div>`).join('');
-  scoreTable.innerHTML=`<table class="score-table"><thead><tr><th>순위</th><th>학급</th>${scoreEvents.map(e=>`<th>${e}</th>`).join('')}<th>총점</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td class="class-cell">${r.key}</td>${scoreEvents.map(e=>`<td>${r.data[e]}</td>`).join('')}<td><b>${r.total}</b></td></tr>`).join('')}</tbody></table>`;
+  const medals=['🥇','🥈','🥉'];
+  rankCards.innerHTML=rows.slice(0,3).map((r,i)=>`<div class="rank-card podium-${i+1}"><div class="rank-medal">${medals[i]}</div><span>${i+1}위</span><strong>${r.key}</strong><b>${r.total}<small>점</small></b><em>${currentGrade}학년 TOP ${i+1}</em></div>`).join('');
+  scoreTable.innerHTML=`<div class="score-board-head"><div><small>CLASS RANKING</small><b>${currentGrade}학년 전체 순위</b></div><span>🏁 경기 결과 반영</span></div><table class="score-table"><thead><tr><th>순위</th><th>학급</th>${scoreEvents.map(e=>`<th>${e}</th>`).join('')}<th>총점</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${i<3?'top-row top-'+(i+1):''}"><td><span class="table-rank">${i<3?medals[i]:i+1}</span></td><td class="class-cell"><b>${r.key}</b></td>${scoreEvents.map(e=>`<td>${r.data[e]}</td>`).join('')}<td class="total-cell"><b>${r.total}</b><small>점</small></td></tr>`).join('')}</tbody></table>`;
   renderLeaders();
 }
 document.querySelectorAll('#gradeTabs button').forEach(b=>b.onclick=()=>{currentGrade=Number(b.dataset.grade);document.querySelectorAll('#gradeTabs button').forEach(x=>x.classList.toggle('active',x===b));renderScores()});
