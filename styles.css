@@ -1472,3 +1472,35 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 #live .top-3{background:#fffaf7}
 #live .info-note{margin-top:14px;border-radius:14px;background:#f5f8fb;color:#718196}
 @media(max-width:700px){#live{border-radius:18px}#live .grade-tabs{width:100%}#live .grade-tabs button{flex:1;padding:10px 8px}#live .rank-cards{grid-template-columns:1fr 1fr;gap:10px}#live .rank-card{min-height:138px;padding:14px}#live .podium-1{grid-column:1/-1;min-height:148px;transform:none}#live .rank-card strong{font-size:24px}#live .rank-card b{font-size:22px}#live .score-board-head{min-width:540px}}
+
+
+/* v35 — 학급 반티 탭 리디자인 */
+.shirt-page-title{background:linear-gradient(135deg,#eef7ff 0%,#f7f3ff 55%,#fff7f2 100%);border:1px solid #dfeaf2}
+.shirt-dashboard{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,105px);gap:10px;margin-bottom:12px}
+.shirt-dashboard-main,.shirt-stat{border:1px solid #dde8ef;border-radius:18px;background:#fff;box-shadow:0 8px 24px rgba(42,72,98,.055)}
+.shirt-dashboard-main{display:flex;align-items:center;gap:12px;padding:16px 18px;background:linear-gradient(135deg,#f1f9ff,#fff)}
+.shirt-dashboard-main>span{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#e5f3ff;font-size:21px}
+.shirt-dashboard-main b{font-size:13px;color:#294a67}.shirt-dashboard-main p{margin:4px 0 0;font-size:9px;color:#788997}
+.shirt-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:11px 8px;background:#f8fbfd}
+.shirt-stat strong{font-size:20px;color:#315673;line-height:1}.shirt-stat span{font-size:8px;font-weight:900;color:#81909c;margin-top:5px}
+.shirt-stat.success{background:#f2faf5;border-color:#dceee2}.shirt-stat.success strong{color:#36805a}
+.shirt-stat.pending-stat{background:#fff9f0;border-color:#f1e7d7}.shirt-stat.pending-stat strong{color:#a97835}
+.shirt-legend{display:flex;align-items:center;gap:12px;padding:9px 12px;margin-bottom:20px;border-radius:12px;background:#f7f9fb;color:#667988;font-size:8px}
+.shirt-legend span{display:flex;align-items:center;gap:5px;font-weight:900}.shirt-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}.legend-confirmed{background:#4eac78}.legend-pending{background:#d39b4c}.shirt-legend small{margin-left:auto;color:#8a969f}
+.shirt-grade-block{padding:16px;border:1px solid #e1e9ee;border-radius:20px;margin:0 0 18px;background:linear-gradient(145deg,#fbfdff,#f7fafc)}
+.grade-block-3{background:linear-gradient(145deg,#f8f5ff,#fcfbff);border-color:#e7e1f1}.grade-block-2{background:linear-gradient(145deg,#f2f9ff,#fbfdff);border-color:#dceaf4}.grade-block-1{background:linear-gradient(145deg,#f3faf6,#fcfefd);border-color:#ddece3}
+.shirt-grade-title{margin-bottom:12px}.shirt-grade-title>span{box-shadow:0 5px 14px rgba(42,74,102,.14)}
+.grade-block-3 .shirt-grade-title>span{background:#725d91}.grade-block-2 .shirt-grade-title>span{background:#44799e}.grade-block-1 .shirt-grade-title>span{background:#45805f}
+.shirt-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.shirt-card{position:relative;overflow:hidden;min-height:162px;padding:13px;border-radius:17px;border:1px solid #e1e8ed;background:#fff!important;box-shadow:0 7px 18px rgba(42,67,88,.05);display:flex;flex-direction:column}
+.shirt-card:before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:#7c94a8}.shirt-card.grade-3:before{background:#927daf}.shirt-card.grade-2:before{background:#65a2c9}.shirt-card.grade-1:before{background:#69a57e}
+.shirt-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.shirt-class-badge{font-size:14px;font-weight:1000;color:#294a65}.shirt-card-top .confirmed,.shirt-card-top .pending{font-size:7px;padding:4px 7px;border-radius:999px;font-weight:1000}.shirt-card-top .confirmed{background:#e8f6ee;color:#397158}.shirt-card-top .pending{background:#fff1dd;color:#9a6a2f}
+.shirt-design-icon{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#f4f7f9;font-size:15px;margin:10px 0 7px}
+.shirt-card h4{font-size:10px;color:#405565;line-height:1.35;margin:0 0 9px;min-height:28px}
+.shirt-color-line{display:flex;align-items:center;gap:5px;padding:7px 8px;border-radius:9px;background:#f7f9fb;margin-top:auto}.shirt-color-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#ef7f82,#73aee0,#76b68d)}.shirt-color-line b{font-size:6px;letter-spacing:.08em;color:#9aa5ad}.shirt-color-line em{font-style:normal;font-size:8px;font-weight:900;color:#667985;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shirt-card-action{min-height:24px;margin-top:8px;display:flex;align-items:center}.shirt-card-action a{width:100%;text-align:center;font-size:8px;font-weight:1000;color:#46749a;background:#edf6fc;padding:6px 8px;border-radius:9px;text-decoration:none}.shirt-card-action a:hover{background:#e0f0fb}.shirt-card-action a span{font-size:9px}.shirt-link-note{font-size:7px;color:#7c8a95;line-height:1.3}.shirt-link-note.muted{color:#a4adb4}
+.shirt-source-note{font-size:8px;color:#7f8c96;background:#f6f8fa;border:1px solid #e7ecef;border-radius:11px;padding:10px 12px;text-align:center}
+@media(max-width:800px){.shirt-dashboard{grid-template-columns:1fr repeat(3,72px)}.shirt-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.shirt-dashboard{grid-template-columns:repeat(3,1fr)}.shirt-dashboard-main{grid-column:1/-1}.shirt-stat{min-height:58px}.shirt-legend{flex-wrap:wrap}.shirt-legend small{width:100%;margin-left:0}.shirt-grade-block{padding:11px}.shirt-grid{gap:8px}.shirt-card{padding:11px;min-height:158px}}
+@media(max-width:390px){.shirt-card h4{font-size:9px}.shirt-color-line em{font-size:7px}.shirt-class-badge{font-size:13px}}
