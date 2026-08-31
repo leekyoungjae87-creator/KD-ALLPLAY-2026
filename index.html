@@ -715,26 +715,39 @@
   </section>
 
   <section class="page" id="songs">
-    <div class="page-title pink"><div class="icon">🎵</div><div><small>SONG REQUEST</small><h2>신청곡</h2><p>체육한마당에서 듣고 싶은 노래를 신청하세요.</p></div></div>
-    <form id="songForm" class="submit-card song-form">
-      <input id="songClass" placeholder="학년-반 예: 3-4" maxlength="5" required>
-      <input id="songName" placeholder="이름 예: 홍길동 → 홍0동으로 표시" maxlength="10" required>
-      <input id="songTitle" placeholder="곡명 / 가수" maxlength="80" required>
-      <textarea id="songMsg" placeholder="신청 메시지(사연) · 300자 이내" maxlength="300"></textarea>
-      <div class="form-foot"><small><span id="songCount">0</span>/300자 · 이름은 가운데 글자를 가려 표시합니다.</small><button>신청하기</button></div>
+    <div class="page-title pink"><div class="icon">🎵</div><div><small>SONG REQUEST</small><h2>신청곡</h2><p>우리 반의 에너지를 올려줄 체육한마당 플레이리스트를 함께 채워주세요.</p></div></div>
+    <div class="song-dashboard">
+      <div class="song-dashboard-main"><span>🎧</span><div><small>ALL PLAY PLAYLIST</small><b>오늘 듣고 싶은 한 곡</b><p>신나는 응원곡, 추억의 노래, 우리 반만의 신청곡을 남겨주세요.</p></div></div>
+      <div class="song-mini"><span>🎵</span><b id="songTotal">0</b><small>신청곡</small></div>
+      <div class="song-mini"><span>💌</span><b>300</b><small>사연 글자</small></div>
+    </div>
+    <form id="songForm" class="submit-card song-form song-form-v39">
+      <div class="form-section-label"><span>01</span><div><b>신청자 정보</b><small>학급과 이름을 입력해 주세요.</small></div></div>
+      <div class="song-form-row"><input id="songClass" placeholder="학년-반 예: 3-4" maxlength="5" required><input id="songName" placeholder="이름 예: 홍길동" maxlength="10" required></div>
+      <div class="form-section-label"><span>02</span><div><b>듣고 싶은 노래</b><small>곡명과 가수를 함께 적으면 더 정확해요.</small></div></div>
+      <input id="songTitle" placeholder="🎶 곡명 / 가수" maxlength="80" required>
+      <textarea id="songMsg" placeholder="💬 신청 메시지나 사연을 자유롭게 남겨주세요. · 300자 이내" maxlength="300"></textarea>
+      <div class="form-foot"><small><span id="songCount">0</span>/300자 · 이름은 공개 화면에서 가운데 글자를 가려 표시합니다.</small><button class="song-submit-btn">🎵 신청하기</button></div>
     </form>
-    <div id="songList" class="post-list"></div>
+    <div class="section-caption"><div><b>🎼 신청 플레이리스트</b><small>최근 신청곡부터 보여요.</small></div></div>
+    <div id="songList" class="song-list-v39"></div>
   </section>
 
   <section class="page" id="media">
-    <div class="page-title coral"><div class="icon">📸</div><div><small>PHOTO & VIDEO CONTEST</small><h2>사진·영상 콘테스트</h2><p>체육한마당의 멋진 순간을 공유하세요.</p></div></div>
-    <form id="mediaForm" class="submit-card">
-      <input id="mediaClass" placeholder="학년-반" required>
-      <input id="mediaLink" placeholder="공유 링크" required>
-      <textarea id="mediaDesc" placeholder="사진/영상 설명"></textarea>
-      <button>제출하기</button>
+    <div class="page-title coral"><div class="icon">📸</div><div><small>PHOTO & VIDEO CONTEST</small><h2>사진·영상 콘테스트</h2><p>승부의 순간, 친구들의 웃음, 응원과 열기를 기록해 주세요.</p></div></div>
+    <div class="media-dashboard">
+      <div class="media-dashboard-main"><span>📷</span><div><small>ALL PLAY MOMENTS</small><b>오늘의 순간을 남겨주세요</b><p>체육한마당의 멋진 사진·영상 공유 링크를 모아 함께 추억합니다.</p></div></div>
+      <div class="media-guide"><span>✨</span><b>추천 장면</b><small>응원 · 경기 · 단체사진 · 웃긴 순간</small></div>
+      <div class="media-guide"><span>🔗</span><b>제출 방법</b><small>공유 가능한 링크를 붙여넣어 주세요.</small></div>
+    </div>
+    <form id="mediaForm" class="submit-card media-form-v39">
+      <div class="form-section-label coral-label"><span>01</span><div><b>우리 반 순간 제보</b><small>학급과 공유 링크, 한 줄 설명을 적어주세요.</small></div></div>
+      <div class="media-form-row"><input id="mediaClass" placeholder="학년-반 예: 2-3" maxlength="5" required><input id="mediaLink" type="url" placeholder="https:// 공유 링크" required></div>
+      <textarea id="mediaDesc" maxlength="160" placeholder="📸 사진·영상 설명 예: 2인3각 결승 직전 우리 반 파이팅!"></textarea>
+      <div class="form-foot"><small>공유 권한이 ‘링크가 있는 사용자’로 설정되어 있는지 확인해 주세요.</small><button class="media-submit-btn">📸 순간 공유하기</button></div>
     </form>
-    <div id="mediaList" class="post-list"></div>
+    <div class="section-caption media-caption"><div><b>🎞️ ALL PLAY 모먼트</b><small>제출된 사진·영상 링크를 확인하세요.</small></div></div>
+    <div id="mediaList" class="media-list-v39"></div>
   </section>
 
   <section class="page" id="board">
@@ -744,15 +757,12 @@
 
 
   <section class="page" id="qna">
-    <div class="page-title qna-title"><div class="icon">❓</div><div><small>SPORTS DAY Q&A</small><h2>체육한마당 Q&A</h2><p>체육한마당에 대해 궁금한 점을 남겨 주세요. 웹앱 관리자가 확인 후 답변합니다.</p></div></div>
-    <form id="qnaForm" class="submit-card qna-form">
-      <input id="qnaNo" placeholder="학번 예: 30415" maxlength="8" required>
-      <input id="qnaName" placeholder="이름 예: 홍길동 → 홍0동으로 표시" maxlength="10" required>
-      <textarea id="qnaQuestion" placeholder="질문 내용을 적어 주세요." maxlength="500" required></textarea>
-      <div class="form-foot"><small>이름은 공개 화면에서 가운데 글자를 가려 표시합니다.</small><button>질문 등록</button></div>
-    </form>
-    <div class="qna-section-head"><b>질문과 답변</b><small>최근 질문부터 표시됩니다.</small></div>
-    <div id="qnaList" class="qna-list"></div>
+    <div class="page-title qna-title"><div class="icon">❓</div><div><small>SPORTS DAY Q&A</small><h2>체육한마당 Q&A</h2><p>자주 묻는 질문과 운영 안내를 한곳에서 빠르게 확인하세요.</p></div></div>
+    <div class="faq-hero">
+      <div class="faq-hero-icon">💡</div><div><small>ALL PLAY GUIDE</small><h3>궁금한 내용을 바로 확인하세요</h3><p>경기·준비물·일정 등 자주 묻는 내용을 관리자가 정리해 안내합니다.</p></div>
+    </div>
+    <div class="qna-section-head faq-head"><b>질문과 답변</b><small>관리자가 등록한 공식 안내입니다.</small></div>
+    <div id="qnaList" class="qna-list faq-list"></div>
   </section>
 
   <section class="page" id="staff">
@@ -768,7 +778,7 @@
         <button data-staff-view="preliminput">🏟️ 예선 결과 입력</button>
         <button data-staff-view="scoreinput">🏆 경기 결과 입력</button>
         <button data-staff-view="noticeinput">📢 공지 등록</button>
-        <button data-staff-view="qnaanswer">❓ Q&A 답변 관리</button>
+        <button data-staff-view="qnaanswer">❓ Q&A 관리</button>
       </div>
       <div id="staffContent" class="staff-content">
         <h3>교직원 운영 메뉴</h3><p>위 메뉴를 선택하세요.</p>

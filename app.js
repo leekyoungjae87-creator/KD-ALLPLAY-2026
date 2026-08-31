@@ -312,69 +312,61 @@ const SUPA_ENABLED = false;
 const kdSupa = null;
 
 async function getQnaData(){
-  if(SUPA_ENABLED){
-    const {data,error}=await kdSupa.from('qna').select('*').order('created_at',{ascending:false});
-    if(error){ console.error(error); return []; }
-    return (data||[]).map(x=>({
-      id:String(x.id),
-      no:x.student_no||'',
-      name:x.student_name||'',
-      question:x.question||'',
-      answer:x.answer||'',
-      time:x.created_at ? new Date(x.created_at).toLocaleString() : ''
-    }));
-  }
   return load(STORE.qna,[]).slice().reverse();
 }
 
-qnaForm.onsubmit=async e=>{
-  e.preventDefault();
-  const payload={
-    no:qnaNo.value.trim(),
-    name:qnaName.value.trim(),
-    question:qnaQuestion.value.trim()
-  };
-  if(SUPA_ENABLED){
-    const {error}=await kdSupa.from('qna').insert({
-      student_no:payload.no,
-      student_name:payload.name,
-      question:payload.question
-    });
-    if(error){ alert('질문 등록 중 오류가 발생했습니다.'); console.error(error); return; }
-  }else{
-    let a=load(STORE.qna,[]);
-    a.push({id:'q'+Date.now(),...payload,answer:'',time:new Date().toLocaleString()});
-    save(STORE.qna,a);
-  }
-  e.target.reset();
-  await renderQna();
-  alert('질문이 이 기기에 등록되었습니다.');
-};
-
 async function renderQna(){
   let a=await getQnaData();
-  qnaList.innerHTML=a.length?a.map(x=>`
-    <article class="qna-card">
-      <div class="qna-card-head"><b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))}</b><small>${escapeHtml(x.time||'')}</small></div>
-      <p class="qna-question">${escapeHtml(x.question)}</p>
-      ${x.answer?`<div class="qna-answer"><b>관리자 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<span class="qna-wait">답변 대기</span>`}
-    </article>`).join(''):`<div class="post">아직 등록된 질문이 없습니다.</div>`;
+  qnaList.innerHTML=a.length?a.map((x,i)=>`
+    <article class="qna-card faq-card">
+      <div class="faq-number">Q${String(i+1).padStart(2,'0')}</div>
+      <div class="faq-copy">
+        <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b>${x.category?`<span class="faq-category">${escapeHtml(x.category)}</span>`:''}</div>
+        <div class="qna-answer faq-answer"><b>💬 답변</b><p>${escapeHtml(x.answer||'답변 준비 중입니다.')}</p></div>
+      </div>
+    </article>`).join(''):`<div class="faq-empty"><span>❔</span><b>등록된 Q&A가 아직 없습니다.</b><small>운영자가 확인된 내용을 순서대로 안내합니다.</small></div>`;
 
   let recent=a.slice(0,3);
   homeQnaList.innerHTML=recent.length?recent.map(x=>`
     <div class="home-qna-item">
-      <b>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.question.length>36?x.question.slice(0,36)+'…':x.question)}</b>
-      <small>${x.answer?'답변 완료':'답변 대기'}</small>
-    </div>`).join(''):`<div class="home-qna-empty">아직 등록된 질문이 없습니다.</div>`;
+      <b>${escapeHtml((x.question||'').length>36?(x.question||'').slice(0,36)+'…':(x.question||''))}</b>
+      <small>답변 완료</small>
+    </div>`).join(''):`<div class="home-qna-empty">등록된 Q&A가 아직 없습니다.</div>`;
 }
 renderQna();
 
-songForm.onsubmit=e=>{e.preventDefault();let a=load(STORE.songs,[]);a.push({cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300),time:new Date().toLocaleString()});save(STORE.songs,a);e.target.reset();songCount.textContent='0';renderSongs()}
+songForm.onsubmit=e=>{
+  e.preventDefault();
+  let a=load(STORE.songs,[]);
+  a.push({cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300),time:new Date().toLocaleString()});
+  save(STORE.songs,a);e.target.reset();songCount.textContent='0';renderSongs();
+}
 songMsg.oninput=()=>songCount.textContent=String(songMsg.value.length);
-function renderSongs(){let a=load(STORE.songs,[]);songList.innerHTML=a.length?a.slice().reverse().map(x=>`<div class="post"><b>${escapeHtml(x.title)}</b><small>${escapeHtml(x.cls)} · ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(x.time)}</small>${x.msg?`<p>${escapeHtml(x.msg)}</p>`:''}</div>`).join(''):`<div class="post">아직 신청곡이 없습니다.</div>`}renderSongs();
+function renderSongs(){
+  let a=load(STORE.songs,[]);
+  if(document.getElementById('songTotal')) songTotal.textContent=String(a.length);
+  songList.innerHTML=a.length?a.slice().reverse().map((x,i)=>`<article class="song-request-card">
+    <div class="song-art"><span>♪</span></div>
+    <div class="song-request-copy"><div class="song-request-top"><span>REQUEST ${String(a.length-i).padStart(2,'0')}</span><small>${escapeHtml(x.cls)}</small></div><h3>${escapeHtml(x.title)}</h3><p class="song-requester">🎧 ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(x.time)}</p>${x.msg?`<blockquote>“${escapeHtml(x.msg)}”</blockquote>`:''}</div>
+  </article>`).join(''):`<div class="pretty-empty song-empty"><span>🎶</span><b>첫 번째 신청곡을 기다리고 있어요!</b><small>체육한마당 분위기를 띄울 한 곡을 남겨주세요.</small></div>`;
+}renderSongs();
 
-mediaForm.onsubmit=e=>{e.preventDefault();let a=load(STORE.media,[]);a.push({cls:mediaClass.value,link:mediaLink.value,desc:mediaDesc.value,time:new Date().toLocaleString()});save(STORE.media,a);e.target.reset();renderMedia()}
-function renderMedia(){let a=load(STORE.media,[]);mediaList.innerHTML=a.length?a.slice().reverse().map(x=>`<div class="post"><b>${x.cls} · ${x.desc||'사진/영상'}</b><small>${x.time}</small><p>${x.link}</p></div>`).join(''):`<div class="post">아직 제출된 사진·영상이 없습니다.</div>`}renderMedia();
+function safeLink(raw){
+  try{const u=new URL(String(raw||'').trim()); return ['http:','https:'].includes(u.protocol)?u.href:'';}catch(e){return '';}
+}
+mediaForm.onsubmit=e=>{
+  e.preventDefault();
+  const link=safeLink(mediaLink.value);
+  if(!link){alert('http:// 또는 https://로 시작하는 올바른 공유 링크를 입력해 주세요.');return;}
+  let a=load(STORE.media,[]);a.push({cls:mediaClass.value.trim(),link,desc:mediaDesc.value.trim().slice(0,160),time:new Date().toLocaleString()});save(STORE.media,a);e.target.reset();renderMedia();
+}
+function renderMedia(){
+  let a=load(STORE.media,[]);
+  mediaList.innerHTML=a.length?a.slice().reverse().map((x,i)=>{const link=safeLink(x.link);return `<article class="media-moment-card">
+    <div class="media-thumb"><span>${i%2?'🎥':'📸'}</span><small>MOMENT ${String(a.length-i).padStart(2,'0')}</small></div>
+    <div class="media-moment-copy"><div class="media-card-top"><b>${escapeHtml(x.cls)}</b><small>${escapeHtml(x.time)}</small></div><h3>${escapeHtml(x.desc||'체육한마당의 멋진 순간')}</h3>${link?`<a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">공유 링크 열기 ↗</a>`:'<span class="link-unavailable">링크 확인 필요</span>'}</div>
+  </article>`}).join(''):`<div class="pretty-empty media-empty"><span>📷</span><b>아직 공유된 순간이 없습니다.</b><small>체육한마당의 첫 번째 멋진 장면을 남겨주세요.</small></div>`;
+}renderMedia();
 
 function renderBoard(){
   let custom=load(STORE.notices,[]), all=[...custom.slice().reverse(),...defaultNotices];
@@ -422,28 +414,41 @@ function staffView(v){
     staffContent.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
-    staffContent.innerHTML=`<h3>Q&A 답변 관리</h3><p>현재 기기에 등록된 질문과 답변을 관리합니다.</p><div id="staffQnaItems">불러오는 중...</div>`;
-    getQnaData().then(a=>{
-      staffQnaItems.innerHTML=a.length?a.map(x=>`<div class="staff-qna-card">
-        <small>${escapeHtml(x.no)} · ${escapeHtml(maskName(x.name))} · ${escapeHtml(x.time||'')}</small>
-        <b>${escapeHtml(x.question)}</b>
-        <textarea id="qa_${x.id}" placeholder="관리자 답변을 입력하세요.">${escapeHtml(x.answer||'')}</textarea>
-        <button data-qna-save="${x.id}">답변 저장</button>
-      </div>`).join(''):'<div class="info-note">아직 등록된 질문이 없습니다.</div>';
+    staffContent.innerHTML=`
+      <div class="faq-admin-head"><div><small>FAQ MANAGER</small><h3>❓ Q&A 관리</h3><p>학생들이 자주 궁금해하는 내용을 질문과 답변 형태로 정리합니다.</p></div><span>간편 등록</span></div>
+      <div class="faq-admin-new">
+        <label><span>분류</span><input id="faqCategory" placeholder="예: 일정 · 경기 · 준비물" maxlength="20"></label>
+        <label class="faq-wide"><span>질문</span><input id="faqQuestion" placeholder="예: 체육한마당은 몇 시에 시작하나요?" maxlength="120"></label>
+        <label class="faq-wide"><span>답변</span><textarea id="faqAnswer" placeholder="학생들에게 보여줄 답변을 입력하세요." maxlength="500"></textarea></label>
+        <button id="faqAdd">＋ Q&A 등록</button>
+      </div>
+      <div class="faq-admin-note">※ 등록 내용은 현재 브라우저에 저장됩니다. 모든 학생 기기에 동일하게 공개하려면 확정된 Q&A를 웹앱 파일에 반영해 GitHub에 올려야 합니다.</div>
+      <div id="staffQnaItems" class="faq-admin-list"></div>`;
+    const drawFaqAdmin=()=>{
+      const list=load(STORE.qna,[]).slice().reverse();
+      staffQnaItems.innerHTML=list.length?list.map(x=>`<article class="staff-faq-card" data-faq-card="${x.id}">
+        <div class="staff-faq-top"><span>${escapeHtml(x.category||'일반')}</span><button class="faq-delete" data-qna-delete="${x.id}" title="삭제">삭제</button></div>
+        <label><small>질문</small><input id="fqq_${x.id}" value="${escapeHtml(x.question||'')}" maxlength="120"></label>
+        <label><small>답변</small><textarea id="fqa_${x.id}" maxlength="500">${escapeHtml(x.answer||'')}</textarea></label>
+        <button class="faq-save" data-qna-save="${x.id}">수정 저장</button>
+      </article>`).join(''):'<div class="info-note">아직 등록된 Q&A가 없습니다. 위 입력창에서 첫 Q&A를 등록해 주세요.</div>';
       document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{
-        const answer=document.getElementById(`qa_${btn.dataset.qnaSave}`).value.trim();
-        if(SUPA_ENABLED){
-          const {error}=await kdSupa.from('qna').update({answer}).eq('id',btn.dataset.qnaSave);
-          if(error){ alert('답변 저장 중 오류가 발생했습니다.'); console.error(error); return; }
-        }else{
-          let list=load(STORE.qna,[]), item=list.find(x=>String(x.id)===String(btn.dataset.qnaSave));
-          if(item){item.answer=answer;save(STORE.qna,list);}
-        }
-        await renderQna();
-        alert('답변을 저장했습니다.');
-        staffView('qnaanswer');
+        const list=load(STORE.qna,[]), item=list.find(x=>String(x.id)===String(btn.dataset.qnaSave));
+        if(item){item.question=document.getElementById(`fqq_${item.id}`).value.trim();item.answer=document.getElementById(`fqa_${item.id}`).value.trim();save(STORE.qna,list);}
+        await renderQna();drawFaqAdmin();alert('Q&A를 수정했습니다.');
       });
-    });
+      document.querySelectorAll('[data-qna-delete]').forEach(btn=>btn.onclick=async()=>{
+        if(!confirm('이 Q&A를 삭제할까요?')) return;
+        let list=load(STORE.qna,[]).filter(x=>String(x.id)!==String(btn.dataset.qnaDelete));save(STORE.qna,list);await renderQna();drawFaqAdmin();
+      });
+    };
+    faqAdd.onclick=async()=>{
+      const q=faqQuestion.value.trim(), a=faqAnswer.value.trim();
+      if(!q||!a){alert('질문과 답변을 모두 입력해 주세요.');return;}
+      let list=load(STORE.qna,[]);list.push({id:'faq'+Date.now(),category:faqCategory.value.trim()||'일반',question:q,answer:a,time:new Date().toLocaleString()});save(STORE.qna,list);
+      faqCategory.value='';faqQuestion.value='';faqAnswer.value='';await renderQna();drawFaqAdmin();alert('Q&A를 등록했습니다.');
+    };
+    drawFaqAdmin();
   } else if(v==='performance'){
     staffContent.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
   } else if(v==='flagvote'){
