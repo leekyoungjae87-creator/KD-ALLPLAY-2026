@@ -1403,3 +1403,11 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .brand-copy{text-align:left}.event-chip{grid-column:1/-1;text-align:center}
   .brand-copy h1{font-size:clamp(24px,7vw,34px)}.v8-slogan{font-size:12px}
 }
+
+/* v29 mobile title wrap fix */
+.brand-copy h1{word-break:keep-all;overflow-wrap:normal;}
+.brand-copy h1 .event-title-green{white-space:nowrap;color:#278461 !important;}
+@media(max-width:500px){
+  .brand-copy h1{font-size:clamp(21px,6.1vw,27px);line-height:1.08;letter-spacing:-.055em;}
+  .brand-copy h1 .all-play-red,.brand-copy h1 .event-title-green{white-space:nowrap;}
+}
