@@ -2371,3 +2371,9 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
     border-radius:16px;
   }
 }
+
+
+/* v52 footer logo */
+.allplay-footer{padding:20px 16px 24px;background:#fff;border-top:1px solid var(--line);text-align:center}
+.allplay-footer-logo{display:block;width:min(150px,42vw);height:auto;margin:0 auto;object-fit:contain}
+@media(max-width:600px){.allplay-footer-logo{width:min(132px,40vw)}}

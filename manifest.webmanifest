@@ -1,9 +1,1 @@
-{
-  "name": "2026 경덕 ALL PLAY 체육한마당",
-  "short_name": "경덕 ALL PLAY",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f5f8fb",
-  "theme_color": "#234a7b",
-  "icons": []
-}
+{"name":"2026 경덕 ALL PLAY 체육한마당","short_name":"경덕 ALL PLAY","start_url":"./","display":"standalone","background_color":"#f5f8fb","theme_color":"#234a7b","lang":"ko"}
