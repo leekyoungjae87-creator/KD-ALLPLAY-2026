@@ -2008,3 +2008,366 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   #safety .safety-card h3{font-size:10.5px}
   #safety .safety-card p{font-size:8.5px}
 }
+
+
+/* =========================================================
+   v50 — 기존 탭 디자인 통일
+   참가자 / 사전 경기·예선 / 신청곡 / 사진·영상
+   ========================================================= */
+
+/* 공통 안내 카드 */
+.participant-v50-guide,
+.prelim-v50-guide,
+.song-v50-guide,
+.media-v50-guide{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+  padding:15px 17px;
+  border:1px solid #dfe8ee;
+  border-radius:17px;
+  background:linear-gradient(135deg,#f7fafc,#ffffff);
+  box-shadow:0 7px 20px rgba(39,67,91,.045);
+}
+.participant-v50-icon,
+.song-v50-icon,
+.media-v50-icon,
+.prelim-v50-score{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  flex:0 0 auto;
+  font-size:21px;
+}
+.participant-v50-icon{
+  background:#edf4fa;
+}
+.song-v50-icon{
+  background:#f3eff8;
+}
+.media-v50-icon{
+  background:#eef6f1;
+}
+.prelim-v50-score{
+  background:#edf2f7;
+  color:#355a78;
+  font-size:10px;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
+.participant-v50-guide small,
+.prelim-v50-guide small,
+.song-v50-guide small,
+.media-v50-guide small{
+  display:block;
+  margin-bottom:2px;
+  color:#8797a5;
+  font-size:7px;
+  font-weight:1000;
+  letter-spacing:.13em;
+}
+.participant-v50-guide b,
+.prelim-v50-guide b,
+.song-v50-guide b,
+.media-v50-guide b{
+  display:block;
+  color:#314c64;
+  font-size:12px;
+  line-height:1.4;
+  word-break:keep-all;
+}
+.participant-v50-guide p,
+.prelim-v50-guide p,
+.song-v50-guide p,
+.media-v50-guide p{
+  margin:4px 0 0;
+  color:#788794;
+  font-size:8.5px;
+  font-weight:750;
+  line-height:1.55;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+.prelim-v50-guide{
+  grid-template-columns:auto minmax(0,1fr) auto;
+}
+.prelim-v50-guide>span{
+  padding:6px 9px;
+  border-radius:999px;
+  background:#eef5f9;
+  color:#53718a;
+  font-size:7.5px;
+  font-weight:1000;
+  letter-spacing:.06em;
+  white-space:nowrap;
+}
+
+/* 참가자 탭: 선택 UI와 결과 영역을 하나의 시스템처럼 */
+#participants select,
+#participants button,
+#participants .chip,
+#participants .filter-chip{
+  border-radius:11px;
+}
+#participants .card,
+#participants .participant-card,
+#participants .team-card,
+#participants .list-card{
+  border-radius:15px !important;
+  border-color:#e3eaf0 !important;
+  box-shadow:0 5px 16px rgba(40,65,86,.035) !important;
+}
+#participants h3,
+#participants h4{
+  word-break:keep-all;
+}
+#participants p,
+#participants li,
+#participants td,
+#participants th{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 예선/사전경기: 표·카드에 스포츠 경기표 느낌을 아주 약하게 */
+#pre .card, #preliminary .card, #pre-games .card, #preGames .card,
+#qualifier .card, #qualifiers .card,
+#pre .match-card, #preliminary .match-card, #pre-games .match-card, #preGames .match-card,
+#qualifier .match-card, #qualifiers .match-card{
+  border-radius:15px !important;
+  border-color:#e1e8ee !important;
+  box-shadow:0 5px 16px rgba(41,63,83,.035) !important;
+}
+#pre table, #preliminary table, #pre-games table, #preGames table,
+#qualifier table, #qualifiers table{
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border-radius:14px;
+}
+#pre th, #preliminary th, #pre-games th, #preGames th,
+#qualifier th, #qualifiers th{
+  background:#f3f6f8;
+  color:#536979;
+}
+#pre td, #preliminary td, #pre-games td, #preGames td,
+#qualifier td, #qualifiers td{
+  background:#fff;
+}
+#pre td, #pre th, #preliminary td, #preliminary th,
+#pre-games td, #pre-games th, #preGames td, #preGames th,
+#qualifier td, #qualifier th, #qualifiers td, #qualifiers th{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 신청곡: 입력 영역을 한 덩어리로 정돈 */
+#song form, #songs form, #music form, #request-song form, #songRequest form,
+#song .form-card, #songs .form-card, #music .form-card, #request-song .form-card, #songRequest .form-card{
+  border-radius:16px !important;
+}
+#song input, #songs input, #music input, #request-song input, #songRequest input,
+#song textarea, #songs textarea, #music textarea, #request-song textarea, #songRequest textarea{
+  border-radius:11px !important;
+}
+#song button, #songs button, #music button, #request-song button, #songRequest button{
+  border-radius:11px !important;
+}
+#song p, #songs p, #music p, #request-song p, #songRequest p{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 사진·영상: 업로드/제보 영역을 CTA 느낌으로 */
+#media form, #photo form, #photos form, #photo-video form, #gallery form, #upload form,
+#media .upload-card, #photo .upload-card, #photos .upload-card, #photo-video .upload-card,
+#gallery .upload-card, #upload .upload-card{
+  border-radius:16px !important;
+}
+#media input, #photo input, #photos input, #photo-video input, #gallery input, #upload input,
+#media textarea, #photo textarea, #photos textarea, #photo-video textarea, #gallery textarea, #upload textarea{
+  border-radius:11px !important;
+}
+#media button, #photo button, #photos button, #photo-video button, #gallery button, #upload button{
+  border-radius:11px !important;
+}
+#media p, #photo p, #photos p, #photo-video p, #gallery p, #upload p{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+/* 모바일 */
+@media(max-width:600px){
+  .participant-v50-guide,
+  .song-v50-guide,
+  .media-v50-guide{
+    padding:13px;
+    gap:10px;
+  }
+  .prelim-v50-guide{
+    grid-template-columns:auto minmax(0,1fr);
+    padding:13px;
+    gap:10px;
+  }
+  .prelim-v50-guide>span{display:none}
+  .participant-v50-icon,
+  .song-v50-icon,
+  .media-v50-icon,
+  .prelim-v50-score{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    font-size:18px;
+  }
+  .prelim-v50-score{
+    font-size:9px;
+  }
+  .participant-v50-guide b,
+  .prelim-v50-guide b,
+  .song-v50-guide b,
+  .media-v50-guide b{
+    font-size:11px;
+  }
+  .participant-v50-guide p,
+  .prelim-v50-guide p,
+  .song-v50-guide p,
+  .media-v50-guide p{
+    font-size:8.2px;
+  }
+}
+
+
+/* v50 refinement — 기존 대시보드를 살리면서 네 탭의 시각 언어 통일 */
+
+/* 1. 참가자 */
+#participants .participant-dashboard{
+  border:1px solid #dce9e6;
+  border-radius:18px;
+  background:linear-gradient(135deg,#f2f8f6,#ffffff);
+  box-shadow:0 7px 20px rgba(42,84,73,.045);
+}
+#participants .participant-dashboard-main>span{
+  background:#e8f3ef;
+  border-radius:13px;
+}
+#participants .participant-step{
+  border-radius:12px;
+  background:rgba(255,255,255,.78);
+  border:1px solid #e5ece9;
+}
+#participants .participant-card-head small{
+  letter-spacing:.11em;
+}
+#participants .participant-search-card,
+#participants .class-panel{
+  border:1px solid #e1e9e6;
+  border-radius:16px;
+  box-shadow:0 5px 16px rgba(40,69,60,.035);
+}
+
+/* 2. 사전 경기·예선 */
+#brackets .prelim-dashboard{
+  border:1px solid #dfe7ee;
+  border-radius:18px;
+  background:linear-gradient(135deg,#f2f6fa,#ffffff);
+  box-shadow:0 7px 20px rgba(49,76,101,.045);
+}
+#brackets .prelim-dashboard-main>span{
+  background:#eaf1f7;
+  border-radius:13px;
+}
+#brackets .prelim-mini{
+  border:1px solid #e3e9ef;
+  border-radius:12px;
+  background:rgba(255,255,255,.82);
+}
+#brackets .prelim-schedule article{
+  border-radius:14px;
+  border-color:#e3e9ef;
+}
+#brackets .prelim-result-head{
+  border-radius:16px;
+  background:linear-gradient(135deg,#f8fafc,#ffffff);
+  border:1px solid #e3e9ee;
+}
+#brackets .filter-row button{
+  border-radius:999px;
+}
+
+/* 3. 신청곡 */
+#songs .song-dashboard{
+  border:1px solid #e7dfea;
+  border-radius:18px;
+  background:linear-gradient(135deg,#faf5fb,#ffffff);
+  box-shadow:0 7px 20px rgba(90,58,98,.04);
+}
+#songs .song-dashboard-main>span{
+  background:#f1e9f4;
+  border-radius:13px;
+}
+#songs .song-mini{
+  border:1px solid #ebe3ed;
+  border-radius:12px;
+  background:rgba(255,255,255,.82);
+}
+#songs .song-form-v39{
+  border-radius:17px;
+  border-color:#e8e2ea;
+  box-shadow:0 5px 16px rgba(77,60,82,.03);
+}
+#songs .form-section-label{
+  border-radius:12px;
+}
+
+/* 4. 사진·영상 */
+#media .media-dashboard{
+  border:1px solid #e5e4df;
+  border-radius:18px;
+  background:linear-gradient(135deg,#fbf8f4,#ffffff);
+  box-shadow:0 7px 20px rgba(88,72,55,.04);
+}
+#media .media-dashboard-main>span{
+  background:#f4eee7;
+  border-radius:13px;
+}
+#media .media-guide{
+  border:1px solid #ebe6df;
+  border-radius:12px;
+  background:rgba(255,255,255,.82);
+}
+#media .media-form-v39{
+  border-radius:17px;
+  border-color:#e9e5df;
+  box-shadow:0 5px 16px rgba(80,69,56,.03);
+}
+#media .coral-label{
+  border-radius:12px;
+}
+
+/* 네 탭 공통: 한글 줄바꿈과 카드 간격 */
+#participants .participant-dashboard,
+#brackets .prelim-dashboard,
+#songs .song-dashboard,
+#media .media-dashboard{
+  margin-bottom:13px;
+}
+#participants b, #participants p,
+#brackets b, #brackets p,
+#songs b, #songs p,
+#media b, #media p{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+@media(max-width:600px){
+  #participants .participant-dashboard,
+  #brackets .prelim-dashboard,
+  #songs .song-dashboard,
+  #media .media-dashboard{
+    border-radius:16px;
+  }
+}
