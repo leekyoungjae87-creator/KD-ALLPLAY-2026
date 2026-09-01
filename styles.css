@@ -1843,3 +1843,21 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   #board .hq-board-top b{font-size:10.5px}
   #board .hq-board-copy p{font-size:8.5px !important}
 }
+
+
+/* v48 — 홈 메인 타이틀 KD 마크를 경덕 로고로 교체 */
+.brand-mark-school{
+  overflow:hidden;
+  background:#fff !important;
+  padding:3px !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+}
+.brand-mark-school img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:inherit;
+}
