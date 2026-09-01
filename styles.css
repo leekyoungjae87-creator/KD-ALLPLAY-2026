@@ -2421,3 +2421,23 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
  .event-chip{text-align:left;box-shadow:0 4px 12px rgba(35,74,123,.05)}
  .event-chip>span{justify-content:flex-start;flex-wrap:wrap;gap:7px}
 }
+
+/* v58 — 일정/응원 퍼포먼스/안전수칙 디테일 업데이트 */
+.legend-prepare{color:#9a6a42}
+.cal-event.prepare{background:#fff1e4;color:#8c5b35}
+#performance{position:relative}
+#performance .performance-title{background:linear-gradient(135deg,#fff3f7 0%,#f7f2ff 46%,#edf7ff 100%);border:1px solid #eee5f0}
+#performance .performance-summary>div:nth-child(1){background:linear-gradient(145deg,#fff8fb,#fff)}
+#performance .performance-summary>div:nth-child(2){background:linear-gradient(145deg,#f1f7ff,#fff)}
+#performance .performance-summary>div:nth-child(3){background:linear-gradient(145deg,#f2fbf6,#fff)}
+#performance .performance-summary>div:nth-child(4){background:linear-gradient(145deg,#fff8ec,#fff)}
+.performance-event-info{display:grid;grid-template-columns:1.15fr .8fr 1.8fr;gap:8px;margin:0 0 12px;padding:10px;background:linear-gradient(135deg,#f4f8ff,#f7fbf8 55%,#fffaf2);border:1px solid #e3eaf0;border-radius:16px;box-shadow:0 6px 16px rgba(45,64,83,.035)}
+.performance-event-time,.performance-event-place{display:flex;align-items:center;gap:8px;background:#ffffffc9;border:1px solid #e8edf2;border-radius:12px;padding:9px 11px}.performance-event-time>span,.performance-event-place>span{font-size:18px}.performance-event-info small,.performance-event-info b{display:block}.performance-event-info small{font-size:7px;letter-spacing:.1em;color:#8b97a3;font-weight:1000}.performance-event-info b{font-size:9px;color:#40566f;margin-top:2px}.performance-event-order{display:flex;align-items:center;justify-content:center;gap:6px;background:#ffffffc9;border:1px solid #e8edf2;border-radius:12px;padding:9px}.performance-event-order span{width:22px;height:22px;border-radius:8px;display:grid;place-items:center;background:#eaf1f8;color:#4b6f93;font-size:9px;font-weight:1000}.performance-event-order b{font-size:9px;margin:0}.performance-event-order i{font-style:normal;color:#aab4be;font-size:8px}
+#performance .performance-grade-block{padding:13px;border-radius:18px;border:1px solid transparent}
+#performance .performance-grade-block:nth-of-type(6){background:#f6f9ff;border-color:#e5edf8}
+#performance .performance-grade-block:nth-of-type(7){background:#f5fbf7;border-color:#e2efe7}
+#performance .performance-grade-block:nth-of-type(8){background:#fff9f3;border-color:#f1e7da}
+#performance .performance-card{box-shadow:0 6px 16px rgba(45,64,83,.04);transition:transform .15s ease,box-shadow .15s ease}
+#performance .performance-card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(45,64,83,.07)}
+#safety .safety-hero h3{text-indent:.55em}
+@media(max-width:700px){.performance-event-info{grid-template-columns:1fr 1fr}.performance-event-order{grid-column:1/-1}.performance-event-time,.performance-event-place{padding:8px 9px}}

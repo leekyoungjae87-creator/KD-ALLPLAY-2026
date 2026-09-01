@@ -42,7 +42,7 @@
   <button data-page="live">🏆 실시간 점수</button>
   <button data-page="points">📊 종목별 배점표</button>
   <button data-page="rules">📖 경기 규칙</button>
-  <button data-page="brackets">⚽ 사전 경기·예선 일정 및 결과</button>
+  <button data-page="brackets">⚽ 예선 진행 및 결과</button>
   <button data-page="participants">👕 참가자</button>
   <button data-page="seating">🗺️ 자리배치도</button>
   <button data-page="shirts">👚 학급 반티</button>
@@ -94,7 +94,7 @@
 
     <div class="quick-cards">
       <button class="quick q1" data-go="countdown"><span>⏳</span><b>체육한마당까지</b><small>실시간 D-DAY</small></button>
-      <button class="quick q2" data-go="brackets"><span>🏟️</span><b>사전 경기·예선</b><small>일정 · 진행 · 결과</small></button>
+      <button class="quick q2" data-go="brackets"><span>🏟️</span><b>예선 진행 및 결과</b><small>일정 · 진행 · 결과</small></button>
       <button class="quick q3" data-go="schedule"><span>📅</span><b>오늘 일정</b><small>시간대별 프로그램</small></button>
       <button class="quick qweather" data-go="weather"><span>🌤️</span><b>당일 날씨</b><small>기온 · 강수 · 바람</small></button>
       <button class="quick q4" data-go="live"><span>🏆</span><b>실시간 순위</b><small>학년별 종합점수</small></button>
@@ -155,7 +155,8 @@
       <div class="calendar-legend">
         <span class="legend-pre">● 사전경기·예선</span>
         <span class="legend-final">● 축구·피구 결승</span>
-        <span class="legend-submit">● 제출 일정</span>
+        <span class="legend-submit">● 제출·배부</span>
+        <span class="legend-prepare">● 행사 준비</span>
         <span class="legend-event">● 행사일</span>
       </div>
 
@@ -172,7 +173,10 @@
             <span class="date">3</span>
             <button class="cal-event pre" data-cal-detail="9월 3일(목)|축구·피구 준결승|1·2·3학년 사전 경기">축구·피구<br>준결승</button>
           </div>
-          <div class="cal-day"><span class="date">4</span></div>
+          <div class="cal-day has-submit">
+            <span class="date">4</span>
+            <button class="cal-event submit" data-cal-detail="9월 4일(금)|참가신청서 배부|체육한마당 참가신청서를 학급에 배부합니다.">참가신청서<br>배부</button>
+          </div>
           <div class="cal-day holiday saturday"><span class="date">5</span></div>
 
           <div class="cal-day sun"><span class="date">6</span></div>
@@ -225,7 +229,10 @@
 
           <div class="cal-day sun"><span class="date">27</span></div>
           <div class="cal-day"><span class="date">28</span></div>
-          <div class="cal-day"><span class="date">29</span></div>
+          <div class="cal-day has-prepare">
+            <span class="date">29</span>
+            <button class="cal-event prepare" data-cal-detail="9월 29일|운동장 평탄화 작업|체육한마당 준비를 위한 운동장 평탄화 작업">운동장<br>평탄화 작업</button>
+          </div>
           <div class="cal-day has-pre">
             <span class="date">30</span>
             <button class="cal-event pre" data-cal-detail="9월 30일(수)|달리는 줄다리기·이어달리기 예선·준결승|1·2·3학년 예선 및 준결승 경기">줄다리기·이어달리기<br>예선·준결승</button>
@@ -383,7 +390,7 @@
       <div class="prelim-mini"><strong>1·2·3</strong><span>전 학년</span></div>
     </div>
     <div class="prelim-schedule-wrap">
-      <div class="prelim-title"><small>PRELIMINARY SCHEDULE</small><h3>사전 경기 및 예선 일정</h3></div>
+      <div class="prelim-title"><small>PRELIMINARY SCHEDULE</small><h3>예선 진행 및 결과</h3></div>
       <div class="prelim-schedule">
         <article><time>① 9. 3.(목)</time><b>축구 · 피구 준결승</b><span>1 · 2 · 3학년</span></article>
         <article><time>② 9. 10.(목)</time><b>바운드 배구 예선</b><span>1 · 2 · 3학년</span></article>
@@ -589,15 +596,21 @@
     </div>
 
     <div class="performance-summary">
-      <div><strong>8</strong><span>신청 학급</span></div>
+      <div><strong>12</strong><span>신청 학급</span></div>
       <div><strong>3</strong><span>1학년</span></div>
-      <div><strong>2</strong><span>2학년</span></div>
-      <div><strong>3</strong><span>3학년</span></div>
+      <div><strong>4</strong><span>2학년</span></div>
+      <div><strong>5</strong><span>3학년</span></div>
     </div>
 
     <div class="performance-guide">
       <span>✨</span>
       <div><b>CLASS PERFORMANCE LINE-UP</b><p>팀명 · 대표학생 · 음악 · 퍼포먼스 주제를 한눈에 확인할 수 있습니다.</p></div>
+    </div>
+
+    <div class="performance-event-info">
+      <div class="performance-event-time"><span>🕘</span><div><small>START</small><b>체육한마당 당일 09:00</b></div></div>
+      <div class="performance-event-place"><span>📍</span><div><small>PLACE</small><b>운동장</b></div></div>
+      <div class="performance-event-order"><span>①</span><b>1학년</b><i>→</i><span>②</span><b>2학년</b><i>→</i><span>③</span><b>3학년</b></div>
     </div>
 
     <div class="performance-order">
@@ -629,7 +642,7 @@
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>공연 순서 ② · 2개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>2</span><div><b>2학년</b><small>공연 순서 ② · 4개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">2-3</span><span class="performance-badge fun">FUN</span><span class="performance-ready">무대 준비</span></div>
@@ -641,16 +654,36 @@
           <h3>2-5</h3>
           <dl><div><dt>대표학생</dt><dd>이0예</dd></div><div><dt>🎵 음악</dt><dd>CHEER UP, BAD</dd></div><div><dt>퍼포먼스 주제</dt><dd>댄스</dd></div></dl>
         </article>
+        <article class="performance-card">
+          <div class="performance-card-top"><span class="performance-class">2-7</span><span class="performance-badge special">SEXY CUTE</span><span class="performance-ready">무대 준비</span></div>
+          <h3>섹시치와와</h3>
+          <dl><div><dt>대표학생</dt><dd>김0연</dd></div><div><dt>🎵 음악</dt><dd>내귀에 캔디, 풍선</dd></div><div><dt>퍼포먼스 주제</dt><dd>섹시큐티</dd></div></dl>
+        </article>
+        <article class="performance-card">
+          <div class="performance-card-top"><span class="performance-class">2-8</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
+          <h3>프리티걸즈와 핸썸보이즈</h3>
+          <dl><div><dt>대표학생</dt><dd>박0람</dd></div><div><dt>🎵 음악</dt><dd>프리티걸</dd></div><div><dt>퍼포먼스 주제</dt><dd>댄스</dd></div></dl>
+        </article>
       </div>
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>3</span><div><b>3학년</b><small>공연 순서 ③ · 3개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>3</span><div><b>3학년</b><small>공연 순서 ③ · 5개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">3-1</span><span class="performance-badge special">PRETTY</span><span class="performance-ready">무대 준비</span></div>
           <h3>아자아자 1반이1등 안하면 누가하누ㅋㅋ</h3>
           <dl><div><dt>대표학생</dt><dd>강0연</dd></div><div><dt>🎵 음악</dt><dd>프리티걸 - 카라</dd></div><div><dt>퍼포먼스 주제</dt><dd>pretty한 1반 &gt;.&lt;</dd></div></dl>
+        </article>
+        <article class="performance-card">
+          <div class="performance-card-top"><span class="performance-class">3-2</span><span class="performance-badge energy">DANCE</span><span class="performance-ready">무대 준비</span></div>
+          <h3>잇츠미요시</h3>
+          <dl><div><dt>대표학생</dt><dd>박0우</dd></div><div><dt>🎵 음악</dt><dd>NEW PACE, HOT SUMMER</dd></div><div><dt>퍼포먼스 주제</dt><dd>댄스</dd></div></dl>
+        </article>
+        <article class="performance-card">
+          <div class="performance-card-top"><span class="performance-class">3-3</span><span class="performance-badge fun">DANCE</span><span class="performance-ready">무대 준비</span></div>
+          <h3>귀요미쌈반</h3>
+          <dl><div><dt>대표학생</dt><dd>한0솔</dd></div><div><dt>🎵 음악</dt><dd>DADDY</dd></div><div><dt>퍼포먼스 주제</dt><dd>댄스</dd></div></dl>
         </article>
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">3-4</span><span class="performance-badge energy">ENERGY</span><span class="performance-ready">무대 준비</span></div>
