@@ -48,11 +48,13 @@
   <button data-page="shirts">👚 학급 반티</button>
   <button data-page="performance">🎉 응원 퍼포먼스</button>
   <button data-page="flags">🚩 학급 깃발</button>
+  <button data-page="operations">🧑‍⚖️ 운영·심판</button>
   <button data-page="songs">🎵 신청곡</button>
   <button data-page="media">📸 사진·영상</button>
   <button data-page="qna">❓ 체육한마당 Q&A</button>
   <button data-page="staff">🔒 교직원</button>
   <button data-page="admin">⚙️ 관리자</button>
+  <button data-page="board">📢 본부 게시판</button>
   <button data-page="safety">🛡️ 안전수칙</button>
 </nav>
 
@@ -251,19 +253,6 @@
         </div>
       </div>
 
-      <div class="mobile-calendar-list" aria-label="9월 체육한마당 주요 일정">
-        <button data-cal-detail="9월 3일(목)|축구·피구 준결승|1·2·3학년 사전 경기"><b>9/3 목</b><span>⚽ 축구·피구 준결승</span></button>
-        <button data-cal-detail="9월 4일(금)|참가신청서 배부|체육한마당 참가신청서를 학급에 배부합니다."><b>9/4 금</b><span>📄 참가신청서 배부</span></button>
-        <button data-cal-detail="9월 10일(목)|바운드 배구 예선|1·2·3학년 예선 경기"><b>9/10 목</b><span>🏐 바운드 배구 예선</span></button>
-        <button data-cal-detail="9월 11일(금)|선수 명단 참가신청서 제출|점심시간 · 본교무실 · 이0재T 제출"><b>9/11 금</b><span>📋 선수명단 제출</span></button>
-        <button data-cal-detail="9월 14일(월)|1학년 축구·피구 결승|1학년 축구·피구 결승 경기"><b>9/14 월</b><span>🏆 1학년 축구·피구 결승</span></button>
-        <button data-cal-detail="9월 15일(화)|2학년 축구·피구 결승|2학년 축구·피구 결승 경기"><b>9/15 화</b><span>🏆 2학년 축구·피구 결승</span></button>
-        <button data-cal-detail="9월 16일(수)|3학년 축구·피구 결승|3학년 축구·피구 결승 경기"><b>9/16 수</b><span>🏆 3학년 축구·피구 결승</span></button>
-        <button data-cal-detail="9월 17일(목)|바운드 배구 준결승|1·2·3학년 준결승 경기"><b>9/17 목</b><span>🏐 바운드 배구 준결승</span></button>
-        <button data-cal-detail="9월 18일(금)|응원 퍼포먼스 음악 및 댄스부 음악 제출|MP3 파일로 USB에 직접 담아서 제출"><b>9/18 금</b><span>🎵 음악 USB 제출</span></button>
-        <button data-cal-detail="9월 22일(화)|학급 깃발 제출|1학년 김0현T · 2학년 마0원T · 3학년 이0재T"><b>9/22 화</b><span>🚩 학급 깃발 제출</span></button>
-        <button data-cal-detail="9월 30일(수)|달리는 줄다리기·이어달리기 예선·준결승|1·2·3학년 예선 및 준결승"><b>9/30 수</b><span>🏃 예선 · 준결승</span></button>
-      </div>
 
       <div class="calendar-detail" id="calendarDetail">
         <div class="calendar-detail-icon">📌</div>
@@ -841,9 +830,10 @@
 
   <section class="page" id="staff">
     <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF VOTE</small><h2>교직원 전용</h2><p>응원 퍼포먼스와 학급 깃발 투표만 이용할 수 있습니다.</p></div></div>
-    <div id="staffLogin" class="login-card">
+    <div id="staffLogin" class="login-card staff-login-card">
+      <input type="text" id="staffName" placeholder="교직원 이름 (예: 홍길동)" maxlength="20" autocomplete="name">
       <input type="password" id="staffPw" placeholder="교직원 비밀번호">
-      <button id="staffLoginBtn">로그인</button>
+      <button id="staffLoginBtn">투표 입장</button>
     </div>
     <div id="staffArea" class="staff-area hidden">
       <div class="staff-menu">
@@ -864,6 +854,7 @@
     </div>
     <div id="adminArea" class="staff-area hidden">
       <div class="staff-menu admin-menu">
+        <button data-admin-view="votemanager">🗳️ 교직원 투표 관리</button>
         <button data-admin-view="preliminput">🏟️ 예선 결과 입력</button>
         <button data-admin-view="scoreinput">🏆 경기 결과 입력</button>
         <button data-admin-view="noticeinput">📢 공지 등록</button>
@@ -933,6 +924,8 @@
 <footer class="allplay-footer">
   <img src="assets/allplay-footer-logo.png" alt="우리 함께, 경덕 로고" class="allplay-footer-logo">
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

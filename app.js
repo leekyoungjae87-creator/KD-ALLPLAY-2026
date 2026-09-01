@@ -385,13 +385,157 @@ function renderBoard(){
   homeBoard.innerHTML=all.slice(0,3).map(x=>`<div><b>${escapeHtml(x.title)}</b><small>${escapeHtml(x.body)}</small></div>`).join('');
 }renderBoard();
 
+
+// ===== V61 교직원 실시간 투표 =====
+const VOTE_LOCAL_KEY='kd_v61_votes';
+const VOTE_STATE_LOCAL_KEY='kd_v61_vote_state';
+const kdSbConfig=window.KD_SUPABASE||{};
+const kdSbReady=!!(kdSbConfig.url&&kdSbConfig.anonKey&&window.supabase&&window.supabase.createClient);
+const kdSb=kdSbReady?window.supabase.createClient(kdSbConfig.url,kdSbConfig.anonKey):null;
+let currentStaffName=sessionStorage.getItem('kd_staff_name')||'';
+let voteRealtimeChannel=null;
+let currentStaffVoteType='';
+
+function voteTypeLabel(type){return type==='performance'?'응원 퍼포먼스':'학급 깃발'}
+function performanceCandidates(){
+  const out={1:[],2:[],3:[]};
+  document.querySelectorAll('#performance .performance-card .performance-class').forEach(el=>{
+    const m=(el.textContent||'').trim().match(/^([123])-(\d+)$/);
+    if(m) out[Number(m[1])].push(Number(m[2]));
+  });
+  Object.keys(out).forEach(g=>out[g]=[...new Set(out[g])].sort((a,b)=>a-b));
+  return out;
+}
+function voteCandidates(type,grade){
+  if(type==='performance') return performanceCandidates()[grade]||[];
+  return Array.from({length:classCount(grade)},(_,i)=>i+1);
+}
+function localVoteState(){return load(VOTE_STATE_LOCAL_KEY,{performance:false,flag:false})}
+function localVotes(){return load(VOTE_LOCAL_KEY,[])}
+async function getVoteState(type){
+  if(kdSbReady){
+    const {data,error}=await kdSb.from('kd_vote_state').select('is_open').eq('vote_type',type).maybeSingle();
+    if(!error&&data) return !!data.is_open;
+  }
+  return !!localVoteState()[type];
+}
+async function setVoteState(type,isOpen){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_vote_state').update({is_open:isOpen,updated_at:new Date().toISOString()}).eq('vote_type',type);
+    if(error) throw error;
+  }else{
+    const st=localVoteState();st[type]=isOpen;save(VOTE_STATE_LOCAL_KEY,st);
+  }
+}
+async function getMyVotes(type,name){
+  if(kdSbReady){
+    const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
+    if(!error) return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
+  }
+  return Object.fromEntries(localVotes().filter(x=>x.vote_type===type&&x.voter_name===name).map(x=>[x.grade,x.class_no]));
+}
+async function saveMyVote(type,grade,classNo,name){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_votes').upsert({voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()},{onConflict:'voter_name,vote_type,grade'});
+    if(error) throw error;
+  }else{
+    let list=localVotes();
+    const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
+    const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
+    if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
+  }
+}
+async function getAllVotes(type){
+  if(kdSbReady){
+    const {data,error}=await kdSb.from('kd_votes').select('voter_name,grade,class_no,updated_at').eq('vote_type',type);
+    if(error) throw error; return data||[];
+  }
+  return localVotes().filter(x=>x.vote_type===type);
+}
+async function clearVotes(type){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_votes').delete().eq('vote_type',type);
+    if(error) throw error;
+  } else save(VOTE_LOCAL_KEY,localVotes().filter(x=>x.vote_type!==type));
+}
+function voteModeBadge(){
+  return kdSbReady?'<span class="vote-mode live">● 실시간 공동 투표</span>':'<span class="vote-mode local">⚠ 설정 전 · 이 기기에서만 저장</span>';
+}
+async function renderStaffVote(type,contentEl=staffContent){
+  const name=currentStaffName||sessionStorage.getItem('kd_staff_name')||'';
+  if(!name){contentEl.innerHTML='<div class="vote-empty">교직원 이름 확인 후 다시 로그인해 주세요.</div>';return;}
+  contentEl.innerHTML='<div class="vote-loading">투표 화면을 불러오는 중입니다…</div>';
+  const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
+  const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
+  const instruction=type==='performance'?'각 학년에서 가장 인상적인 응원 퍼포먼스 학급을 1개씩 선택합니다.':'각 학년에서 가장 인상적인 학급 깃발을 1개씩 선택합니다.';
+  contentEl.innerHTML=`
+    <div class="vote-head">
+      <div><small>STAFF ONE-VOTE</small><h3>${icon} ${title} 투표</h3><p>${escapeHtml(name)} 선생님 · ${instruction}</p></div>
+      ${voteModeBadge()}
+    </div>
+    <div class="vote-open-state ${isOpen?'open':'closed'}"><b>${isOpen?'🟢 투표 진행 중':'🔒 현재 투표가 마감되어 있습니다.'}</b><span>${isOpen?'학년별로 1표씩 선택 후 각각 저장해 주세요.':'관리자가 투표를 시작하면 선택할 수 있습니다.'}</span></div>
+    <div class="vote-grade-list" id="voteGradeList"></div>
+    <div class="vote-footnote">※ 학년별 1표만 저장됩니다. 투표가 열려 있는 동안에는 선택을 수정할 수 있습니다. 중간 득표수는 공개되지 않습니다.</div>`;
+  const wrap=contentEl.querySelector('#voteGradeList');
+  [1,2,3].forEach(grade=>{
+    const candidates=voteCandidates(type,grade), chosen=Number(myVotes[grade]||0);
+    const article=document.createElement('article');article.className='vote-grade-card';
+    article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen?'done':''}">${chosen?`✓ ${grade}-${chosen} 투표 완료`:'미투표'}</em></div>
+      <div class="vote-choice-grid">${candidates.map(no=>`<label class="vote-choice ${chosen===no?'selected':''}"><input type="radio" name="vote_${type}_${grade}" value="${no}" ${chosen===no?'checked':''} ${isOpen?'':'disabled'}><span><b>${grade}-${no}</b><small>${type==='performance'?'응원 퍼포먼스':'학급 깃발'}</small></span></label>`).join('')}</div>
+      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen?'선택 수정 저장':'이 학년 투표 저장'}</button>`;
+    wrap.appendChild(article);
+  });
+  contentEl.querySelectorAll('.vote-choice input').forEach(inp=>inp.onchange=()=>{
+    const card=inp.closest('.vote-grade-card');card.querySelectorAll('.vote-choice').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked));
+  });
+  contentEl.querySelectorAll('[data-vote-save]').forEach(btn=>btn.onclick=async()=>{
+    const grade=Number(btn.dataset.voteSave), checked=contentEl.querySelector(`input[name="vote_${type}_${grade}"]:checked`);
+    if(!checked){alert(`${grade}학년에서 한 학급을 선택해 주세요.`);return;}
+    btn.disabled=true;btn.textContent='저장 중…';
+    try{await saveMyVote(type,grade,Number(checked.value),name);await renderStaffVote(type,contentEl);}
+    catch(e){console.error(e);alert('투표 저장 중 오류가 발생했습니다. Supabase 설정을 확인해 주세요.');btn.disabled=false;}
+  });
+}
+function tallyVotes(rows,grade){
+  const counts={};rows.filter(x=>Number(x.grade)===grade).forEach(x=>counts[x.class_no]=(counts[x.class_no]||0)+1);
+  return Object.entries(counts).map(([no,count])=>({no:Number(no),count})).sort((a,b)=>b.count-a.count||a.no-b.no);
+}
+async function renderVoteManager(contentEl=adminContent){
+  contentEl.innerHTML='<div class="vote-loading">실시간 투표 현황을 불러오는 중입니다…</div>';
+  try{
+    const [pOpen,fOpen,pRows,fRows]=await Promise.all([getVoteState('performance'),getVoteState('flag'),getAllVotes('performance'),getAllVotes('flag')]);
+    const unique=(rows)=>new Set(rows.map(x=>x.voter_name)).size;
+    const completed=(rows)=>{const m={};rows.forEach(x=>(m[x.voter_name]||(m[x.voter_name]=new Set())).add(Number(x.grade)));return Object.values(m).filter(set=>set.size===3).length;};
+    const typePanel=(type,open,rows)=>`<section class="vote-admin-panel" data-admin-vote="${type}">
+      <div class="vote-admin-top"><div><small>${type==='performance'?'PERFORMANCE':'CLASS FLAG'}</small><h4>${type==='performance'?'🎉 응원 퍼포먼스':'🚩 학급 깃발'}</h4><p>3개 학년 완료 <b>${completed(rows)}명</b> · 참여 ${unique(rows)}명 · 저장 ${rows.length}표</p></div><span class="${open?'open':'closed'}">${open?'투표 진행 중':'투표 마감'}</span></div>
+      <div class="vote-admin-actions"><button data-vote-toggle="${type}" data-next="${open?'0':'1'}">${open?'🔒 투표 마감':'🟢 투표 시작'}</button><button class="danger" data-vote-clear="${type}">↻ 전체 투표 초기화</button></div>
+      <div class="vote-result-grades">${[1,2,3].map(g=>{const t=tallyVotes(rows,g);const total=rows.filter(x=>Number(x.grade)===g).length;return `<div class="vote-result-grade"><div class="vote-result-title"><b>${g}학년</b><span>${total}명 투표</span></div>${t.length?t.map((r,i)=>`<div class="vote-result-row ${r.count===t[0].count?'leader':''}"><span>${g}-${r.no}</span><b>${r.count}표</b></div>`).join(''):'<div class="vote-no-result">아직 투표 없음</div>'}</div>`}).join('')}</div>
+    </section>`;
+    contentEl.innerHTML=`<div class="vote-admin-head"><div><small>LIVE VOTE CONTROL</small><h3>🗳️ 교직원 투표 관리</h3><p>투표 시작·마감과 학년별 실시간 득표 현황을 관리자만 확인합니다.</p></div>${voteModeBadge()}</div><div class="vote-admin-grid">${typePanel('performance',pOpen,pRows)}${typePanel('flag',fOpen,fRows)}</div><div class="vote-admin-note">※ 동률은 임의로 순위를 정하지 않고 같은 득표수로 표시됩니다. 일반 교직원 화면에는 중간 득표수가 표시되지 않습니다.</div>`;
+    contentEl.querySelectorAll('[data-vote-toggle]').forEach(btn=>btn.onclick=async()=>{try{await setVoteState(btn.dataset.voteToggle,btn.dataset.next==='1');await renderVoteManager(contentEl);}catch(e){console.error(e);alert('상태 변경에 실패했습니다.');}});
+    contentEl.querySelectorAll('[data-vote-clear]').forEach(btn=>btn.onclick=async()=>{if(!confirm(`${voteTypeLabel(btn.dataset.voteClear)} 투표를 전부 초기화할까요? 이 작업은 되돌릴 수 없습니다.`))return;try{await clearVotes(btn.dataset.voteClear);await renderVoteManager(contentEl);}catch(e){console.error(e);alert('초기화에 실패했습니다.');}});
+  }catch(e){console.error(e);contentEl.innerHTML='<div class="vote-empty">투표 데이터를 불러오지 못했습니다. config.js와 Supabase SQL 설정을 확인해 주세요.</div>';}
+}
+function setupVoteRealtime(){
+  if(!kdSbReady||voteRealtimeChannel) return;
+  voteRealtimeChannel=kdSb.channel('kd-v61-votes')
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_vote_state'},()=>{if(!staffArea.classList.contains('hidden')&&currentStaffVoteType)renderStaffVote(currentStaffVoteType,staffContent);})
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_votes'},()=>{if(!adminArea.classList.contains('hidden')&&adminContent.querySelector('[data-admin-vote]'))renderVoteManager(adminContent);})
+    .subscribe();
+}
+
 staffLoginBtn.onclick=()=>{
-  if(staffPw.value==='rudejr26**'){staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');if(pendingStaffView)staffView(pendingStaffView)}
+  const name=(staffName.value||'').trim();
+  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
   else alert('비밀번호를 확인해 주세요.');
 };
+if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 function staffView(v, contentEl=staffContent){
-  if(v==='preliminput'){
+  if(v==='votemanager'){
+    renderVoteManager(contentEl);
+  } else if(v==='preliminput'){
     contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
   } else if(v==='scoreinput'){
@@ -461,9 +605,11 @@ function staffView(v, contentEl=staffContent){
     };
     drawFaqAdmin();
   } else if(v==='performance'){
-    contentEl.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
+    currentStaffVoteType='performance';
+    renderStaffVote('performance',contentEl);
   } else if(v==='flagvote'){
-    contentEl.innerHTML=`<h3>학급 깃발 투표</h3><p>학년별 학급 깃발을 확인하고 평가하는 화면입니다.</p><div class="info-note">깃발 사진은 촬영 후 웹앱 파일에 일괄 반영하는 방식으로 운영합니다. 투표 결과는 관리자가 최종 점수로 입력합니다.</div>`;
+    currentStaffVoteType='flag';
+    renderStaffVote('flag',contentEl);
   }
 }
 
@@ -474,6 +620,8 @@ adminLoginBtn.onclick=()=>{
   if(adminPw.value==='rkrk1212!@'){
     adminLogin.classList.add('hidden');
     adminArea.classList.remove('hidden');
+    setupVoteRealtime();
+    renderVoteManager(adminContent);
   } else alert('관리자 비밀번호를 확인해 주세요.');
 };
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));

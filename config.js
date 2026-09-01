@@ -1,4 +1,8 @@
-// Supabase 연결 설정
-// 실제 다기기 Q&A를 사용하려면 아래 두 값을 Supabase 프로젝트 값으로 바꾸세요.
-window.KD_SUPABASE_URL = "";
-window.KD_SUPABASE_ANON_KEY = "";
+// V61 교직원 실시간 투표용 Supabase 설정
+// 1) Supabase 프로젝트 생성
+// 2) Project Settings > API에서 URL과 anon public key 복사
+// 3) 아래 값만 교체한 뒤 GitHub Pages에 함께 업로드
+window.KD_SUPABASE = {
+  url: '',
+  anonKey: ''
+};

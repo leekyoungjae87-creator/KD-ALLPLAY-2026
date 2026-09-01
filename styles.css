@@ -2442,25 +2442,25 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 #safety .safety-hero h3{text-indent:.55em}
 @media(max-width:700px){.performance-event-info{grid-template-columns:1fr 1fr}.performance-event-order{grid-column:1/-1}.performance-event-time,.performance-event-place{padding:8px 9px}}
 
-/* v60 home feature cards + mobile calendar + admin */
-.q12{background:linear-gradient(135deg,#eaf3ff,#f7fbff)}
-.q13{background:linear-gradient(135deg,#fff0f6,#fff8fb)}
-.q14{background:linear-gradient(135deg,#fff6d9,#fffdf4)}
-.q15{background:linear-gradient(135deg,#eaf8f1,#f7fcf9)}
-.home-feature{border-color:#dbe5ec}
+/* v62 home feature cards — 기존 학생 바로가기와 동일한 파스텔 결 */
+.q12{background:#e5f1ff}
+.q13{background:#ffedf6}
+.q14{background:#fff3c8}
+.q15{background:#e8f7ee}
+.home-feature{border-color:var(--line)}
 .home-feature b{letter-spacing:-.02em}
-.mobile-calendar-list{display:none}
 .admin-menu button{background:#f8fafc}
-@media(max-width:600px){
-  #schedule .calendar-wrap{display:none}
-  #schedule .calendar-legend{display:none}
-  #schedule .calendar-head>span{display:none}
-  .mobile-calendar-list{display:grid;gap:7px;margin-top:10px}
-  .mobile-calendar-list button{width:100%;border:1px solid #e1e8ee;background:#fff;border-radius:12px;padding:10px 11px;display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:center;text-align:left}
-  .mobile-calendar-list button b{font-size:10px;color:#315273;white-space:nowrap}
-  .mobile-calendar-list button span{font-size:10px;line-height:1.35;font-weight:800;color:#4c6073;white-space:normal;word-break:keep-all}
-  .mobile-calendar-list button:nth-child(4n+1){background:#f2f7fd}
-  .mobile-calendar-list button:nth-child(4n+2){background:#f2faf5}
-  .mobile-calendar-list button:nth-child(4n+3){background:#fff8e8}
-  .mobile-calendar-list button:nth-child(4n){background:#fff3f6}
-}
+
+/* ===== V61 교직원 실시간 투표 ===== */
+.staff-login-card{max-width:760px;display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.staff-login-card input{min-width:0}
+.vote-head,.vote-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:18px;border:1px solid #dce7ef;border-radius:17px;background:linear-gradient(135deg,#eef6ff,#f3fbf6 58%,#fff8e5)}
+.vote-head small,.vote-admin-head small{font-size:8px;font-weight:1000;letter-spacing:.12em;color:#65829e}.vote-head h3,.vote-admin-head h3{margin:3px 0 5px;color:#234a7b;font-size:20px}.vote-head p,.vote-admin-head p{margin:0;color:#6d7e8f;font-size:10px;line-height:1.55}
+.vote-mode{flex:0 0 auto;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:900}.vote-mode.live{color:#23744d;background:#e7f7ee;border:1px solid #ccebd9}.vote-mode.local{color:#8a6a1d;background:#fff7dc;border:1px solid #efe1ad}
+.vote-open-state{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:10px 0 12px;padding:11px 13px;border-radius:13px;font-size:10px}.vote-open-state.open{background:#edf9f2;border:1px solid #d0ebda;color:#3d7156}.vote-open-state.closed{background:#f5f6f8;border:1px solid #e0e4e8;color:#66717b}.vote-open-state span{font-size:9px;opacity:.88}
+.vote-grade-list{display:grid;gap:12px}.vote-grade-card{border:1px solid #e0e7ed;border-radius:16px;background:#fff;padding:14px}.vote-grade-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:11px}.vote-grade-top>div{display:flex;align-items:center;gap:8px}.vote-grade-top>div>span{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#234a7b;color:#fff;font-weight:1000}.vote-grade-top b{color:#2d465f}.vote-grade-top em{font-style:normal;font-size:9px;font-weight:900;color:#7f8b96;background:#f1f4f6;border-radius:999px;padding:6px 9px}.vote-grade-top em.done{color:#2e7854;background:#eaf8f0}
+.vote-choice-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.vote-choice{position:relative;cursor:pointer}.vote-choice input{position:absolute;opacity:0;pointer-events:none}.vote-choice>span{display:block;text-align:center;border:1px solid #dfe6ec;border-radius:13px;background:#f9fbfc;padding:12px 8px;transition:.15s}.vote-choice b,.vote-choice small{display:block}.vote-choice b{font-size:16px;color:#2d4761}.vote-choice small{font-size:8px;color:#7b8997;margin-top:3px}.vote-choice:hover>span{transform:translateY(-1px);border-color:#b9cddd}.vote-choice.selected>span{background:#eaf3ff;border:2px solid #4d7db4;box-shadow:0 5px 14px #234a7b12}.vote-choice input:disabled+span{opacity:.55;cursor:not-allowed}
+.vote-submit{margin-top:10px;width:100%;border:0;border-radius:11px;background:#234a7b;color:#fff;padding:10px 12px;font-size:10px;font-weight:900}.vote-submit:disabled{background:#aeb8c1;cursor:not-allowed}.vote-footnote,.vote-admin-note{margin-top:10px;border-radius:11px;background:#f7f9fb;border:1px solid #e4e9ed;padding:9px 11px;color:#788592;font-size:8.5px;line-height:1.6}.vote-loading,.vote-empty{padding:24px;text-align:center;border:1px dashed #ccd6df;border-radius:14px;background:#f8fafc;color:#72808e;font-size:10px}
+.vote-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.vote-admin-panel{border:1px solid #dee6ec;border-radius:16px;background:#fff;padding:14px}.vote-admin-top{display:flex;justify-content:space-between;gap:10px}.vote-admin-top small{font-size:7px;font-weight:1000;letter-spacing:.1em;color:#6f8498}.vote-admin-top h4{font-size:16px;color:#29445f;margin:2px 0 4px}.vote-admin-top p{font-size:9px;color:#7d8a96;margin:0}.vote-admin-top>span{height:max-content;border-radius:999px;padding:6px 8px;font-size:8px;font-weight:900}.vote-admin-top>span.open{background:#e8f7ef;color:#28724f}.vote-admin-top>span.closed{background:#f0f2f4;color:#68747e}.vote-admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:11px 0}.vote-admin-actions button{border:0;border-radius:10px;padding:9px;font-size:9px;font-weight:900;background:#234a7b;color:#fff}.vote-admin-actions .danger{background:#fff0ef;color:#af5b55;border:1px solid #f0d3d0}.vote-result-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.vote-result-grade{border:1px solid #e5eaee;border-radius:12px;padding:9px;background:#fafcfd}.vote-result-title{display:flex;justify-content:space-between;gap:5px;align-items:center;padding-bottom:6px;margin-bottom:5px;border-bottom:1px solid #e7ecef}.vote-result-title b{font-size:10px;color:#314b64}.vote-result-title span{font-size:7px;color:#8a96a1}.vote-result-row{display:flex;justify-content:space-between;align-items:center;padding:5px 6px;border-radius:8px;font-size:9px;color:#627385}.vote-result-row b{color:#425b75}.vote-result-row.leader{background:#fff5d7;color:#6f5c1e}.vote-result-row.leader b{color:#8a6a12}.vote-no-result{font-size:8px;text-align:center;color:#98a2ab;padding:10px 0}
+@media(max-width:760px){.staff-login-card{grid-template-columns:1fr}.vote-head,.vote-admin-head{flex-direction:column;padding:14px}.vote-choice-grid{grid-template-columns:repeat(3,1fr)}.vote-admin-grid{grid-template-columns:1fr}.vote-result-grades{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:430px){.vote-choice-grid{grid-template-columns:repeat(2,1fr)}.vote-grade-card{padding:11px}.vote-result-grades{grid-template-columns:1fr}.vote-admin-actions{grid-template-columns:1fr}.vote-grade-top{align-items:flex-start}.vote-grade-top em{max-width:52%;text-align:right}}
