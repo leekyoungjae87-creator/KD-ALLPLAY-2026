@@ -375,8 +375,14 @@ function renderMedia(){
 
 function renderBoard(){
   let custom=load(STORE.notices,[]), all=[...custom.slice().reverse(),...defaultNotices];
-  boardList.innerHTML=all.map(x=>`<div class="board-item"><b>${x.title}</b><small>${x.time||''}</small><p>${x.body}</p></div>`).join('');
-  homeBoard.innerHTML=all.slice(0,3).map(x=>`<div><b>${x.title}</b><small>${x.body}</small></div>`).join('');
+  boardList.innerHTML=all.map((x,i)=>`<article class="board-item hq-board-item">
+    <div class="hq-board-number">${String(i+1).padStart(2,'0')}</div>
+    <div class="hq-board-copy">
+      <div class="hq-board-top"><b>${escapeHtml(x.title)}</b>${x.time?`<small>${escapeHtml(x.time)}</small>`:''}</div>
+      <p>${escapeHtml(x.body)}</p>
+    </div>
+  </article>`).join('');
+  homeBoard.innerHTML=all.slice(0,3).map(x=>`<div><b>${escapeHtml(x.title)}</b><small>${escapeHtml(x.body)}</small></div>`).join('');
 }renderBoard();
 
 staffLoginBtn.onclick=()=>{
