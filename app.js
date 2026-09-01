@@ -285,8 +285,8 @@ findStudent.onclick=()=>{
 };
 
 let flagGrade=1;
-function renderFlags(){
-  let store=load(STORE.flags,{});
+async function renderFlags(){
+  let store=await loadSharedFlags();
   flagGallery.innerHTML=Array.from({length:classCount(flagGrade)},(_,i)=>{let key=`${flagGrade}-${i+1}`,url=store[key];return url?`<div class="flag-card" style="background:url('${url}') center/cover"><b style="background:#ffffffdd;padding:4px 7px;border-radius:8px">${key}</b></div>`:`<div class="flag-card"><b>${key}</b><small>깃발 이미지 준비 중</small></div>`}).join('');
 }
 document.querySelectorAll('#flagTabs button').forEach(b=>b.onclick=()=>{flagGrade=Number(b.dataset.fgrade);document.querySelectorAll('#flagTabs button').forEach(x=>x.classList.toggle('active',x===b));renderFlags()});renderFlags();
@@ -406,6 +406,29 @@ function performanceCandidates(){
   Object.keys(out).forEach(g=>out[g]=[...new Set(out[g])].sort((a,b)=>a-b));
   return out;
 }
+function performanceMusicMap(){
+  const out={};
+  document.querySelectorAll('#performance .performance-card').forEach(card=>{
+    const cls=(card.querySelector('.performance-class')?.textContent||'').trim();
+    let music='';
+    card.querySelectorAll('dl>div').forEach(row=>{if((row.querySelector('dt')?.textContent||'').includes('음악')) music=(row.querySelector('dd')?.textContent||'').trim();});
+    if(cls) out[cls]=music;
+  });
+  return out;
+}
+let sharedFlagCache={};
+async function loadSharedFlags(){
+  if(kdSbReady){
+    try{const {data,error}=await kdSb.from('kd_flags').select('class_key,image_data');if(error)throw error;sharedFlagCache=Object.fromEntries((data||[]).map(x=>[x.class_key,x.image_data]));return sharedFlagCache;}catch(e){console.warn('shared flags',e);}
+  }
+  sharedFlagCache=load(STORE.flags,{});return sharedFlagCache;
+}
+async function saveSharedFlag(classKey,imageData){
+  if(kdSbReady){const {error}=await kdSb.from('kd_flags').upsert({class_key:classKey,image_data:imageData,updated_at:new Date().toISOString()},{onConflict:'class_key'});if(error)throw error;}
+  else{const x=load(STORE.flags,{});x[classKey]=imageData;save(STORE.flags,x);}
+  sharedFlagCache[classKey]=imageData;
+}
+function compressFlagImage(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{let w=img.width,h=img.height,max=1200;if(Math.max(w,h)>max){const q=max/Math.max(w,h);w=Math.round(w*q);h=Math.round(h*q)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',.82));};img.src=r.result;};r.readAsDataURL(file);});}
 function voteCandidates(type,grade){
   if(type==='performance') return performanceCandidates()[grade]||[];
   return Array.from({length:classCount(grade)},(_,i)=>i+1);
@@ -466,6 +489,7 @@ async function renderStaffVote(type,contentEl=staffContent){
   if(!name){contentEl.innerHTML='<div class="vote-empty">교직원 이름 확인 후 다시 로그인해 주세요.</div>';return;}
   contentEl.innerHTML='<div class="vote-loading">투표 화면을 불러오는 중입니다…</div>';
   const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
+  if(type==='flag') await loadSharedFlags();
   const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
   const instruction=type==='performance'?'각 학년에서 가장 인상적인 응원 퍼포먼스 학급을 1개씩 선택합니다.':'각 학년에서 가장 인상적인 학급 깃발을 1개씩 선택합니다.';
   contentEl.innerHTML=`
@@ -481,7 +505,7 @@ async function renderStaffVote(type,contentEl=staffContent){
     const candidates=voteCandidates(type,grade), chosen=Number(myVotes[grade]||0);
     const article=document.createElement('article');article.className='vote-grade-card';
     article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen?'done':''}">${chosen?`✓ ${grade}-${chosen} 투표 완료`:'미투표'}</em></div>
-      <div class="vote-choice-grid">${candidates.map(no=>`<label class="vote-choice ${chosen===no?'selected':''}"><input type="radio" name="vote_${type}_${grade}" value="${no}" ${chosen===no?'checked':''} ${isOpen?'':'disabled'}><span><b>${grade}-${no}</b><small>${type==='performance'?'응원 퍼포먼스':'학급 깃발'}</small></span></label>`).join('')}</div>
+      <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${chosen===no?'selected':''}"><input type="radio" name="vote_${type}_${grade}" value="${no}" ${chosen===no?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
       <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen?'선택 수정 저장':'이 학년 투표 저장'}</button>`;
     wrap.appendChild(article);
   });
@@ -549,6 +573,11 @@ document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffVie
 function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
     renderVoteManager(contentEl);
+  } else if(v==='flagimages'){
+    contentEl.innerHTML=`<div class="flag-admin-head"><small>CLASS FLAG IMAGE</small><h3>🚩 학급 깃발 이미지 관리</h3><p>사진을 한 번 등록하면 학급 깃발 탭과 교직원 깃발 투표 화면에 함께 표시됩니다.</p></div><div class="flag-admin-controls"><select id="fiGrade">${[1,2,3].map(g=>`<option value="${g}">${g}학년</option>`).join('')}</select><select id="fiClass"></select><input type="file" id="fiFile" accept="image/*" capture="environment"><button id="fiSave">사진 등록</button></div><div id="fiPreview" class="flag-admin-preview">등록할 학급과 사진을 선택해 주세요.</div>`;
+    const fill=()=>{const g=Number(fiGrade.value);fiClass.innerHTML=Array.from({length:classCount(g)},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')};fill();fiGrade.onchange=fill;
+    fiFile.onchange=()=>{const f=fiFile.files[0];if(f){const u=URL.createObjectURL(f);fiPreview.innerHTML=`<img src="${u}"><b>${fiGrade.value}-${fiClass.value} 등록 예정</b>`;}};
+    fiSave.onclick=async()=>{const f=fiFile.files[0];if(!f){alert('깃발 사진을 선택해 주세요.');return;}fiSave.disabled=true;fiSave.textContent='등록 중…';try{const data=await compressFlagImage(f);const key=`${fiGrade.value}-${fiClass.value}`;await saveSharedFlag(key,data);await renderFlags();alert(`${key} 깃발 사진을 등록했습니다. 투표 화면에도 자동 반영됩니다.`);fiPreview.innerHTML=`<img src="${data}"><b>${key} 등록 완료</b>`;}catch(e){console.error(e);alert('사진 등록에 실패했습니다. Supabase 깃발 설정을 확인해 주세요.');}finally{fiSave.disabled=false;fiSave.textContent='사진 등록';}};
   } else if(v==='preliminput'){
     contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
