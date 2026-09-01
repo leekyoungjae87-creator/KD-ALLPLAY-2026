@@ -1106,6 +1106,56 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   text-align:center;
 }
 
+/* v45 seating chair notice */
+.seating-chair-note{
+  margin-top:12px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:13px 15px;
+  border:1px solid #eadcae;
+  border-radius:14px;
+  background:linear-gradient(135deg,#fffaf0,#fffdf7);
+  color:#4f5d69;
+}
+.seating-chair-icon{
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:11px;
+  background:#fff1c7;
+  font-size:20px;
+}
+.seating-chair-note b{
+  display:block;
+  margin-bottom:3px;
+  color:#394b5c;
+  font-size:11px;
+}
+.seating-chair-note p{
+  margin:0;
+  color:#687785;
+  font-size:9.5px;
+  font-weight:800;
+  line-height:1.5;
+}
+@media(max-width:600px){
+  .seating-chair-note{
+    padding:11px 12px;
+    gap:9px;
+  }
+  .seating-chair-icon{
+    width:34px;
+    height:34px;
+    font-size:18px;
+  }
+  .seating-chair-note b{font-size:10.5px}
+  .seating-chair-note p{font-size:9px}
+}
+
 /* v23 polished game-rule cards */
 #rules .page-title{
   background:linear-gradient(135deg,#fff4f1 0%,#fff9f1 48%,#f4f8ff 100%);
@@ -1588,16 +1638,11 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   width:25px;height:25px;margin-right:7px;border-radius:8px;
   background:#f0f4f8;color:#708296;font-style:normal;font-size:8px;font-weight:1000;
 }
-.points-v43-row>strong{font-size:14px;color:#a96c10;font-weight:1000}
 .points-v43-row>span{color:#566a7d;font-weight:800}
 .points-v43-header{min-height:40px;background:#fafbfd}
 .points-v43-header>*{font-size:9px!important;color:#788897!important;font-weight:1000!important}
 .points-v43-header>b{padding-left:18px}
 .points-v43-row:not(.points-v43-header):hover{background:#fbfcfe}
-.points-v43-major{background:linear-gradient(90deg,#f3f7fd 0%,#f8fbff 100%)}
-.points-v43-major>b{color:#234a7b}
-.points-v43-major>b em{background:#e4edf8;color:#315f90}
-.points-v43-major>strong{color:#234a7b;font-size:16px}
 .points-v43-note{margin-top:12px;display:grid;gap:7px}
 .points-v43-note>div{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid #eee1bd;border-radius:13px;background:#fff9e9}
 .points-v43-note>div>span{font-size:18px}
@@ -1612,8 +1657,6 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .points-v43-row>*{padding:9px 2px;font-size:9px}
   .points-v43-row>b{padding-left:8px;font-size:9px;white-space:normal;line-height:1.25}
   .points-v43-row>b em{width:19px;height:19px;margin-right:3px;border-radius:6px;font-size:7px;vertical-align:middle}
-  .points-v43-row>strong{font-size:11px}
-  .points-v43-major>strong{font-size:12px}
   .points-v43-header>*{font-size:7px!important}
   .points-v43-header>b{padding-left:8px}
 }
