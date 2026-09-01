@@ -506,13 +506,27 @@ async function renderVoteManager(contentEl=adminContent){
     const [pOpen,fOpen,pRows,fRows]=await Promise.all([getVoteState('performance'),getVoteState('flag'),getAllVotes('performance'),getAllVotes('flag')]);
     const unique=(rows)=>new Set(rows.map(x=>x.voter_name)).size;
     const completed=(rows)=>{const m={};rows.forEach(x=>(m[x.voter_name]||(m[x.voter_name]=new Set())).add(Number(x.grade)));return Object.values(m).filter(set=>set.size===3).length;};
+    const participantList=(rows)=>{
+      const map={};
+      rows.forEach(x=>{const n=(x.voter_name||'').trim();if(!n)return;(map[n]||(map[n]=new Set())).add(Number(x.grade));});
+      const names=Object.keys(map).sort((a,b)=>a.localeCompare(b,'ko'));
+      if(!names.length) return '<div class="vote-participant-empty">아직 참여한 교직원이 없습니다.</div>';
+      return names.map(name=>{
+        const grades=map[name];
+        const done=grades.size===3;
+        return `<div class="vote-participant-row"><div class="vote-participant-name"><b>${escapeHtml(name)}</b><small>${done?'3개 학년 완료':`${grades.size}/3 학년 완료`}</small></div><div class="vote-participant-grades">${[1,2,3].map(g=>`<span class="${grades.has(g)?'done':'pending'}">${grades.has(g)?'✓':'–'} ${g}학년</span>`).join('')}</div></div>`;
+      }).join('');
+    };
     const typePanel=(type,open,rows)=>`<section class="vote-admin-panel" data-admin-vote="${type}">
       <div class="vote-admin-top"><div><small>${type==='performance'?'PERFORMANCE':'CLASS FLAG'}</small><h4>${type==='performance'?'🎉 응원 퍼포먼스':'🚩 학급 깃발'}</h4><p>3개 학년 완료 <b>${completed(rows)}명</b> · 참여 ${unique(rows)}명 · 저장 ${rows.length}표</p></div><span class="${open?'open':'closed'}">${open?'투표 진행 중':'투표 마감'}</span></div>
       <div class="vote-admin-actions"><button data-vote-toggle="${type}" data-next="${open?'0':'1'}">${open?'🔒 투표 마감':'🟢 투표 시작'}</button><button class="danger" data-vote-clear="${type}">↻ 전체 투표 초기화</button></div>
+      <button class="vote-participant-toggle" data-participant-toggle="${type}">👥 참여 교직원 보기 <b>${unique(rows)}명</b></button>
+      <div class="vote-participant-list hidden" data-participant-list="${type}">${participantList(rows)}</div>
       <div class="vote-result-grades">${[1,2,3].map(g=>{const t=tallyVotes(rows,g);const total=rows.filter(x=>Number(x.grade)===g).length;return `<div class="vote-result-grade"><div class="vote-result-title"><b>${g}학년</b><span>${total}명 투표</span></div>${t.length?t.map((r,i)=>`<div class="vote-result-row ${r.count===t[0].count?'leader':''}"><span>${g}-${r.no}</span><b>${r.count}표</b></div>`).join(''):'<div class="vote-no-result">아직 투표 없음</div>'}</div>`}).join('')}</div>
     </section>`;
     contentEl.innerHTML=`<div class="vote-admin-head"><div><small>LIVE VOTE CONTROL</small><h3>🗳️ 교직원 투표 관리</h3><p>투표 시작·마감과 학년별 실시간 득표 현황을 관리자만 확인합니다.</p></div>${voteModeBadge()}</div><div class="vote-admin-grid">${typePanel('performance',pOpen,pRows)}${typePanel('flag',fOpen,fRows)}</div><div class="vote-admin-note">※ 동률은 임의로 순위를 정하지 않고 같은 득표수로 표시됩니다. 일반 교직원 화면에는 중간 득표수가 표시되지 않습니다.</div>`;
     contentEl.querySelectorAll('[data-vote-toggle]').forEach(btn=>btn.onclick=async()=>{try{await setVoteState(btn.dataset.voteToggle,btn.dataset.next==='1');await renderVoteManager(contentEl);}catch(e){console.error(e);alert('상태 변경에 실패했습니다.');}});
+    contentEl.querySelectorAll('[data-participant-toggle]').forEach(btn=>btn.onclick=()=>{const type=btn.dataset.participantToggle;const list=contentEl.querySelector(`[data-participant-list="${type}"]`);if(!list)return;const opening=list.classList.contains('hidden');list.classList.toggle('hidden');btn.innerHTML=opening?`👥 참여 교직원 닫기 <b>${list.querySelectorAll('.vote-participant-row').length}명</b>`:`👥 참여 교직원 보기 <b>${list.querySelectorAll('.vote-participant-row').length}명</b>`;});
     contentEl.querySelectorAll('[data-vote-clear]').forEach(btn=>btn.onclick=async()=>{if(!confirm(`${voteTypeLabel(btn.dataset.voteClear)} 투표를 전부 초기화할까요? 이 작업은 되돌릴 수 없습니다.`))return;try{await clearVotes(btn.dataset.voteClear);await renderVoteManager(contentEl);}catch(e){console.error(e);alert('초기화에 실패했습니다.');}});
   }catch(e){console.error(e);contentEl.innerHTML='<div class="vote-empty">투표 데이터를 불러오지 못했습니다. config.js와 Supabase SQL 설정을 확인해 주세요.</div>';}
 }
