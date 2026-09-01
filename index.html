@@ -48,12 +48,12 @@
   <button data-page="shirts">👚 학급 반티</button>
   <button data-page="performance">🎉 응원 퍼포먼스</button>
   <button data-page="flags">🚩 학급 깃발</button>
-  <button data-page="operations">🧑‍⚖️ 운영·심판</button>
   <button data-page="songs">🎵 신청곡</button>
   <button data-page="media">📸 사진·영상</button>
   <button data-page="qna">❓ 체육한마당 Q&A</button>
   <button data-page="staff">🔒 교직원</button>
-  <button data-page="board">📢 본부 게시판</button><button data-page="safety">🛡️ 안전수칙</button>
+  <button data-page="admin">⚙️ 관리자</button>
+  <button data-page="safety">🛡️ 안전수칙</button>
 </nav>
 
 <main class="shell">
@@ -105,12 +105,10 @@
       <button class="quick q9" data-go="qna"><span>❓</span><b>체육한마당 Q&A</b><small>질문하고 답변 확인</small></button>
       <button class="quick q10" data-go="seating"><span>🗺️</span><b>자리배치도</b><small>우리 반 위치 확인</small></button>
       <button class="quick q11" data-go="shirts"><span>👚</span><b>학급 반티</b><small>우리 반 반티 확인</small></button>
-      <button class="quick q12" data-go="points"><span>📊</span><b>종목별 배점표</b><small>종목별 순위 · 배점 확인</small></button>
-      <button class="quick q13" data-go="performance"><span>🎉</span><b>응원 퍼포먼스</b><small>신청 학급 · 공연 정보</small></button>
-      <button class="quick q14" data-go="flags"><span>🚩</span><b>학급 깃발</b><small>학급별 깃발 확인</small></button>
-      <button class="quick q15" data-go="operations"><span>🧑‍⚖️</span><b>운영·심판</b><small>종목별 운영 정보</small></button>
-      <button class="quick q16" data-go="board"><span>📢</span><b>본부 게시판</b><small>최신 공지 확인</small></button>
-      <button class="quick q17" data-go="safety"><span>🛡️</span><b>안전수칙</b><small>안전한 참여를 위한 약속</small></button>
+      <button class="quick q12 home-feature points-card" data-go="points"><span>📊</span><b>종목별 배점표</b><small>종목별 순위 · 배점 확인</small></button>
+      <button class="quick q13 home-feature performance-card" data-go="performance"><span>🎉</span><b>응원 퍼포먼스</b><small>참가 학급 · 음악 · 주제</small></button>
+      <button class="quick q14 home-feature flags-card" data-go="flags"><span>🚩</span><b>학급 깃발</b><small>학급의 개성과 단합</small></button>
+      <button class="quick q15 home-feature safety-card-home" data-go="safety"><span>🛡️</span><b>안전수칙</b><small>안전하게 즐기는 ALL PLAY</small></button>
     </div>
 
     <div class="section-heading teacher-heading">
@@ -251,6 +249,20 @@
           <div class="cal-day empty"></div>
           <div class="cal-day empty"></div>
         </div>
+      </div>
+
+      <div class="mobile-calendar-list" aria-label="9월 체육한마당 주요 일정">
+        <button data-cal-detail="9월 3일(목)|축구·피구 준결승|1·2·3학년 사전 경기"><b>9/3 목</b><span>⚽ 축구·피구 준결승</span></button>
+        <button data-cal-detail="9월 4일(금)|참가신청서 배부|체육한마당 참가신청서를 학급에 배부합니다."><b>9/4 금</b><span>📄 참가신청서 배부</span></button>
+        <button data-cal-detail="9월 10일(목)|바운드 배구 예선|1·2·3학년 예선 경기"><b>9/10 목</b><span>🏐 바운드 배구 예선</span></button>
+        <button data-cal-detail="9월 11일(금)|선수 명단 참가신청서 제출|점심시간 · 본교무실 · 이0재T 제출"><b>9/11 금</b><span>📋 선수명단 제출</span></button>
+        <button data-cal-detail="9월 14일(월)|1학년 축구·피구 결승|1학년 축구·피구 결승 경기"><b>9/14 월</b><span>🏆 1학년 축구·피구 결승</span></button>
+        <button data-cal-detail="9월 15일(화)|2학년 축구·피구 결승|2학년 축구·피구 결승 경기"><b>9/15 화</b><span>🏆 2학년 축구·피구 결승</span></button>
+        <button data-cal-detail="9월 16일(수)|3학년 축구·피구 결승|3학년 축구·피구 결승 경기"><b>9/16 수</b><span>🏆 3학년 축구·피구 결승</span></button>
+        <button data-cal-detail="9월 17일(목)|바운드 배구 준결승|1·2·3학년 준결승 경기"><b>9/17 목</b><span>🏐 바운드 배구 준결승</span></button>
+        <button data-cal-detail="9월 18일(금)|응원 퍼포먼스 음악 및 댄스부 음악 제출|MP3 파일로 USB에 직접 담아서 제출"><b>9/18 금</b><span>🎵 음악 USB 제출</span></button>
+        <button data-cal-detail="9월 22일(화)|학급 깃발 제출|1학년 김0현T · 2학년 마0원T · 3학년 이0재T"><b>9/22 화</b><span>🚩 학급 깃발 제출</span></button>
+        <button data-cal-detail="9월 30일(수)|달리는 줄다리기·이어달리기 예선·준결승|1·2·3학년 예선 및 준결승"><b>9/30 수</b><span>🏃 예선 · 준결승</span></button>
       </div>
 
       <div class="calendar-detail" id="calendarDetail">
@@ -602,8 +614,8 @@
     </div>
 
     <div class="performance-summary">
-      <div><strong>13</strong><span>신청 학급</span></div>
-      <div><strong>4</strong><span>1학년</span></div>
+      <div><strong>12</strong><span>신청 학급</span></div>
+      <div><strong>3</strong><span>1학년</span></div>
       <div><strong>4</strong><span>2학년</span></div>
       <div><strong>5</strong><span>3학년</span></div>
     </div>
@@ -627,17 +639,12 @@
     </div>
 
     <div class="performance-grade-block">
-      <div class="performance-grade-title"><span>1</span><div><b>1학년</b><small>공연 순서 ① · 4개 학급 신청</small></div></div>
+      <div class="performance-grade-title"><span>1</span><div><b>1학년</b><small>공연 순서 ① · 3개 학급 신청</small></div></div>
       <div class="performance-grid">
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">1-1</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
           <h3>1학년1반</h3>
           <dl><div><dt>대표학생</dt><dd>정0율</dd></div><div><dt>🎵 음악</dt><dd>풍선</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
-        </article>
-        <article class="performance-card">
-          <div class="performance-card-top"><span class="performance-class">1-3</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
-          <h3>대옥쌤과 아이들</h3>
-          <dl><div><dt>대표학생</dt><dd>남0인</dd></div><div><dt>🎵 음악</dt><dd>BAD와 HER 리믹스</dd></div><div><dt>퍼포먼스 주제</dt><dd>춤</dd></div></dl>
         </article>
         <article class="performance-card">
           <div class="performance-card-top"><span class="performance-class">1-4</span><span class="performance-badge">DANCE</span><span class="performance-ready">무대 준비</span></div>
@@ -833,7 +840,7 @@
   </section>
 
   <section class="page" id="staff">
-    <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF ONLY</small><h2>교직원 전용</h2><p>체육한마당 운영자가 경기 결과와 공지를 직접 입력하는 간단한 관리 화면입니다.</p></div></div>
+    <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF VOTE</small><h2>교직원 전용</h2><p>응원 퍼포먼스와 학급 깃발 투표만 이용할 수 있습니다.</p></div></div>
     <div id="staffLogin" class="login-card">
       <input type="password" id="staffPw" placeholder="교직원 비밀번호">
       <button id="staffLoginBtn">로그인</button>
@@ -842,14 +849,27 @@
       <div class="staff-menu">
         <button data-staff-view="performance">🎉 응원 퍼포먼스 투표</button>
         <button data-staff-view="flagvote">🚩 학급 깃발 투표</button>
-        <button data-staff-view="preliminput">🏟️ 예선 결과 입력</button>
-        <button data-staff-view="scoreinput">🏆 경기 결과 입력</button>
-        <button data-staff-view="noticeinput">📢 공지 등록</button>
-        <button data-staff-view="qnaanswer">❓ Q&A 관리</button>
       </div>
       <div id="staffContent" class="staff-content">
-        <h3>교직원 운영 메뉴</h3><p>위 메뉴를 선택하세요.</p>
+        <h3>교직원 투표 메뉴</h3><p>응원 퍼포먼스 또는 학급 깃발 투표를 선택하세요.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="page" id="admin">
+    <div class="page-title navy"><div class="icon">⚙️</div><div><small>ADMIN ONLY</small><h2>관리자 전용</h2><p>경기 결과 · 예선 결과 · 공지 · Q&A를 한 곳에서 관리합니다.</p></div></div>
+    <div id="adminLogin" class="login-card">
+      <input type="password" id="adminPw" placeholder="관리자 비밀번호">
+      <button id="adminLoginBtn">관리자 로그인</button>
+    </div>
+    <div id="adminArea" class="staff-area hidden">
+      <div class="staff-menu admin-menu">
+        <button data-admin-view="preliminput">🏟️ 예선 결과 입력</button>
+        <button data-admin-view="scoreinput">🏆 경기 결과 입력</button>
+        <button data-admin-view="noticeinput">📢 공지 등록</button>
+        <button data-admin-view="qnaanswer">❓ Q&A 관리</button>
+      </div>
+      <div id="adminContent" class="staff-content"><h3>관리자 메뉴</h3><p>위 메뉴를 선택하세요.</p></div>
     </div>
   </section>
 </main>
@@ -870,7 +890,7 @@
       <div>
         <small>ALL PLAY PROMISE</small>
         <h3>안전도 체육한마당의 일부입니다.</h3>
-        <p>즐거운 체육한마당은 모두의 안전에서 시작됩니다.</p>
+        <p>즐거운 체육한마당은 모두의 안전에서 시작됩니다. 서로를 배려하며 안전하게 참여해 주세요.</p>
       </div>
     </div>
 

@@ -2441,3 +2441,26 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 #performance .performance-card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(45,64,83,.07)}
 #safety .safety-hero h3{text-indent:.55em}
 @media(max-width:700px){.performance-event-info{grid-template-columns:1fr 1fr}.performance-event-order{grid-column:1/-1}.performance-event-time,.performance-event-place{padding:8px 9px}}
+
+/* v60 home feature cards + mobile calendar + admin */
+.q12{background:linear-gradient(135deg,#eaf3ff,#f7fbff)}
+.q13{background:linear-gradient(135deg,#fff0f6,#fff8fb)}
+.q14{background:linear-gradient(135deg,#fff6d9,#fffdf4)}
+.q15{background:linear-gradient(135deg,#eaf8f1,#f7fcf9)}
+.home-feature{border-color:#dbe5ec}
+.home-feature b{letter-spacing:-.02em}
+.mobile-calendar-list{display:none}
+.admin-menu button{background:#f8fafc}
+@media(max-width:600px){
+  #schedule .calendar-wrap{display:none}
+  #schedule .calendar-legend{display:none}
+  #schedule .calendar-head>span{display:none}
+  .mobile-calendar-list{display:grid;gap:7px;margin-top:10px}
+  .mobile-calendar-list button{width:100%;border:1px solid #e1e8ee;background:#fff;border-radius:12px;padding:10px 11px;display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:center;text-align:left}
+  .mobile-calendar-list button b{font-size:10px;color:#315273;white-space:nowrap}
+  .mobile-calendar-list button span{font-size:10px;line-height:1.35;font-weight:800;color:#4c6073;white-space:normal;word-break:keep-all}
+  .mobile-calendar-list button:nth-child(4n+1){background:#f2f7fd}
+  .mobile-calendar-list button:nth-child(4n+2){background:#f2faf5}
+  .mobile-calendar-list button:nth-child(4n+3){background:#fff8e8}
+  .mobile-calendar-list button:nth-child(4n){background:#fff3f6}
+}

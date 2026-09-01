@@ -390,12 +390,12 @@ staffLoginBtn.onclick=()=>{
   else alert('비밀번호를 확인해 주세요.');
 };
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
-function staffView(v){
+function staffView(v, contentEl=staffContent){
   if(v==='preliminput'){
-    staffContent.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
+    contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
   } else if(v==='scoreinput'){
-    staffContent.innerHTML=`
+    contentEl.innerHTML=`
       <div class="score-admin-head">
         <div><small>ADMIN SCORE INPUT</small><h3>🏆 경기 결과 입력</h3><p>학급·종목·순위만 선택하면 배점표에 맞는 점수가 자동으로 입력됩니다.</p></div>
         <span>관리자 직접 입력</span>
@@ -422,10 +422,10 @@ function staffView(v){
       alert(`${siClass.value} · ${siEvent.value} · ${siRank.options[siRank.selectedIndex].text} → ${pts}점 반영 완료`);
     };
   } else if(v==='noticeinput'){
-    staffContent.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
+    contentEl.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
-    staffContent.innerHTML=`
+    contentEl.innerHTML=`
       <div class="faq-admin-head"><div><small>FAQ MANAGER</small><h3>❓ Q&A 관리</h3><p>학생들이 자주 궁금해하는 내용을 질문과 답변 형태로 정리합니다.</p></div><span>간편 등록</span></div>
       <div class="faq-admin-new">
         <label><span>분류</span><input id="faqCategory" placeholder="예: 일정 · 경기 · 준비물" maxlength="20"></label>
@@ -461,12 +461,22 @@ function staffView(v){
     };
     drawFaqAdmin();
   } else if(v==='performance'){
-    staffContent.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
+    contentEl.innerHTML=`<h3>응원 퍼포먼스 투표</h3><p>참여도 · 협동성 · 창의성 · 완성도 · 호응도 기준으로 평가하는 화면입니다.</p><div class="info-note">실제 교직원별 중복 방지와 합산은 Supabase 연동 단계에서 완성하는 것을 권장합니다.</div>`;
   } else if(v==='flagvote'){
-    staffContent.innerHTML=`<h3>학급 깃발 투표</h3><p>학년별 학급 깃발을 확인하고 평가하는 화면입니다.</p><div class="info-note">깃발 사진은 촬영 후 웹앱 파일에 일괄 반영하는 방식으로 운영합니다. 투표 결과는 관리자가 최종 점수로 입력합니다.</div>`;
+    contentEl.innerHTML=`<h3>학급 깃발 투표</h3><p>학년별 학급 깃발을 확인하고 평가하는 화면입니다.</p><div class="info-note">깃발 사진은 촬영 후 웹앱 파일에 일괄 반영하는 방식으로 운영합니다. 투표 결과는 관리자가 최종 점수로 입력합니다.</div>`;
   }
 }
 
+
+
+// v60 관리자 전용: 운영 입력 기능은 관리자만 사용
+adminLoginBtn.onclick=()=>{
+  if(adminPw.value==='rkrk1212!@'){
+    adminLogin.classList.add('hidden');
+    adminArea.classList.remove('hidden');
+  } else alert('관리자 비밀번호를 확인해 주세요.');
+};
+document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 
 
