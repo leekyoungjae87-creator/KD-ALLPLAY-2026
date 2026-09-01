@@ -1,8 +1,6 @@
-// V61 교직원 실시간 투표용 Supabase 설정
-// 1) Supabase 프로젝트 생성
-// 2) Project Settings > API에서 URL과 anon public key 복사
-// 3) 아래 값만 교체한 뒤 GitHub Pages에 함께 업로드
+// V65 교직원 실시간 투표용 Supabase 설정
+// 브라우저용 Publishable Key만 사용합니다. Secret/service_role 키는 넣지 마세요.
 window.KD_SUPABASE = {
-  url: '',
-  anonKey: ''
+  url: 'https://dfkjhvkqldmofqaipfmg.supabase.co',
+  anonKey: 'sb_publishable_L6J8gGnGnBIaQn3-v-a_Cw_rlZzA7Ns'
 };
