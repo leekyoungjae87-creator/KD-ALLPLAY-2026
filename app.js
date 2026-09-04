@@ -120,7 +120,15 @@ function pointsForRank(eventName, rankKey){
 }
 
 const prelimEvents = ["축구(남)","피구(여)","바운드 배구","달리는 줄다리기","이어달리기"];
-const prelimSchedule = {"축구(남)": "9. 3.(목) · 전 학년 준결승", "피구(여)": "9. 3.(목) · 전 학년 준결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
+const defaultPrelim = {
+  "축구(남)_1":"결승: 1학년 3반 VS 7반 · 9.14.(월)",
+  "축구(남)_2":"결승: 2학년 3반 VS 8반 · 9.15.(화)",
+  "축구(남)_3":"결승: 3학년 3반 VS 7반 · 9.16.(수)",
+  "피구(여)_1":"결승: 1학년 2반 VS 5반 · 9.14.(월)",
+  "피구(여)_2":"결승: 2학년 1반 VS 7반 · 9.15.(화)",
+  "피구(여)_3":"결승: 3학년 1반 VS 6반 · 9.16.(수)"
+};
+const prelimSchedule = {"축구(남)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "피구(여)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
 const ops = [
   ["응원 퍼포먼스","전 교직원 투표","각 학년 체육교사 지원"],
   ["학급 깃발","전 교직원 투표","각 학년 체육교사 지원"],
@@ -260,7 +268,7 @@ document.querySelectorAll('#ruleFilter button').forEach(b=>b.onclick=()=>{docume
 
 bracketFilter.innerHTML=['전체',...prelimEvents].map((x,i)=>`<button class="${i===0?'active':''}" data-bracket="${x}">${x}</button>`).join('');
 function renderBrackets(f='전체'){
-  let store=load(STORE.prelim,{}), arr=f==='전체'?prelimEvents:[f];
+  let store={...defaultPrelim,...load(STORE.prelim,{})}, arr=f==='전체'?prelimEvents:[f];
   const eventIcon={'축구(남)':'⚽','피구(여)':'🔴','바운드 배구':'🏐','달리는 줄다리기':'🪢','이어달리기':'🏃'};
   bracketList.innerHTML=arr.map(e=>`<article class="bracket-card bracket-card-v40">
     <div class="bracket-card-head"><span class="bracket-event-icon">${eventIcon[e]||'🏟️'}</span><div><small>PRE-GAME</small><h3>${e}</h3></div><em>진행 현황</em></div>
