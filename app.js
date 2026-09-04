@@ -6,6 +6,11 @@ const STORE = {
   flags:'kd_new_flags', perfVotes:'kd_new_perf_votes', flagVotes:'kd_new_flag_votes', qna:'kd_new_qna'
 };
 
+// v88: 관리자 관련 DOM은 브라우저의 id 전역변수 동작에 의존하지 않고 명시적으로 참조합니다.
+const adminArea=document.getElementById('adminArea');
+const adminContent=document.getElementById('adminContent');
+
+
 const schedule = [
   ["08:15-08:30","집결","학년별 기준"],
   ["08:30-09:00","개회식 · 준비운동(청소년체조) · 안전교육",""],
@@ -935,28 +940,39 @@ function staffView(v, contentEl=staffContent){
 
 
 
-// v84 관리자 전용: ID + 비밀번호 로그인 (자동 로그아웃 없음)
+// v88 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
 const ADMIN_ID='leekj1212';
 const ADMIN_PW='rkrkrk121212!@';
+const adminLoginEl=document.getElementById('adminLogin');
+const adminIdEl=document.getElementById('adminId');
+const adminPwEl=document.getElementById('adminPw');
+const adminLoginBtnEl=document.getElementById('adminLoginBtn');
+const adminAreaEl=document.getElementById('adminArea');
+const adminContentEl=document.getElementById('adminContent');
+
 function adminSignIn(){
-  const id=(adminId.value||'').trim();
-  const pw=adminPw.value||'';
+  if(!adminIdEl||!adminPwEl||!adminLoginEl||!adminAreaEl||!adminContentEl){
+    alert('관리자 로그인 화면을 불러오지 못했습니다. 페이지를 새로고침해 주세요.');
+    return;
+  }
+  const id=(adminIdEl.value||'').trim();
+  const pw=adminPwEl.value||'';
   if(id===ADMIN_ID && pw===ADMIN_PW){
-    adminLogin.classList.add('hidden');
-    adminArea.classList.remove('hidden');
-    adminPw.value='';
+    adminLoginEl.classList.add('hidden');
+    adminAreaEl.classList.remove('hidden');
+    adminPwEl.value='';
     setupVoteRealtime();
-    renderVoteManager(adminContent);
+    renderVoteManager(adminContentEl);
   } else {
     alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
-    adminPw.value='';
-    adminPw.focus();
+    adminPwEl.value='';
+    adminPwEl.focus();
   }
 }
-adminLoginBtn.onclick=adminSignIn;
-[adminId,adminPw].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter') adminSignIn();}));
-document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=87', {updateViaCache:'none'}).catch(()=>{})}
+if(adminLoginBtnEl) adminLoginBtnEl.addEventListener('click',adminSignIn);
+[adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminSignIn();}}));
+document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=88', {updateViaCache:'none'}).catch(()=>{})}
 
 
 
