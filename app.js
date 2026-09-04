@@ -131,9 +131,15 @@ const defaultPrelim = {
   "축구(남)_3":"결승: 3학년 3반 VS 7반 · 9.16.(수)",
   "피구(여)_1":"결승: 1학년 2반 VS 5반 · 9.14.(월)",
   "피구(여)_2":"결승: 2학년 1반 VS 7반 · 9.15.(화)",
-  "피구(여)_3":"결승: 3학년 1반 VS 6반 · 9.16.(수)"
+  "피구(여)_3":"결승: 3학년 1반 VS 6반 · 9.16.(수)",
+  "달리는 줄다리기_3":"9.30 예선: 5반 VS 6반 · 3반 VS 4반 · 2반 VS 7반 · 1반 부전승 → 체육한마당 당일 준결승·결승",
+  "달리는 줄다리기_2":"9.30 예선: 4반 VS 7반 · 2반 VS 3반 · 5반 VS 8반 · 1반 VS 6반 → 체육한마당 당일 준결승·결승",
+  "달리는 줄다리기_1":"9.30 예선: 3반 VS 5반 · 4반 VS 6반 · 1반 VS 7반 · 2반 부전승 → 체육한마당 당일 준결승·결승",
+  "이어달리기_3":"9.30 예선: 1조 1·3·4·5반 중 2개 반 결승 진출 / 2조 2·6·7반 중 2개 반 결승 진출 → 체육한마당 당일 결승",
+  "이어달리기_2":"9.30 예선: 1조 4·5·6·7반 중 2개 반 결승 진출 / 2조 1·2·3·8반 중 2개 반 결승 진출 → 체육한마당 당일 결승",
+  "이어달리기_1":"9.30 예선: 1조 3·5·6·7반 / 2조 1·2·4반 → 각 조 2개 반 결승 진출 → 체육한마당 당일 결승"
 };
-const prelimSchedule = {"축구(남)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "피구(여)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
+const prelimSchedule = {"축구(남)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "피구(여)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) 전 학년 예선 → 10. 1.(목) 체육한마당 당일 준결승·결승", "이어달리기": "9. 30.(수) 전 학년 조별 예선 → 10. 1.(목) 체육한마당 당일 결승"};
 const ops = [
   ["응원 퍼포먼스","전 교직원 투표","각 학년 체육교사 지원"],
   ["학급 깃발","전 교직원 투표","각 학년 체육교사 지원"],
@@ -495,6 +501,10 @@ renderSongs();setupSongRealtime();
 let currentStaffName=sessionStorage.getItem('kd_staff_name')||'';
 let voteRealtimeChannel=null;
 let currentStaffVoteType='';
+let voteCloudOk=kdSbReady;
+let voteCloudLastError='';
+function markVoteCloudError(err){ voteCloudOk=false; voteCloudLastError=String(err?.message||err||'Supabase vote error'); console.warn('vote cloud fallback:',err); }
+function markVoteCloudOk(){ voteCloudOk=true; voteCloudLastError=''; }
 
 function voteTypeLabel(type){return type==='performance'?'응원 퍼포먼스':'학급 깃발'}
 function performanceCandidates(){
@@ -537,52 +547,77 @@ function localVoteState(){return load(VOTE_STATE_LOCAL_KEY,{performance:false,fl
 function localVotes(){return load(VOTE_LOCAL_KEY,[])}
 async function getVoteState(type){
   if(kdSbReady){
-    const {data,error}=await kdSb.from('kd_vote_state').select('is_open').eq('vote_type',type).maybeSingle();
-    if(!error&&data) return !!data.is_open;
+    try{
+      const {data,error}=await kdSb.from('kd_vote_state').select('is_open').eq('vote_type',type).maybeSingle();
+      if(error) throw error;
+      markVoteCloudOk();
+      if(data) return !!data.is_open;
+    }catch(e){ markVoteCloudError(e); }
   }
   return !!localVoteState()[type];
 }
 async function setVoteState(type,isOpen){
   if(kdSbReady){
-    const {error}=await kdSb.from('kd_vote_state').update({is_open:isOpen,updated_at:new Date().toISOString()}).eq('vote_type',type);
-    if(error) throw error;
-  }else{
-    const st=localVoteState();st[type]=isOpen;save(VOTE_STATE_LOCAL_KEY,st);
+    try{
+      const {error}=await kdSb.from('kd_vote_state').upsert({vote_type:type,is_open:isOpen,updated_at:new Date().toISOString()},{onConflict:'vote_type'});
+      if(error) throw error;
+      markVoteCloudOk();
+      return;
+    }catch(e){ markVoteCloudError(e); }
   }
+  const st=localVoteState();st[type]=isOpen;save(VOTE_STATE_LOCAL_KEY,st);
 }
 async function getMyVotes(type,name){
   if(kdSbReady){
-    const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
-    if(!error) return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
+    try{
+      const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
+      if(error) throw error;
+      markVoteCloudOk();
+      return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
+    }catch(e){ markVoteCloudError(e); }
   }
   return Object.fromEntries(localVotes().filter(x=>x.vote_type===type&&x.voter_name===name).map(x=>[x.grade,x.class_no]));
 }
 async function saveMyVote(type,grade,classNo,name){
+  const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
   if(kdSbReady){
-    const {error}=await kdSb.from('kd_votes').upsert({voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()},{onConflict:'voter_name,vote_type,grade'});
-    if(error) throw error;
-  }else{
-    let list=localVotes();
-    const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
-    const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
-    if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
+    try{
+      const {error}=await kdSb.from('kd_votes').upsert(row,{onConflict:'voter_name,vote_type,grade'});
+      if(error) throw error;
+      markVoteCloudOk();
+      return;
+    }catch(e){ markVoteCloudError(e); }
   }
+  let list=localVotes();
+  const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
+  if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
 }
 async function getAllVotes(type){
   if(kdSbReady){
-    const {data,error}=await kdSb.from('kd_votes').select('voter_name,grade,class_no,updated_at').eq('vote_type',type);
-    if(error) throw error; return data||[];
+    try{
+      const {data,error}=await kdSb.from('kd_votes').select('voter_name,grade,class_no,updated_at').eq('vote_type',type);
+      if(error) throw error;
+      markVoteCloudOk();
+      return data||[];
+    }catch(e){ markVoteCloudError(e); }
   }
   return localVotes().filter(x=>x.vote_type===type);
 }
 async function clearVotes(type){
   if(kdSbReady){
-    const {error}=await kdSb.from('kd_votes').delete().eq('vote_type',type);
-    if(error) throw error;
-  } else save(VOTE_LOCAL_KEY,localVotes().filter(x=>x.vote_type!==type));
+    try{
+      const {error}=await kdSb.from('kd_votes').delete().eq('vote_type',type);
+      if(error) throw error;
+      markVoteCloudOk();
+      return;
+    }catch(e){ markVoteCloudError(e); }
+  }
+  save(VOTE_LOCAL_KEY,localVotes().filter(x=>x.vote_type!==type));
 }
 function voteModeBadge(){
-  return kdSbReady?'<span class="vote-mode live">● 실시간 공동 투표</span>':'<span class="vote-mode local">⚠ 설정 전 · 이 기기에서만 저장</span>';
+  if(kdSbReady && voteCloudOk) return '<span class="vote-mode live">● 실시간 공동 투표</span>';
+  if(kdSbReady && !voteCloudOk) return '<span class="vote-mode local">⚠ Supabase 연결 오류 · 이 기기 임시 저장</span>';
+  return '<span class="vote-mode local">⚠ 설정 전 · 이 기기에서만 저장</span>';
 }
 async function renderStaffVote(type,contentEl=staffContent){
   const name=currentStaffName||sessionStorage.getItem('kd_staff_name')||'';
@@ -688,11 +723,11 @@ if(staffLoginBtnEl){
 }
 if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView,document.getElementById('staffContent')));
-function staffView(v, contentEl=document.getElementById('staffContent')){
+async function staffView(v, contentEl=document.getElementById('staffContent')){
   if(v==='votemanager'){
-    renderVoteManager(contentEl);
+    await renderVoteManager(contentEl);
   } else if(v==='songmanager'){
-    renderSongManager(contentEl);
+    await renderSongManager(contentEl);
   } else if(v==='flagimages'){
     contentEl.innerHTML=`<div class="flag-admin-head"><small>CLASS FLAG IMAGE</small><h3>🚩 학급 깃발 이미지 관리</h3><p>사진을 한 번 등록하면 학급 깃발 탭과 교직원 깃발 투표 화면에 함께 표시됩니다.</p></div><div class="flag-admin-controls"><select id="fiGrade">${[1,2,3].map(g=>`<option value="${g}">${g}학년</option>`).join('')}</select><select id="fiClass"></select><input type="file" id="fiFile" accept="image/*" capture="environment"><button id="fiSave">사진 등록</button></div><div id="fiPreview" class="flag-admin-preview">등록할 학급과 사진을 선택해 주세요.</div>`;
     const fill=()=>{const g=Number(fiGrade.value);fiClass.innerHTML=Array.from({length:classCount(g)},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')};fill();fiGrade.onchange=fill;
@@ -975,14 +1010,14 @@ if(adminLoginBtnEl){
       if(adminLoginEl) adminLoginEl.classList.add('hidden');
       if(adminAreaEl) adminAreaEl.classList.remove('hidden');
       setupVoteRealtime();
-      if(adminContentEl) renderVoteManager(adminContentEl);
+      if(adminContentEl) adminContentEl.innerHTML='<h3>관리자 메뉴</h3><p>위 메뉴에서 필요한 관리 기능을 선택하세요.</p>';
     }else{
       alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
     }
   };
 }
-document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=93', {updateViaCache:'none'}).catch(()=>{})}
+document.querySelectorAll('[data-admin-view]').forEach(b=>{b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}}});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=95', {updateViaCache:'none'}).catch(()=>{})}
 
 
 

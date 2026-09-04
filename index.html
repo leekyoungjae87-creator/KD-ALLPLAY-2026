@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="모두가 함께, 모두가 빛나는 하루" />
   <meta name="twitter:image" content="kakao-thumbnail-v69.png" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=93" />
+  <link rel="stylesheet" href="styles.css?v=95" />
 </head>
 <body>
 <header class="site-header">
@@ -1022,46 +1022,9 @@
   <img src="assets/allplay-footer-logo.png" alt="우리 함께, 경덕 로고" class="allplay-footer-logo">
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=93"></script>
-<script src="app.js?v=93"></script>
-<script>
-/* v93 로그인 독립 안전장치: app.js의 다른 기능 오류와 무관하게 로그인 버튼 자체는 작동 */
-(function(){
-  const $=id=>document.getElementById(id);
-  const staffBtn=$('staffLoginBtn'), staffName=$('staffName'), staffPw=$('staffPw');
-  if(staffBtn){
-    staffBtn.onclick=function(){
-      const name=(staffName?.value||'').trim();
-      const pw=staffPw?.value||'';
-      if(name.length<2){ alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.'); return; }
-      if(pw!=='rudejr26**'){ alert('비밀번호를 확인해 주세요.'); return; }
-      try{ sessionStorage.setItem('kd_staff_name',name); }catch(e){}
-      if(typeof currentStaffName!=='undefined') currentStaffName=name;
-      $('staffLogin')?.classList.add('hidden');
-      $('staffArea')?.classList.remove('hidden');
-      try{ if(typeof setupVoteRealtime==='function') setupVoteRealtime(); }catch(e){}
-    };
-  }
-  const adminBtn=$('adminLoginBtn'), adminId=$('adminId'), adminPw=$('adminPw');
-  if(adminBtn){
-    adminBtn.onclick=function(){
-      const id=(adminId?.value||'').trim();
-      const pw=adminPw?.value||'';
-      if(id!=='leekj1212' || pw!=='rkrkrk121212!@'){ alert('관리자 ID 또는 비밀번호를 확인해 주세요.'); return; }
-      $('adminLogin')?.classList.add('hidden');
-      $('adminArea')?.classList.remove('hidden');
-      try{ if(typeof setupVoteRealtime==='function') setupVoteRealtime(); }catch(e){}
-      try{ if(typeof renderVoteManager==='function') renderVoteManager($('adminContent')); }catch(e){}
-    };
-  }
-  document.querySelectorAll('[data-staff-view]').forEach(btn=>{
-    btn.onclick=()=>{ try{ if(typeof staffView==='function') staffView(btn.dataset.staffView,$('staffContent')); }catch(e){console.error(e);} };
-  });
-  document.querySelectorAll('[data-admin-view]').forEach(btn=>{
-    btn.onclick=()=>{ try{ if(typeof staffView==='function') staffView(btn.dataset.adminView,$('adminContent')); }catch(e){console.error(e);} };
-  });
-})();
-</script>
+<script src="config.js?v=95"></script>
+<script src="app.js?v=95"></script>
+
 
 </body>
 </html>
