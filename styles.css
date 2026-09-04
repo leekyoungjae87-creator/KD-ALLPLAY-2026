@@ -2492,3 +2492,24 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 
 /* V78 본부 통합 기록 입력 */
 .record-event-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}.record-event-chips span{padding:6px 9px;border-radius:999px;background:#f3f7fa;border:1px solid #dbe6ee;font-size:9px;font-weight:900;color:#587087}.record-guide{display:flex;flex-direction:column;gap:3px}.record-guide b{font-size:12px;color:#244a73}.record-guide span{font-size:10px;color:#60778d}.record-table select.rrankinput{min-width:92px;border:1px solid #d7e2eb;border-radius:9px;background:#fff;padding:8px 7px;text-align:center;font-weight:900;color:#263f59}.record-table .rresult{font-weight:900;color:#536d84}.record-flow{display:flex;gap:12px;align-items:center;margin-top:11px;padding:12px 14px;border-radius:12px;background:#fffaf0;border:1px solid #f0dfb8}.record-flow b{white-space:nowrap;font-size:10px;color:#8a651b}.record-flow span{font-size:10px;color:#725d34;line-height:1.5}@media(max-width:600px){.record-event-chips{display:none}.record-flow{align-items:flex-start;flex-direction:column;gap:3px}.record-table select.rrankinput{min-width:82px}}
+\n\n/* v80 responsive seating map — 2-8 attached to 1-1 / 2-1 same size as 3-7 */
+.seating-map-v80{background:#fff;border:1px solid #dfe7ee;border-radius:20px;padding:16px;box-shadow:0 8px 24px #234a7b0d;overflow:auto}
+.seat-top-row{display:grid;grid-template-columns:repeat(8,minmax(72px,1fr));gap:5px;margin-left:154px;margin-right:82px;margin-bottom:5px;min-width:760px}
+.seat-main-area{display:grid;grid-template-columns:148px minmax(520px,1fr) 76px;gap:6px;min-width:920px;align-items:stretch}
+.seat-left-facilities{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.facility{border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:5px;font-size:24px;font-weight:900;min-height:84px}
+.facility b{font-size:12px}.facility small{font-size:9px}
+.gym{background:#e7f2ff;color:#315f8e}.court{background:#fff0df;color:#a86423}
+.field-core{background:#f8fbfd;border:1px solid #e5ebf0;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:350px}
+.field-track{width:min(92%,620px);aspect-ratio:1.75/1;border-radius:999px;background:#e9a49c;padding:28px;box-shadow:inset 0 0 0 5px #f6c4bd,inset 0 0 0 10px #fff7f5}
+.field-inner{height:100%;border-radius:999px;background:#dff3df;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#2c714c;font-size:27px}.field-inner b{font-size:20px;margin-top:3px}.field-inner small{font-size:9px;letter-spacing:.18em;margin-top:4px}
+.seat-right-column{display:grid;grid-template-rows:repeat(6,1fr);gap:5px}
+.seat-cell{border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:1000;min-height:44px;border:1px solid #ffffffa8;box-shadow:inset 0 -1px 0 #00000008}
+.g1{background:#dcecff;color:#315e8f}.g2{background:#dff3df;color:#2f714a}.g3{background:#fde4eb;color:#91445a}
+.seat-bottom-row{display:grid;grid-template-columns:74px 74px repeat(9,minmax(64px,1fr));gap:5px;margin-top:5px;min-width:920px;align-items:stretch}
+.facility.mini{min-height:54px;font-size:15px;gap:2px}.facility.mini b{font-size:9px}.water{background:#eef8ff;color:#3773a1}.stairs{background:#fff6cb;color:#8a721a}.facility.hq{background:#d7f0ec;color:#276b65;min-height:54px;font-size:15px;gap:1px}.facility.hq b{font-size:10px}.facility.hq small{font-size:8px}
+.seat-bottom-row .seat-cell{min-height:54px}
+.mobile-clinic{width:140px;margin:7px auto 5px;background:#fff0f0;color:#9c4141;border:1px solid #f1d5d5;border-radius:10px;padding:7px;text-align:center;font-size:10px}
+.main-building{min-width:920px;background:#f1f3f5;border:1px solid #e1e5e8;border-radius:12px;padding:11px;text-align:center;color:#56636f;font-size:14px}
+.seating-legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:9px;font-weight:800}.lg1{color:#5586b9}.lg2{color:#58a16e}.lg3{color:#bf7187}.lgf{color:#b49836}.lgh{color:#4b8d86}
+@media(max-width:700px){.seating-map-v80{padding:10px;overflow-x:auto}.seat-top-row{margin-left:124px;margin-right:66px;grid-template-columns:repeat(8,66px);min-width:max-content}.seat-main-area{grid-template-columns:118px 430px 62px;min-width:622px}.seat-bottom-row{grid-template-columns:58px 58px repeat(9,62px);min-width:max-content}.field-core{min-height:270px;padding:12px}.field-track{padding:20px}.field-inner b{font-size:16px}.facility{font-size:18px}.seat-cell{font-size:11px}.main-building{min-width:622px}.seating-legend{justify-content:flex-start;min-width:622px}}
