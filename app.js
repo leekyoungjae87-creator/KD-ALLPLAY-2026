@@ -640,6 +640,85 @@ function staffView(v, contentEl=staffContent){
   } else if(v==='preliminput'){
     contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
+  } else if(v==='recordinput'){
+    const recordEvents={
+      '축구':{label:'⚽ 축구(남)',mode:'rank',desc:'사전경기 최종 순위를 입력하면 배점(50·40·30·20·10점)을 자동 반영합니다.'},
+      '피구':{label:'🔴 피구(여)',mode:'rank',desc:'사전경기 최종 순위를 입력하면 배점(50·40·30·20·10점)을 자동 반영합니다.'},
+      '바운드배구':{label:'🏐 바운드 배구',mode:'rank',desc:'결선 결과의 최종 순위를 입력하면 배점(60·50·40·30·20점)을 자동 반영합니다.'},
+      '8자줄넘기':{label:'🪢 8자 줄넘기',mode:'sum2',unit:'회',desc:'종이 기록지의 1차·2차 횟수를 입력하면 합계·공동순위·배점을 자동 계산합니다.'},
+      '슈팅릴레이':{label:'🏀 슈팅 릴레이',mode:'sum2',unit:'개',desc:'99초 1차·2차 성공 개수를 입력하면 합계·공동순위·배점을 자동 계산합니다.'},
+      '2인3각':{label:'👟 2인 3각',mode:'time',unit:'초',desc:'최종 기록을 초 단위(0.1초까지)로 입력하면 빠른 기록 순으로 자동 계산합니다.'},
+      '달리는줄다리기':{label:'🧑‍🤝‍🧑 달리는 줄다리기',mode:'rank',desc:'준결승·결승 종료 후 최종 순위를 입력하면 배점(120·100·80·60·40점)을 자동 반영합니다.'},
+      '미션이어달리기':{label:'🏃 미션 이어달리기',mode:'rank',desc:'도착 순위를 입력하면 배점(40·30·20·10점, 5위 이하 10점)을 자동 반영합니다.'},
+      '이어달리기':{label:'🏁 이어달리기',mode:'rank',desc:'결선 최종 순위를 입력하면 배점(120·100·80·60·40점)을 자동 반영합니다.'},
+      '학급깃발':{label:'🚩 학급 깃발',mode:'rank',desc:'교직원 투표 결과 순위를 입력하면 1·2위 30점 / 3·4위 20점 / 그 외 10점으로 반영합니다.'}
+    };
+    const recordKey=(g,e)=>`kd_office_record_${g}_${e}`;
+    const rankOptions=(value='')=>`<option value="">선택</option><option value="1" ${String(value)==='1'?'selected':''}>1위</option><option value="2" ${String(value)==='2'?'selected':''}>2위</option><option value="3" ${String(value)==='3'?'selected':''}>3위</option><option value="4" ${String(value)==='4'?'selected':''}>4위</option><option value="5" ${String(value)==='5'?'selected':''}>5위 이하</option>`;
+    const makeRows=()=>{
+      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], saved=load(recordKey(g,event),{});
+      riDesc.innerHTML=`<b>${ev.label}</b><span>${ev.desc}</span>`;
+      const rankMode=ev.mode==='rank';
+      riHead1.textContent=rankMode?'최종 순위':(ev.mode==='sum2'?'1차':'기록');
+      riHead2.textContent=rankMode?'결과':(ev.mode==='sum2'?'2차':'-');
+      riHeadTotal.textContent=rankMode?'확인':'합계·기록';
+      riRows.innerHTML=Array.from({length:classCount(g)},(_,i)=>{
+        const cls=`${g}-${i+1}`,r=saved[cls]||{};
+        if(ev.mode==='sum2') return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td><input class="r1" type="number" min="0" inputmode="numeric" value="${r.a??''}" placeholder="1차"></td><td><input class="r2" type="number" min="0" inputmode="numeric" value="${r.b??''}" placeholder="2차"></td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
+        if(ev.mode==='time') return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td colspan="2"><input class="rt" type="number" min="0" step="0.1" inputmode="decimal" value="${r.time??''}" placeholder="예: 42.7"></td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
+        return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td><select class="rrankinput">${rankOptions(r.rank)}</select></td><td class="rresult">${r.rank?`${r.rank==='5'?'5위 이하':r.rank+'위'}`:'-'}</td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
+      }).join('');
+      calcOfficeRecords(false);
+    };
+    const calcOfficeRecords=(commit=false)=>{
+      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], rows=[...riRows.querySelectorAll('tr')];
+      const vals=[]; let saved={};
+      rows.forEach(tr=>{
+        const cls=tr.dataset.cls;
+        if(ev.mode==='sum2'){
+          const a=tr.querySelector('.r1').value,b=tr.querySelector('.r2').value;
+          saved[cls]={a,b};
+          if(a!==''&&b!=='') vals.push({tr,cls,val:Number(a)+Number(b)});
+          tr.querySelector('.rtotal').textContent=(a!==''&&b!=='')?`${Number(a)+Number(b)}${ev.unit}`:'-';
+        }else if(ev.mode==='time'){
+          const t=tr.querySelector('.rt').value;
+          saved[cls]={time:t};
+          if(t!=='') vals.push({tr,cls,val:Number(t)});
+          tr.querySelector('.rtotal').textContent=t!==''?`${Number(t).toFixed(1)}${ev.unit}`:'-';
+        }else{
+          const rank=tr.querySelector('.rrankinput').value;
+          saved[cls]={rank};
+          const result=tr.querySelector('.rresult');
+          result.textContent=rank?(rank==='5'?'5위 이하':`${rank}위`):'-';
+          tr.querySelector('.rtotal').textContent=rank?'입력 완료':'-';
+          if(rank!=='') vals.push({tr,cls,rank:Number(rank),point:pointsForRank(event,rank)});
+        }
+      });
+      if(ev.mode==='sum2'||ev.mode==='time'){
+        vals.sort((x,y)=>ev.mode==='time'?x.val-y.val:y.val-x.val);
+        let prev=null,rank=0;
+        vals.forEach((x,i)=>{if(prev===null||x.val!==prev)rank=i+1;prev=x.val;x.rank=rank;x.point=pointsForRank(event,rank);x.tr.querySelector('.rrank').textContent=`${rank}위`;x.tr.querySelector('.rpoint').textContent=`${x.point}점`;});
+      }else{
+        vals.forEach(x=>{x.tr.querySelector('.rrank').textContent=x.rank===5?'5위 이하':`${x.rank}위`;x.tr.querySelector('.rpoint').textContent=`${x.point}점`;});
+      }
+      rows.filter(tr=>!vals.some(x=>x.tr===tr)).forEach(tr=>{tr.querySelector('.rrank').textContent='-';tr.querySelector('.rpoint').textContent='-';});
+      save(recordKey(g,event),saved);
+      riStatus.textContent=`입력 ${vals.length}/${classCount(g)}학급`;
+      if(commit){
+        if(vals.length!==classCount(g)){alert(`아직 결과가 입력되지 않은 학급이 있습니다. ${g}학년 전체 학급을 입력한 뒤 반영해 주세요.`);return;}
+        let scores=getScores();vals.forEach(x=>scores[x.cls][event]=x.point);save(STORE.scores,scores);renderScores();
+        alert(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과를 실시간 점수표에 반영했습니다.`);
+      }
+    };
+    contentEl.innerHTML=`<div class="score-admin-head"><div><small>OFFICE RECORD INPUT · V78</small><h3>📋 본부 통합 기록 입력</h3><p>노트북에서 종이 원본 기록을 입력하면 전 종목의 순위와 배점을 자동 계산합니다.</p></div><span id="riStatus">입력 0학급</span></div>
+      <div class="record-event-chips">${Object.values(recordEvents).map(x=>`<span>${x.label}</span>`).join('')}</div>
+      <div class="record-select"><label><span>① 학년</span><select id="riGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></label><label><span>② 종목</span><select id="riEvent">${Object.entries(recordEvents).map(([k,x])=>`<option value="${k}">${x.label}</option>`).join('')}</select></label></div>
+      <div id="riDesc" class="record-guide"></div>
+      <div class="record-table-wrap"><table class="record-table"><thead><tr><th>학급</th><th id="riHead1">기록</th><th id="riHead2">2차</th><th id="riHeadTotal">합계·기록</th><th>순위</th><th>점수</th></tr></thead><tbody id="riRows"></tbody></table></div>
+      <div class="record-actions"><button id="riCalc">↻ 순위·점수 다시 계산</button><button id="riApply" class="score-save-btn">✓ 이 학년 결과 확정 · 점수 반영</button></div>
+      <div class="record-flow"><b>당일 추천 흐름</b><span>실물 계수기·초시계 → 종이 기록지 확인 → 노트북 입력 → 점수 반영 → 실시간 순위 확인</span></div>
+      <div class="score-admin-foot"><b>현장 기록은 종이가 원본</b><span>입력 실수가 있으면 수정 후 다시 확정하면 기존 점수를 덮어씁니다. 8자 줄넘기·슈팅 릴레이는 동점 시 공동순위로 자동 처리합니다.</span></div>`;
+    riGrade.onchange=makeRows;riEvent.onchange=makeRows;riRows.oninput=()=>calcOfficeRecords(false);riRows.onchange=()=>calcOfficeRecords(false);riCalc.onclick=()=>calcOfficeRecords(false);riApply.onclick=()=>calcOfficeRecords(true);makeRows();
   } else if(v==='scoreinput'){
     contentEl.innerHTML=`
       <div class="score-admin-head">
