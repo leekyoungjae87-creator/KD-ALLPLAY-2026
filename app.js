@@ -956,7 +956,7 @@ function adminSignIn(){
 adminLoginBtn.onclick=adminSignIn;
 [adminId,adminPw].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter') adminSignIn();}));
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=87', {updateViaCache:'none'}).catch(()=>{})}
 
 
 

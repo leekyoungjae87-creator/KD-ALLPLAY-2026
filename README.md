@@ -646,3 +646,12 @@
 - Q&A 질문자 정보를 학급 → 학번(4자리, 예: 3211)으로 변경
 - 이름 예시를 김0수 형식으로 변경
 - 학번 4자리 숫자 입력 검증 추가
+
+
+## V87 변경사항
+- 서비스워커 캐시를 `kd-allplay-v87`로 갱신했습니다.
+- 실제 배포 묶음에 없던 `assets/allplay-footer-logo.png`를 precache 목록에서 제거해 서비스워커 설치 실패 원인을 없앴습니다.
+- HTML/JS/CSS는 network-first + no-store로 최신 GitHub Pages 파일을 우선 불러옵니다.
+- 새 서비스워커는 `skipWaiting()`/`clients.claim()`으로 즉시 활성화됩니다.
+- index.html의 styles/config/app에 `?v=87` 버전 쿼리를 추가했습니다.
+- 관리자 ID/비밀번호 로그인과 V86 Q&A 기능은 그대로 유지합니다.
