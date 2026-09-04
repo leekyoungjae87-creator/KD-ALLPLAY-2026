@@ -2490,3 +2490,100 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .quick-score-head{align-items:center}.quick-score-head>span{white-space:nowrap;background:#e9f7ef;color:#24744e;border:1px solid #cce8d7;border-radius:999px;padding:8px 12px;font-weight:900}
 .quick-score-toolbar{display:grid;grid-template-columns:1.25fr 1.6fr .65fr;gap:10px;align-items:end;margin:14px 0}.quick-score-toolbar label,.quick-grade-tabs,.quick-progress{background:#f7f9fb;border:1px solid #e1e7ed;border-radius:14px;padding:12px}.quick-score-toolbar label>span,.quick-grade-tabs>span,.quick-progress small{display:block;font-size:10px;font-weight:900;color:#6c7c8d;margin-bottom:7px}.quick-score-toolbar select{width:100%;border:1px solid #ccd7e2;border-radius:10px;padding:11px;font-size:14px;font-weight:900;background:#fff;color:#244564}.quick-grade-tabs>div{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.quick-grade-tabs button{border:1px solid #ccd7e2;background:#fff;border-radius:10px;padding:11px 8px;font-weight:900;color:#526a82}.quick-grade-tabs button.active{background:#234a7b;color:#fff;border-color:#234a7b}.quick-progress{text-align:center}.quick-progress strong{font-size:24px;color:#234a7b}.quick-progress span{display:block;font-size:9px;color:#708091}.quick-score-notice{background:#fff8dc;border:1px solid #eedf9f;border-radius:12px;padding:10px 12px;font-size:11px;color:#675b32;margin-bottom:10px}.quick-score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick-score-class{border:1px solid #dde5ec;border-radius:15px;padding:12px;background:#fff}.quick-score-class.done{border-color:#b9dec8;background:#f7fcf9}.quick-score-class-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.quick-score-class-head strong{font-size:19px;color:#203f61}.quick-score-class-head span{font-size:10px;font-weight:900;color:#758493}.quick-score-class.done .quick-score-class-head span{color:#28764f}.quick-rank-buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.quick-rank-buttons button{border:1px solid #d8e1e9;background:#f8fafc;border-radius:10px;padding:9px 4px;color:#4f6478}.quick-rank-buttons button b,.quick-rank-buttons button small{display:block}.quick-rank-buttons button b{font-size:13px}.quick-rank-buttons button small{font-size:9px;margin-top:2px}.quick-rank-buttons button.selected{background:#234a7b;color:#fff;border-color:#234a7b;box-shadow:0 4px 10px #234a7b25}.quick-score-bottom{position:sticky;bottom:8px;display:flex;align-items:center;gap:10px;margin-top:12px;background:#fff;border:1px solid #dce4eb;border-radius:14px;padding:10px;box-shadow:0 8px 24px #234a7b18}.quick-score-bottom button{border:0;background:#eef3f7;color:#34516d;border-radius:10px;padding:10px 12px;font-weight:900}.quick-score-bottom button:disabled{opacity:.45}.quick-score-bottom span{font-size:11px;font-weight:800;color:#3b5874}
 @media(max-width:700px){.quick-score-toolbar{grid-template-columns:1fr}.quick-score-grid{grid-template-columns:1fr}.quick-score-class{padding:12px 10px}.quick-score-class-head strong{font-size:21px}.quick-score-class-head span{font-size:11px}.quick-rank-buttons{gap:5px}.quick-rank-buttons button{min-height:58px;padding:8px 2px}.quick-rank-buttons button b{font-size:14px}.quick-rank-buttons button small{font-size:10px}.quick-score-bottom{flex-direction:column;align-items:stretch}.quick-score-bottom button{font-size:13px;min-height:44px}.quick-score-bottom span{text-align:center}.quick-score-notice{font-size:12px;line-height:1.55}}
+
+
+/* V76.1 latest seating map transplanted from V95 */
+/* v80 responsive seating map — 2-8 attached to 1-1 / 2-1 same size as 3-7 */
+.seating-map-v80{background:#fff;border:1px solid #dfe7ee;border-radius:20px;padding:16px;box-shadow:0 8px 24px #234a7b0d;overflow:auto}
+.seat-top-row{display:grid;grid-template-columns:repeat(8,minmax(72px,1fr));gap:5px;margin-left:154px;margin-right:82px;margin-bottom:5px;min-width:760px}
+.seat-main-area{display:grid;grid-template-columns:148px minmax(520px,1fr) 76px;gap:6px;min-width:920px;align-items:stretch}
+.seat-left-facilities{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.facility{border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:5px;font-size:24px;font-weight:900;min-height:84px}
+.facility b{font-size:12px}.facility small{font-size:9px}
+.gym{background:#e7f2ff;color:#315f8e}.court{background:#fff0df;color:#a86423}
+.field-core{background:#f8fbfd;border:1px solid #e5ebf0;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:350px}
+.field-track{width:min(92%,620px);aspect-ratio:1.75/1;border-radius:999px;background:#e9a49c;padding:28px;box-shadow:inset 0 0 0 5px #f6c4bd,inset 0 0 0 10px #fff7f5}
+.field-inner{height:100%;border-radius:999px;background:#dff3df;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#2c714c;font-size:27px}.field-inner b{font-size:20px;margin-top:3px}.field-inner small{font-size:9px;letter-spacing:.18em;margin-top:4px}
+.seat-right-column{display:grid;grid-template-rows:repeat(6,1fr);gap:5px}
+.seat-cell{border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:1000;min-height:44px;border:1px solid #ffffffa8;box-shadow:inset 0 -1px 0 #00000008}
+.g1{background:#dcecff;color:#315e8f}.g2{background:#dff3df;color:#2f714a}.g3{background:#fde4eb;color:#91445a}
+.seat-bottom-row{display:grid;grid-template-columns:74px 74px repeat(9,minmax(64px,1fr));gap:5px;margin-top:5px;min-width:920px;align-items:stretch}
+.facility.mini{min-height:54px;font-size:15px;gap:2px}.facility.mini b{font-size:9px}.water{background:#eef8ff;color:#3773a1}.stairs{background:#fff6cb;color:#8a721a}.facility.hq{background:#d7f0ec;color:#276b65;min-height:54px;font-size:15px;gap:1px}.facility.hq b{font-size:10px}.facility.hq small{font-size:8px}
+.seat-bottom-row .seat-cell{min-height:54px}
+.mobile-clinic{width:140px;margin:7px auto 5px;background:#fff0f0;color:#9c4141;border:1px solid #f1d5d5;border-radius:10px;padding:7px;text-align:center;font-size:10px}
+.main-building{min-width:920px;background:#f1f3f5;border:1px solid #e1e5e8;border-radius:12px;padding:11px;text-align:center;color:#56636f;font-size:14px}
+.seating-legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:9px;font-weight:800}.lg1{color:#5586b9}.lg2{color:#58a16e}.lg3{color:#bf7187}.lgf{color:#b49836}.lgh{color:#4b8d86}
+@media(max-width:700px){.seating-map-v80{padding:10px;overflow-x:auto}.seat-top-row{margin-left:124px;margin-right:66px;grid-template-columns:repeat(8,66px);min-width:max-content}.seat-main-area{grid-template-columns:118px 430px 62px;min-width:622px}.seat-bottom-row{grid-template-columns:58px 58px repeat(9,62px);min-width:max-content}.field-core{min-height:270px;padding:12px}.field-track{padding:20px}.field-inner b{font-size:16px}.facility{font-size:18px}.seat-cell{font-size:11px}.main-building{min-width:622px}.seating-legend{justify-content:flex-start;min-width:622px}}
+
+
+/* v81 seating map — 실제 계획서 사진 배치 재현 */
+#seating .seating-title{background:linear-gradient(135deg,#edf6ff,#eef8f1)}
+.seat-photo-map{background:#fff;border:1px solid #dfe7ee;border-radius:20px;padding:16px;box-shadow:0 8px 24px #234a7b0d}
+.seat-map-scroll{overflow-x:auto;padding-bottom:4px}
+.seat-map-board{min-width:900px;max-width:1040px;margin:0 auto;border:2px solid #58636f;background:#fff;box-shadow:inset 0 0 0 1px #dce2e7}
+.seat-top-strip{display:grid;grid-template-columns:150px repeat(8,1fr) 34px;min-height:78px;border-bottom:1px solid #69737d}
+.seat-top-strip>*{border-right:1px solid #7f8891}
+.seat-top-strip>*:last-child{border-right:0}
+.seat-box,.facility-small{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:1000;color:#283848;background:#fff}
+.seat-box.grade1{background:#eef5ff;color:#315f8f}
+.seat-box.grade2{background:#edf8ee;color:#35734c}
+.seat-box.grade3{background:#fff0f4;color:#91455a}
+.seat-middle-zone{display:grid;grid-template-columns:150px 1fr 82px;min-height:470px}
+.seat-left-stack{display:grid;grid-template-columns:1fr 1fr;border-right:1px solid #69737d}
+.facility-vertical{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:1000;font-size:23px;line-height:1.55;border-right:1px solid #69737d}
+.facility-vertical:last-child{border-right:0}
+.gym-block{background:#e8f2ff;color:#315f8f}
+.court-block{background:#ffe8d8;color:#9b5a1d}
+.seat-field-wrap{display:flex;align-items:center;justify-content:center;padding:42px 34px;background:#fff}
+.seat-field-oval{width:74%;aspect-ratio:1.55/1;border-radius:48% 48% 46% 46% / 45% 45% 52% 52%;background:#f2dfa0;border:2px solid #9d8c52;box-shadow:0 2px 0 #ffffff inset;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#3d3a2f}
+.seat-field-oval b{font-size:24px;letter-spacing:-.04em}.seat-field-oval small{margin-top:7px;font-size:10px;letter-spacing:.18em;color:#7b6d40;font-weight:900}
+.seat-right-stack{display:grid;grid-template-rows:repeat(6,1fr);border-left:1px solid #69737d}
+.seat-right-stack .seat-box{border-bottom:1px solid #7f8891}.seat-right-stack .seat-box:last-child{border-bottom:0}
+.seat-bottom-strip{display:grid;grid-template-columns:70px 78px 56px repeat(3,1fr) 1.18fr repeat(5,1fr) 32px;min-height:84px;border-top:1px solid #69737d;border-bottom:1px solid #69737d}
+.seat-bottom-strip>*{border-right:1px solid #7f8891}.seat-bottom-strip>*:last-child{border-right:0}
+.facility-small{font-size:12px;line-height:1.2}.facility-small small{display:block;font-size:9px;margin-top:3px}.water-block{background:#f7fbff}.stair-block{background:#b8ef21;color:#34440c}.hq-block{background:#d9f0ec;color:#2e6f69;flex-direction:column}
+.clinic-row{height:56px;display:flex;justify-content:center;align-items:flex-start;border-bottom:1px solid #69737d;background:#fff}
+.clinic-box{width:64px;height:56px;border-left:1px solid #7f8891;border-right:1px solid #7f8891;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:900;background:#fff1f1;color:#8d3e3e}
+.main-building-bar{height:86px;display:flex;align-items:center;justify-content:center;background:#f2f3f4;color:#3f4a55;font-size:24px;font-weight:1000;letter-spacing:.04em}
+.seat-blank{background:#fff}
+.photo-legend{margin-top:12px}
+@media(max-width:700px){
+  .seat-photo-map{padding:10px}
+  .seat-map-board{min-width:760px}
+  .seat-top-strip{grid-template-columns:122px repeat(8,1fr) 28px;min-height:66px}
+  .seat-middle-zone{grid-template-columns:122px 1fr 70px;min-height:385px}
+  .facility-vertical{font-size:18px}
+  .seat-field-wrap{padding:30px 24px}
+  .seat-field-oval b{font-size:18px}
+  .seat-bottom-strip{grid-template-columns:58px 68px 48px repeat(3,1fr) 1.12fr repeat(5,1fr) 28px;min-height:72px}
+  .seat-box{font-size:11px}.facility-small{font-size:10px}.main-building-bar{height:70px;font-size:20px}
+}
+
+
+/* v89 seating map — 모바일 한 화면 전체보기 */
+.seat-mobile-oneview-note{display:none;margin-top:6px;color:#47627d;font-weight:800}
+@media(max-width:700px){
+  #seating{padding-left:8px!important;padding-right:8px!important}
+  #seating .page-title{margin-left:0;margin-right:0}
+  .seat-mobile-oneview-note{display:block;font-size:10.5px}
+  .seat-photo-map{padding:7px;border-radius:14px}
+  .seat-map-scroll{overflow:visible!important;padding-bottom:0}
+  .seat-map-board{min-width:0!important;width:100%!important;max-width:none!important;margin:0!important;border-width:1px}
+  .seat-top-strip{grid-template-columns:1.6fr repeat(8,1fr) .4fr!important;min-height:48px!important}
+  .seat-middle-zone{grid-template-columns:1.6fr 7.4fr .9fr!important;min-height:250px!important}
+  .seat-left-stack{grid-template-columns:1fr 1fr!important}
+  .seat-field-wrap{padding:16px 8px!important}
+  .seat-field-oval{width:86%!important;max-width:none!important}
+  .seat-field-oval b{font-size:11px!important;white-space:nowrap}
+  .seat-field-oval small{font-size:6px!important;margin-top:3px!important;letter-spacing:.12em!important}
+  .seat-right-stack{grid-template-rows:repeat(6,1fr)!important}
+  .seat-bottom-strip{grid-template-columns:.8fr .9fr .7fr repeat(3,1fr) 1.25fr repeat(5,1fr) .35fr!important;min-height:52px!important}
+  .seat-box,.facility-box,.facility-vertical,.seat-bottom-strip>*{font-size:8px!important;line-height:1.05!important;letter-spacing:-.04em!important}
+  .facility-vertical span{font-size:8px!important;line-height:1.08!important}
+  .clinic-row{min-height:28px!important}
+  .clinic-box{font-size:7px!important;line-height:1.05!important;padding:3px 5px!important}
+  .main-building-bar{min-height:34px!important;font-size:11px!important}
+  .seat-photo-map .seat-legend{gap:5px!important;margin-top:8px!important;font-size:9px!important;flex-wrap:wrap}
+  .seat-photo-map .seat-legend span{font-size:9px!important}
+}
+
