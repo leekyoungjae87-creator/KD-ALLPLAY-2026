@@ -654,10 +654,39 @@ function staffView(v, contentEl=staffContent){
       '학급깃발':{label:'🚩 학급 깃발',mode:'rank',desc:'교직원 투표 결과 순위를 입력하면 1·2위 30점 / 3·4위 20점 / 그 외 10점으로 반영합니다.'}
     };
     const recordKey=(g,e)=>`kd_office_record_${g}_${e}`;
+    const stateKey=(g,e)=>`kd_office_record_state_${g}_${e}`;
+    const getState=(g,e)=>load(stateKey(g,e),{locked:false,committedAt:''});
+    const setState=(g,e,state)=>save(stateKey(g,e),state);
+    const savedCount=(g,e)=>{
+      const ev=recordEvents[e],saved=load(recordKey(g,e),{});
+      return Array.from({length:classCount(g)},(_,i)=>saved[`${g}-${i+1}`]).filter(r=>{
+        if(!r)return false;
+        if(ev.mode==='sum2')return r.a!==''&&r.a!=null&&r.b!==''&&r.b!=null;
+        if(ev.mode==='time')return r.time!==''&&r.time!=null;
+        return r.rank!==''&&r.rank!=null;
+      }).length;
+    };
+    const statusFor=(g,e)=>{
+      const state=getState(g,e),count=savedCount(g,e);
+      if(state.locked)return {key:'done',label:'완료',icon:'✓'};
+      if(count>0)return {key:'progress',label:`입력중 ${count}/${classCount(g)}`,icon:'●'};
+      return {key:'waiting',label:'미입력',icon:'○'};
+    };
     const rankOptions=(value='')=>`<option value="">선택</option><option value="1" ${String(value)==='1'?'selected':''}>1위</option><option value="2" ${String(value)==='2'?'selected':''}>2위</option><option value="3" ${String(value)==='3'?'selected':''}>3위</option><option value="4" ${String(value)==='4'?'selected':''}>4위</option><option value="5" ${String(value)==='5'?'selected':''}>5위 이하</option>`;
+    const renderOverview=()=>{
+      if(!riOverview)return;
+      const cards=Object.entries(recordEvents).map(([e,ev])=>{
+        const grades=[1,2,3].map(g=>{const s=statusFor(g,e);return `<button class="record-status ${s.key}" data-jump-grade="${g}" data-jump-event="${e}"><b>${g}학년</b><span>${s.icon} ${s.label}</span></button>`}).join('');
+        return `<div class="record-overview-card"><strong>${ev.label}</strong><div>${grades}</div></div>`;
+      }).join('');
+      const total=Object.keys(recordEvents).length*3;
+      const done=Object.keys(recordEvents).reduce((n,e)=>n+[1,2,3].filter(g=>getState(g,e).locked).length,0);
+      riOverview.innerHTML=`<div class="record-overview-title"><div><b>📊 기록 입력 완료 현황</b><small>종목·학년별 확정 상태를 한눈에 확인합니다.</small></div><span>${done}/${total} 완료</span></div><div class="record-overview-grid">${cards}</div>`;
+      riOverview.querySelectorAll('[data-jump-grade]').forEach(btn=>btn.onclick=()=>{riGrade.value=btn.dataset.jumpGrade;riEvent.value=btn.dataset.jumpEvent;makeRows();});
+    };
     const makeRows=()=>{
-      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], saved=load(recordKey(g,event),{});
-      riDesc.innerHTML=`<b>${ev.label}</b><span>${ev.desc}</span>`;
+      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], saved=load(recordKey(g,event),{}),state=getState(g,event);
+      riDesc.innerHTML=`<div><b>${ev.label}</b><span>${ev.desc}</span></div>${state.locked?`<em>🔒 ${state.committedAt||'결과 확정됨'}</em>`:''}`;
       const rankMode=ev.mode==='rank';
       riHead1.textContent=rankMode?'최종 순위':(ev.mode==='sum2'?'1차':'기록');
       riHead2.textContent=rankMode?'결과':(ev.mode==='sum2'?'2차':'-');
@@ -668,10 +697,16 @@ function staffView(v, contentEl=staffContent){
         if(ev.mode==='time') return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td colspan="2"><input class="rt" type="number" min="0" step="0.1" inputmode="decimal" value="${r.time??''}" placeholder="예: 42.7"></td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
         return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td><select class="rrankinput">${rankOptions(r.rank)}</select></td><td class="rresult">${r.rank?`${r.rank==='5'?'5위 이하':r.rank+'위'}`:'-'}</td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
       }).join('');
-      calcOfficeRecords(false);
+      riRows.querySelectorAll('input,select').forEach(el=>el.disabled=!!state.locked);
+      riCalc.disabled=!!state.locked;
+      riApply.disabled=!!state.locked;
+      riApply.textContent=state.locked?'🔒 결과 확정됨':'✓ 결과 확정 · 점수 반영 · 잠금';
+      riUnlock.classList.toggle('hidden',!state.locked);
+      calcOfficeRecords(false,true);
+      renderOverview();
     };
-    const calcOfficeRecords=(commit=false)=>{
-      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], rows=[...riRows.querySelectorAll('tr')];
+    const calcOfficeRecords=(commit=false,skipSave=false)=>{
+      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], state=getState(g,event),rows=[...riRows.querySelectorAll('tr')];
       const vals=[]; let saved={};
       rows.forEach(tr=>{
         const cls=tr.dataset.cls;
@@ -702,23 +737,71 @@ function staffView(v, contentEl=staffContent){
         vals.forEach(x=>{x.tr.querySelector('.rrank').textContent=x.rank===5?'5위 이하':`${x.rank}위`;x.tr.querySelector('.rpoint').textContent=`${x.point}점`;});
       }
       rows.filter(tr=>!vals.some(x=>x.tr===tr)).forEach(tr=>{tr.querySelector('.rrank').textContent='-';tr.querySelector('.rpoint').textContent='-';});
-      save(recordKey(g,event),saved);
-      riStatus.textContent=`입력 ${vals.length}/${classCount(g)}학급`;
-      if(commit){
-        if(vals.length!==classCount(g)){alert(`아직 결과가 입력되지 않은 학급이 있습니다. ${g}학년 전체 학급을 입력한 뒤 반영해 주세요.`);return;}
-        let scores=getScores();vals.forEach(x=>scores[x.cls][event]=x.point);save(STORE.scores,scores);renderScores();
-        alert(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과를 실시간 점수표에 반영했습니다.`);
-      }
+      if(!skipSave&&!state.locked)save(recordKey(g,event),saved);
+      riStatus.textContent=state.locked?'🔒 결과 확정':`입력 ${vals.length}/${classCount(g)}학급`;
+      if(!commit){if(!skipSave)renderOverview();return;}
+      if(state.locked){alert('이미 확정된 결과입니다. 수정하려면 먼저 잠금을 해제해 주세요.');return;}
+      if(vals.length!==classCount(g)){alert(`아직 결과가 입력되지 않은 학급이 있습니다. ${g}학년 전체 학급을 입력한 뒤 확정해 주세요.`);return;}
+      if(!confirm(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과를 확정할까요?\n점수표에 반영되고 입력 화면이 잠깁니다.`))return;
+      let scores=getScores();vals.forEach(x=>scores[x.cls][event]=x.point);save(STORE.scores,scores);renderScores();
+      const committedAt=new Date().toLocaleString();
+      setState(g,event,{locked:true,committedAt});
+      alert(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과 확정 완료\n점수표 반영 및 수정 잠금 처리했습니다.`);
+      makeRows();
     };
-    contentEl.innerHTML=`<div class="score-admin-head"><div><small>OFFICE RECORD INPUT · V78</small><h3>📋 본부 통합 기록 입력</h3><p>노트북에서 종이 원본 기록을 입력하면 전 종목의 순위와 배점을 자동 계산합니다.</p></div><span id="riStatus">입력 0학급</span></div>
+    contentEl.innerHTML=`<div class="score-admin-head"><div><small>OFFICE RECORD INPUT · V82</small><h3>📋 본부 통합 기록 입력</h3><p>종이 원본 기록을 입력하고, 확정된 결과는 잠금하여 당일 오입력을 방지합니다.</p></div><span id="riStatus">입력 0학급</span></div>
+      <div id="riOverview" class="record-overview"></div>
       <div class="record-event-chips">${Object.values(recordEvents).map(x=>`<span>${x.label}</span>`).join('')}</div>
       <div class="record-select"><label><span>① 학년</span><select id="riGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></label><label><span>② 종목</span><select id="riEvent">${Object.entries(recordEvents).map(([k,x])=>`<option value="${k}">${x.label}</option>`).join('')}</select></label></div>
       <div id="riDesc" class="record-guide"></div>
       <div class="record-table-wrap"><table class="record-table"><thead><tr><th>학급</th><th id="riHead1">기록</th><th id="riHead2">2차</th><th id="riHeadTotal">합계·기록</th><th>순위</th><th>점수</th></tr></thead><tbody id="riRows"></tbody></table></div>
-      <div class="record-actions"><button id="riCalc">↻ 순위·점수 다시 계산</button><button id="riApply" class="score-save-btn">✓ 이 학년 결과 확정 · 점수 반영</button></div>
-      <div class="record-flow"><b>당일 추천 흐름</b><span>실물 계수기·초시계 → 종이 기록지 확인 → 노트북 입력 → 점수 반영 → 실시간 순위 확인</span></div>
-      <div class="score-admin-foot"><b>현장 기록은 종이가 원본</b><span>입력 실수가 있으면 수정 후 다시 확정하면 기존 점수를 덮어씁니다. 8자 줄넘기·슈팅 릴레이는 동점 시 공동순위로 자동 처리합니다.</span></div>`;
-    riGrade.onchange=makeRows;riEvent.onchange=makeRows;riRows.oninput=()=>calcOfficeRecords(false);riRows.onchange=()=>calcOfficeRecords(false);riCalc.onclick=()=>calcOfficeRecords(false);riApply.onclick=()=>calcOfficeRecords(true);makeRows();
+      <div class="record-actions"><button id="riCalc">↻ 순위·점수 다시 계산</button><button id="riUnlock" class="unlock-btn hidden">🔓 잠금 해제 · 수정</button><button id="riApply" class="score-save-btn">✓ 결과 확정 · 점수 반영 · 잠금</button></div>
+      <div class="record-flow"><b>당일 추천 흐름</b><span>실물 계수기·초시계 → 종이 기록지 확인 → 노트북 입력 → 결과 확정·잠금 → 실시간 순위 확인</span></div>
+      <div class="score-admin-foot"><b>현장 기록은 종이가 원본</b><span>확정 후에는 입력칸이 잠깁니다. 실제 수정이 필요할 때만 잠금을 해제하고 다시 확정하세요.</span></div>`;
+    riGrade.onchange=makeRows;riEvent.onchange=makeRows;
+    riRows.oninput=()=>calcOfficeRecords(false);riRows.onchange=()=>calcOfficeRecords(false);
+    riCalc.onclick=()=>calcOfficeRecords(false);riApply.onclick=()=>calcOfficeRecords(true);
+    riUnlock.onclick=()=>{const g=Number(riGrade.value),event=riEvent.value,ev=recordEvents[event];if(!confirm(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과 잠금을 해제할까요?\n수정 후 반드시 다시 확정해 주세요.`))return;setState(g,event,{locked:false,committedAt:''});makeRows();};
+    makeRows();
+  } else if(v==='backup'){
+    const collectBackup=()=>{
+      const data={};
+      Object.keys(localStorage).filter(k=>k.startsWith('kd_')).sort().forEach(k=>{
+        const raw=localStorage.getItem(k);
+        try{data[k]=JSON.parse(raw)}catch{data[k]=raw}
+      });
+      return {
+        app:'2026 경덕 ALL PLAY 체육한마당',
+        version:'V82',
+        createdAt:new Date().toISOString(),
+        createdAtLocal:new Date().toLocaleString(),
+        note:'당일 본부 노트북 브라우저(localStorage) 데이터 백업',
+        data
+      };
+    };
+    const countRecordStates=()=>Object.keys(localStorage).filter(k=>k.startsWith('kd_office_record_state_')).reduce((n,k)=>{const s=load(k,{});return n+(s.locked?1:0)},0);
+    const refreshBackupSummary=()=>{
+      const b=collectBackup(),keys=Object.keys(b.data);
+      backupSummary.innerHTML=`<div><b>${keys.length}</b><span>저장 항목</span></div><div><b>${countRecordStates()}</b><span>확정 기록</span></div><div><b>${Object.keys(getScores()).length}</b><span>학급 점수표</span></div>`;
+    };
+    contentEl.innerHTML=`<div class="backup-admin-head"><div><small>EVENT DAY BACKUP · V82</small><h3>💾 당일 데이터 백업</h3><p>현재 노트북 브라우저에 저장된 점수·기록·확정상태·예선결과·공지 등을 JSON 파일로 내려받습니다.</p></div><span>LOCAL BACKUP</span></div>
+      <div id="backupSummary" class="backup-summary"></div>
+      <div class="backup-card">
+        <div class="backup-icon">💾</div>
+        <div><b>현재 상태를 파일로 저장</b><p>경기 중간에도 수시로 눌러 백업해 두세요. 기존 데이터는 변경되지 않습니다.</p></div>
+        <button id="backupDownload">백업 파일 다운로드</button>
+      </div>
+      <div class="backup-note"><b>추천</b><span>오전 순환경기 종료 후 1회 · 점심 전후 1회 · 이어달리기 종료 후 1회 저장하면 충분합니다.</span></div>`;
+    refreshBackupSummary();
+    backupDownload.onclick=()=>{
+      const backup=collectBackup();
+      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const d=new Date(),pad=n=>String(n).padStart(2,'0');
+      const filename=`경덕_ALLPLAY_백업_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`;
+      const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      refreshBackupSummary();
+    };
   } else if(v==='scoreinput'){
     contentEl.innerHTML=`
       <div class="score-admin-head">

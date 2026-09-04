@@ -2514,41 +2514,55 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .seating-legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:9px;font-weight:800}.lg1{color:#5586b9}.lg2{color:#58a16e}.lg3{color:#bf7187}.lgf{color:#b49836}.lgh{color:#4b8d86}
 @media(max-width:700px){.seating-map-v80{padding:10px;overflow-x:auto}.seat-top-row{margin-left:124px;margin-right:66px;grid-template-columns:repeat(8,66px);min-width:max-content}.seat-main-area{grid-template-columns:118px 430px 62px;min-width:622px}.seat-bottom-row{grid-template-columns:58px 58px repeat(9,62px);min-width:max-content}.field-core{min-height:270px;padding:12px}.field-track{padding:20px}.field-inner b{font-size:16px}.facility{font-size:18px}.seat-cell{font-size:11px}.main-building{min-width:622px}.seating-legend{justify-content:flex-start;min-width:622px}}
 
-/* V81 자리배치도 — 첫 화면에서 전체 구조가 한눈에 보이도록 축소 */
-#seating .seating-map-v80{
-  width:min(100%,900px);
-  margin:0 auto;
+
+/* v81 seating map — 실제 계획서 사진 배치 재현 */
+#seating .seating-title{background:linear-gradient(135deg,#edf6ff,#eef8f1)}
+.seat-photo-map{background:#fff;border:1px solid #dfe7ee;border-radius:20px;padding:16px;box-shadow:0 8px 24px #234a7b0d}
+.seat-map-scroll{overflow-x:auto;padding-bottom:4px}
+.seat-map-board{min-width:900px;max-width:1040px;margin:0 auto;border:2px solid #58636f;background:#fff;box-shadow:inset 0 0 0 1px #dce2e7}
+.seat-top-strip{display:grid;grid-template-columns:150px repeat(8,1fr) 34px;min-height:78px;border-bottom:1px solid #69737d}
+.seat-top-strip>*{border-right:1px solid #7f8891}
+.seat-top-strip>*:last-child{border-right:0}
+.seat-box,.facility-small{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:1000;color:#283848;background:#fff}
+.seat-box.grade1{background:#eef5ff;color:#315f8f}
+.seat-box.grade2{background:#edf8ee;color:#35734c}
+.seat-box.grade3{background:#fff0f4;color:#91455a}
+.seat-middle-zone{display:grid;grid-template-columns:150px 1fr 82px;min-height:470px}
+.seat-left-stack{display:grid;grid-template-columns:1fr 1fr;border-right:1px solid #69737d}
+.facility-vertical{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:1000;font-size:23px;line-height:1.55;border-right:1px solid #69737d}
+.facility-vertical:last-child{border-right:0}
+.gym-block{background:#e8f2ff;color:#315f8f}
+.court-block{background:#ffe8d8;color:#9b5a1d}
+.seat-field-wrap{display:flex;align-items:center;justify-content:center;padding:42px 34px;background:#fff}
+.seat-field-oval{width:74%;aspect-ratio:1.55/1;border-radius:48% 48% 46% 46% / 45% 45% 52% 52%;background:#f2dfa0;border:2px solid #9d8c52;box-shadow:0 2px 0 #ffffff inset;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#3d3a2f}
+.seat-field-oval b{font-size:24px;letter-spacing:-.04em}.seat-field-oval small{margin-top:7px;font-size:10px;letter-spacing:.18em;color:#7b6d40;font-weight:900}
+.seat-right-stack{display:grid;grid-template-rows:repeat(6,1fr);border-left:1px solid #69737d}
+.seat-right-stack .seat-box{border-bottom:1px solid #7f8891}.seat-right-stack .seat-box:last-child{border-bottom:0}
+.seat-bottom-strip{display:grid;grid-template-columns:70px 78px 56px repeat(3,1fr) 1.18fr repeat(5,1fr) 32px;min-height:84px;border-top:1px solid #69737d;border-bottom:1px solid #69737d}
+.seat-bottom-strip>*{border-right:1px solid #7f8891}.seat-bottom-strip>*:last-child{border-right:0}
+.facility-small{font-size:12px;line-height:1.2}.facility-small small{display:block;font-size:9px;margin-top:3px}.water-block{background:#f7fbff}.stair-block{background:#b8ef21;color:#34440c}.hq-block{background:#d9f0ec;color:#2e6f69;flex-direction:column}
+.clinic-row{height:56px;display:flex;justify-content:center;align-items:flex-start;border-bottom:1px solid #69737d;background:#fff}
+.clinic-box{width:64px;height:56px;border-left:1px solid #7f8891;border-right:1px solid #7f8891;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:900;background:#fff1f1;color:#8d3e3e}
+.main-building-bar{height:86px;display:flex;align-items:center;justify-content:center;background:#f2f3f4;color:#3f4a55;font-size:24px;font-weight:1000;letter-spacing:.04em}
+.seat-blank{background:#fff}
+.photo-legend{margin-top:12px}
+@media(max-width:700px){
+  .seat-photo-map{padding:10px}
+  .seat-map-board{min-width:760px}
+  .seat-top-strip{grid-template-columns:122px repeat(8,1fr) 28px;min-height:66px}
+  .seat-middle-zone{grid-template-columns:122px 1fr 70px;min-height:385px}
+  .facility-vertical{font-size:18px}
+  .seat-field-wrap{padding:30px 24px}
+  .seat-field-oval b{font-size:18px}
+  .seat-bottom-strip{grid-template-columns:58px 68px 48px repeat(3,1fr) 1.12fr repeat(5,1fr) 28px;min-height:72px}
+  .seat-box{font-size:11px}.facility-small{font-size:10px}.main-building-bar{height:70px;font-size:20px}
 }
-@media (min-width:701px){
-  #seating .seat-top-row{min-width:0;margin-left:124px;margin-right:66px;grid-template-columns:repeat(8,minmax(58px,1fr))}
-  #seating .seat-main-area{grid-template-columns:118px minmax(430px,1fr) 62px;min-width:0}
-  #seating .seat-bottom-row{grid-template-columns:58px 58px repeat(9,minmax(50px,1fr));min-width:0}
-  #seating .field-core{min-height:285px;padding:14px}
-  #seating .field-track{width:min(90%,520px);padding:23px}
-  #seating .main-building{min-width:0}
-}
-@media (max-width:700px){
-  #seating .seating-map-v80{width:100%;max-width:100%;padding:6px;overflow:hidden;border-radius:15px}
-  #seating .seat-top-row{margin-left:62px;margin-right:31px;margin-bottom:3px;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;min-width:0}
-  #seating .seat-main-area{grid-template-columns:58px minmax(0,1fr) 31px;gap:3px;min-width:0}
-  #seating .seat-left-facilities{gap:2px}
-  #seating .seat-right-column{gap:2px}
-  #seating .seat-bottom-row{grid-template-columns:28px 28px repeat(9,minmax(0,1fr));gap:2px;margin-top:3px;min-width:0}
-  #seating .seat-cell{min-width:0;min-height:28px;border-radius:6px;font-size:8px;line-height:1}
-  #seating .seat-bottom-row .seat-cell{min-height:31px}
-  #seating .facility{min-height:56px;border-radius:7px;font-size:12px;gap:2px}
-  #seating .facility b{font-size:7px;letter-spacing:-.05em}
-  #seating .facility.mini{min-height:31px;font-size:8px;gap:0}
-  #seating .facility.mini b{font-size:6px}
-  #seating .facility.hq{min-height:31px;font-size:8px;gap:0}
-  #seating .facility.hq b{font-size:6px}
-  #seating .facility.hq small{font-size:5px}
-  #seating .field-core{min-height:145px;padding:6px;border-radius:10px}
-  #seating .field-track{width:92%;padding:11px;box-shadow:inset 0 0 0 2px #f6c4bd,inset 0 0 0 4px #fff7f5}
-  #seating .field-inner{font-size:13px}
-  #seating .field-inner b{font-size:10px;margin-top:1px;letter-spacing:-.05em}
-  #seating .field-inner small{font-size:5px;margin-top:2px}
-  #seating .mobile-clinic{width:88px;margin:4px auto 3px;padding:4px;font-size:6px;border-radius:6px}
-  #seating .main-building{min-width:0;padding:6px;border-radius:7px;font-size:8px}
-  #seating .seating-legend{min-width:0;justify-content:center;gap:5px;margin-top:6px;font-size:6px}
-}
+
+/* V82 본부 기록 완료 현황 · 결과 잠금 · 데이터 백업 */
+.record-overview{margin:0 0 14px;padding:14px;border:1px solid #dfe8ef;border-radius:16px;background:#fff}
+.record-overview-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.record-overview-title>div{display:flex;flex-direction:column;gap:2px}.record-overview-title b{font-size:13px;color:#244a73}.record-overview-title small{font-size:9px;color:#7b8b99}.record-overview-title>span{background:#244a73;color:#fff;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:1000;white-space:nowrap}
+.record-overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.record-overview-card{border:1px solid #e4eaf0;border-radius:12px;padding:10px;background:#fafcfd}.record-overview-card>strong{display:block;font-size:10px;color:#314d69;margin-bottom:7px}.record-overview-card>div{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.record-status{border:1px solid #e1e7ec;border-radius:9px;background:#fff;padding:7px 5px;display:flex;flex-direction:column;gap:2px;align-items:center}.record-status b{font-size:9px;color:#53687d}.record-status span{font-size:8px;font-weight:900}.record-status.waiting span{color:#8b98a4}.record-status.progress{background:#fff9e7;border-color:#efdfaa}.record-status.progress span{color:#9b751b}.record-status.done{background:#edf8f1;border-color:#cde6d5}.record-status.done span{color:#2d7d50}
+.record-guide{justify-content:space-between;align-items:center;flex-direction:row}.record-guide>div{display:flex;flex-direction:column;gap:3px}.record-guide em{font-style:normal;background:#eaf2f8;color:#244a73;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:900;white-space:nowrap}.record-table input:disabled,.record-table select:disabled{background:#eef2f5;color:#7a8793;cursor:not-allowed}.record-actions button:disabled{opacity:.5;cursor:not-allowed}.record-actions .unlock-btn{background:#fff3dd;color:#8a6115;border:1px solid #efd8a7}.record-actions .hidden{display:none}
+.backup-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,#f2f7ff,#f7fbf6);border:1px solid #dce8f2;margin-bottom:12px}.backup-admin-head small{display:block;font-size:9px;font-weight:1000;letter-spacing:.1em;color:#6b8baa;margin-bottom:3px}.backup-admin-head h3{margin:0;color:#234a7b;font-size:19px}.backup-admin-head p{margin:5px 0 0;color:#718295;font-size:11px}.backup-admin-head>span{background:#278461;color:#fff;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:900}
+.backup-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.backup-summary>div{background:#fff;border:1px solid #e2e8ee;border-radius:12px;padding:13px;text-align:center}.backup-summary b{display:block;font-size:24px;color:#234a7b}.backup-summary span{display:block;font-size:9px;color:#7e8c99;margin-top:2px}.backup-card{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;background:#fff;border:1px solid #dfe7ed;border-radius:16px;padding:16px}.backup-icon{width:48px;height:48px;border-radius:13px;background:#eef6ff;display:flex;align-items:center;justify-content:center;font-size:25px}.backup-card b{display:block;color:#2a4968}.backup-card p{margin:4px 0 0;font-size:10px;color:#778796}.backup-card button{border:0;border-radius:11px;background:#234a7b;color:#fff;padding:11px 14px;font-size:10px;font-weight:900;white-space:nowrap}.backup-note{margin-top:10px;padding:11px 13px;border-radius:12px;background:#fff8e8;border:1px solid #f0e2b9;display:flex;gap:9px;font-size:10px;color:#75633e}.backup-note b{color:#8a6a1f}
+@media(max-width:700px){.record-overview-grid{grid-template-columns:1fr}.record-guide{align-items:flex-start;flex-direction:column}.backup-admin-head{flex-direction:column}.backup-card{grid-template-columns:auto 1fr}.backup-card button{grid-column:1/-1;width:100%}.backup-summary b{font-size:20px}}
