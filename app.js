@@ -982,7 +982,7 @@ if(adminLoginBtnEl){
   };
 }
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=91', {updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=93', {updateViaCache:'none'}).catch(()=>{})}
 
 
 
