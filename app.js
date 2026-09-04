@@ -657,18 +657,31 @@ async function renderVoteManager(contentEl=adminContent){
 function setupVoteRealtime(){
   if(!kdSbReady||voteRealtimeChannel) return;
   voteRealtimeChannel=kdSb.channel('kd-v61-votes')
-    .on('postgres_changes',{event:'*',schema:'public',table:'kd_vote_state'},()=>{if(!staffArea.classList.contains('hidden')&&currentStaffVoteType)renderStaffVote(currentStaffVoteType,staffContent);})
-    .on('postgres_changes',{event:'*',schema:'public',table:'kd_votes'},()=>{if(!adminArea.classList.contains('hidden')&&adminContent.querySelector('[data-admin-vote]'))renderVoteManager(adminContent);})
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_vote_state'},()=>{{const a=document.getElementById('staffArea'),c=document.getElementById('staffContent');if(a&&!a.classList.contains('hidden')&&currentStaffVoteType&&c)renderStaffVote(currentStaffVoteType,c)};})
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_votes'},()=>{{const a=document.getElementById('adminArea'),c=document.getElementById('adminContent');if(a&&!a.classList.contains('hidden')&&c&&c.querySelector('[data-admin-vote]'))renderVoteManager(c)};})
     .subscribe();
 }
 
-staffLoginBtn.onclick=()=>{
-  const name=(staffName.value||'').trim();
+// v89 교직원 로그인: HTML id 전역변수에 의존하지 않고 DOM을 직접 연결
+const staffLoginBtnEl=document.getElementById('staffLoginBtn');
+const staffNameEl=document.getElementById('staffName');
+const staffPwEl=document.getElementById('staffPw');
+const staffLoginEl=document.getElementById('staffLogin');
+const staffAreaEl=document.getElementById('staffArea');
+const staffContentEl=document.getElementById('staffContent');
+if(staffLoginBtnEl) staffLoginBtnEl.onclick=()=>{
+  const name=(staffNameEl?.value||'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
-  else alert('비밀번호를 확인해 주세요.');
+  if((staffPwEl?.value||'')==='rudejr26**'){
+    currentStaffName=name;
+    sessionStorage.setItem('kd_staff_name',name);
+    staffLoginEl?.classList.add('hidden');
+    staffAreaEl?.classList.remove('hidden');
+    setupVoteRealtime();
+    if(pendingStaffView) staffView(pendingStaffView,staffContentEl);
+  } else alert('비밀번호를 확인해 주세요.');
 };
-if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
@@ -940,7 +953,7 @@ function staffView(v, contentEl=staffContent){
 
 
 
-// v88 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
+// v89 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
 const ADMIN_ID='leekj1212';
 const ADMIN_PW='rkrkrk121212!@';
 const adminLoginEl=document.getElementById('adminLogin');
@@ -972,7 +985,7 @@ function adminSignIn(){
 if(adminLoginBtnEl) adminLoginBtnEl.addEventListener('click',adminSignIn);
 [adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminSignIn();}}));
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=88', {updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=89', {updateViaCache:'none'}).catch(()=>{})}
 
 
 
