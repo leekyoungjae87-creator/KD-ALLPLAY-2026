@@ -6,11 +6,6 @@ const STORE = {
   flags:'kd_new_flags', perfVotes:'kd_new_perf_votes', flagVotes:'kd_new_flag_votes', qna:'kd_new_qna'
 };
 
-// v88: 관리자 관련 DOM은 브라우저의 id 전역변수 동작에 의존하지 않고 명시적으로 참조합니다.
-const adminArea=document.getElementById('adminArea');
-const adminContent=document.getElementById('adminContent');
-
-
 const schedule = [
   ["08:15-08:30","집결","학년별 기준"],
   ["08:30-09:00","개회식 · 준비운동(청소년체조) · 안전교육",""],
@@ -131,15 +126,9 @@ const defaultPrelim = {
   "축구(남)_3":"결승: 3학년 3반 VS 7반 · 9.16.(수)",
   "피구(여)_1":"결승: 1학년 2반 VS 5반 · 9.14.(월)",
   "피구(여)_2":"결승: 2학년 1반 VS 7반 · 9.15.(화)",
-  "피구(여)_3":"결승: 3학년 1반 VS 6반 · 9.16.(수)",
-  "달리는 줄다리기_3":"9.30 예선: 5반 VS 6반 · 3반 VS 4반 · 2반 VS 7반 · 1반 부전승 → 체육한마당 당일 준결승·결승",
-  "달리는 줄다리기_2":"9.30 예선: 4반 VS 7반 · 2반 VS 3반 · 5반 VS 8반 · 1반 VS 6반 → 체육한마당 당일 준결승·결승",
-  "달리는 줄다리기_1":"9.30 예선: 3반 VS 5반 · 4반 VS 6반 · 1반 VS 7반 · 2반 부전승 → 체육한마당 당일 준결승·결승",
-  "이어달리기_3":"9.30 예선: 1조 1·3·4·5반 중 2개 반 결승 진출 / 2조 2·6·7반 중 2개 반 결승 진출 → 체육한마당 당일 결승",
-  "이어달리기_2":"9.30 예선: 1조 4·5·6·7반 중 2개 반 결승 진출 / 2조 1·2·3·8반 중 2개 반 결승 진출 → 체육한마당 당일 결승",
-  "이어달리기_1":"9.30 예선: 1조 3·5·6·7반 / 2조 1·2·4반 → 각 조 2개 반 결승 진출 → 체육한마당 당일 결승"
+  "피구(여)_3":"결승: 3학년 1반 VS 6반 · 9.16.(수)"
 };
-const prelimSchedule = {"축구(남)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "피구(여)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) 전 학년 예선 → 10. 1.(목) 체육한마당 당일 준결승·결승", "이어달리기": "9. 30.(수) 전 학년 조별 예선 → 10. 1.(목) 체육한마당 당일 결승"};
+const prelimSchedule = {"축구(남)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "피구(여)": "9. 3.(목) 준결승 → 9. 14.(월) 1학년 · 9. 15.(화) 2학년 · 9. 16.(수) 3학년 결승", "바운드 배구": "9. 10.(목) 예선 → 9. 17.(목) 준결승", "달리는 줄다리기": "9. 30.(수) · 전 학년 예선·준결승", "이어달리기": "9. 30.(수) · 전 학년 예선·준결승"};
 const ops = [
   ["응원 퍼포먼스","전 교직원 투표","각 학년 체육교사 지원"],
   ["학급 깃발","전 교직원 투표","각 학년 체육교사 지원"],
@@ -177,7 +166,7 @@ let pendingStaffView='';
 document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
   pendingStaffView=b.dataset.staffTarget;
   showPage('staff');
-  {const sa=document.getElementById('staffArea'); if(sa && !sa.classList.contains('hidden')) staffView(pendingStaffView);}
+  if(!staffArea.classList.contains('hidden')) staffView(pendingStaffView);
 });
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
@@ -332,70 +321,32 @@ opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
 
 
-// V85 공용 Q&A — Supabase 사용, 테이블 미설정 시 현재 브라우저 localStorage로 임시 동작
+const SUPA_ENABLED = false;
+const kdSupa = null;
+
 async function getQnaData(){
-  if(kdSbReady){
-    try{
-      const {data,error}=await kdSb.from('kd_qna').select('*').order('created_at',{ascending:false});
-      if(!error) return (data||[]).map(x=>({id:x.id,cls:x.class_name,name:x.name,category:x.category,question:x.question,answer:x.answer||'',status:x.status||'pending',time:x.created_at,answeredAt:x.answered_at}));
-    }catch(e){}
-  }
   return load(STORE.qna,[]).slice().reverse();
 }
-async function addQnaQuestion(row){
-  if(kdSbReady){
-    const {error}=await kdSb.from('kd_qna').insert({class_name:row.cls,name:row.name,category:row.category,question:row.question,status:'pending'});
-    if(!error)return true;
-  }
-  let a=load(STORE.qna,[]);a.push({...row,id:'q'+Date.now(),answer:'',status:'pending',time:new Date().toISOString()});save(STORE.qna,a);return false;
-}
-async function answerQna(id,answer){
-  if(kdSbReady){
-    const {error}=await kdSb.from('kd_qna').update({answer,status:answer?'answered':'pending',answered_at:answer?new Date().toISOString():null}).eq('id',id);
-    if(!error)return true;
-  }
-  let a=load(STORE.qna,[]),x=a.find(v=>String(v.id)===String(id));if(x){x.answer=answer;x.status=answer?'answered':'pending';x.answeredAt=answer?new Date().toISOString():null;save(STORE.qna,a);}return false;
-}
-async function deleteQna(id){
-  if(kdSbReady){const {error}=await kdSb.from('kd_qna').delete().eq('id',id);if(!error)return true;}
-  save(STORE.qna,load(STORE.qna,[]).filter(x=>String(x.id)!==String(id)));return false;
-}
-function maskQnaName(name){const s=String(name||'').trim();if(s.length<=1)return s||'익명';if(s.includes('○'))return s;return s[0]+'○'+(s.length>2?s.slice(2):'');}
+
 async function renderQna(){
   let a=await getQnaData();
-  qnaList.innerHTML=a.length?a.map((x,i)=>{
-    const answered=!!(x.answer&&String(x.answer).trim());
-    return `<article class="qna-card faq-card ${answered?'is-answered':'is-pending'}">
+  qnaList.innerHTML=a.length?a.map((x,i)=>`
+    <article class="qna-card faq-card">
       <div class="faq-number">Q${String(i+1).padStart(2,'0')}</div>
       <div class="faq-copy">
-        <div class="qna-meta"><span>${escapeHtml(x.cls||'')}</span><span>${escapeHtml(maskQnaName(x.name))}</span><span class="faq-category">${escapeHtml(x.category||'일반')}</span><em class="qna-status ${answered?'done':'wait'}">${answered?'✓ 답변완료':'● 답변대기'}</em></div>
-        <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b></div>
-        ${answered?`<div class="qna-answer faq-answer"><b>🏫 본부 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<div class="qna-answer faq-answer qna-wait-answer"><b>💬 답변 준비 중</b><p>관리자가 확인 후 답변하겠습니다.</p></div>`}
+        <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b>${x.category?`<span class="faq-category">${escapeHtml(x.category)}</span>`:''}</div>
+        <div class="qna-answer faq-answer"><b>💬 답변</b><p>${escapeHtml(x.answer||'답변 준비 중입니다.')}</p></div>
       </div>
-    </article>`}).join(''):`<div class="faq-empty"><span>❔</span><b>등록된 질문이 아직 없습니다.</b><small>궁금한 내용을 첫 번째로 남겨보세요.</small></div>`;
+    </article>`).join(''):`<div class="faq-empty"><span>❔</span><b>등록된 Q&A가 아직 없습니다.</b><small>운영자가 확인된 내용을 순서대로 안내합니다.</small></div>`;
+
   let recent=a.slice(0,3);
-  homeQnaList.innerHTML=recent.length?recent.map(x=>`<div class="home-qna-item"><b>${escapeHtml((x.question||'').length>36?(x.question||'').slice(0,36)+'…':(x.question||''))}</b><small>${x.answer?'✓ 답변완료':'● 답변대기'}</small></div>`).join(''):`<div class="home-qna-empty">등록된 Q&A가 아직 없습니다.</div>`;
+  homeQnaList.innerHTML=recent.length?recent.map(x=>`
+    <div class="home-qna-item">
+      <b>${escapeHtml((x.question||'').length>36?(x.question||'').slice(0,36)+'…':(x.question||''))}</b>
+      <small>답변 완료</small>
+    </div>`).join(''):`<div class="home-qna-empty">등록된 Q&A가 아직 없습니다.</div>`;
 }
 renderQna();
-
-if(typeof qnaAskForm!=='undefined'&&qnaAskForm){
-  qnaAskForm.onsubmit=async e=>{
-    e.preventDefault();
-    const cls=qnaAskClass.value.trim(),name=qnaAskName.value.trim(),category=qnaAskCategory.value,question=qnaAskQuestion.value.trim();
-    if(!/^\d{4}$/.test(cls)){alert('학번은 4자리 숫자로 입력해 주세요. 예: 3211');qnaAskClass.focus();return;}
-    if(!cls||!name||!question){alert('학급, 이름, 질문을 모두 입력해 주세요.');return;}
-    const btn=qnaAskForm.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='등록 중…';
-    try{await addQnaQuestion({cls,name,category,question});qnaAskQuestion.value='';await renderQna();alert('질문을 등록했습니다. 관리자가 확인 후 답변합니다.');}
-    catch(err){alert('질문 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');}
-    finally{btn.disabled=false;btn.textContent='질문 등록하기';}
-  };
-}
-let qnaRealtimeChannel=null;
-function startQnaRealtime(){
-  if(!kdSbReady||qnaRealtimeChannel)return;
-  qnaRealtimeChannel=kdSb.channel('kd-qna-live').on('postgres_changes',{event:'*',schema:'public',table:'kd_qna'},async()=>{await renderQna();if(!adminArea.classList.contains('hidden')&&adminContent.querySelector('.qna-manager-v85'))renderAdmin('qnaanswer');}).subscribe();
-}
-startQnaRealtime();
 
 
 function safeLink(raw){
@@ -663,38 +614,24 @@ async function renderVoteManager(contentEl=adminContent){
 function setupVoteRealtime(){
   if(!kdSbReady||voteRealtimeChannel) return;
   voteRealtimeChannel=kdSb.channel('kd-v61-votes')
-    .on('postgres_changes',{event:'*',schema:'public',table:'kd_vote_state'},()=>{{const a=document.getElementById('staffArea'),c=document.getElementById('staffContent');if(a&&!a.classList.contains('hidden')&&currentStaffVoteType&&c)renderStaffVote(currentStaffVoteType,c)};})
-    .on('postgres_changes',{event:'*',schema:'public',table:'kd_votes'},()=>{{const a=document.getElementById('adminArea'),c=document.getElementById('adminContent');if(a&&!a.classList.contains('hidden')&&c&&c.querySelector('[data-admin-vote]'))renderVoteManager(c)};})
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_vote_state'},()=>{if(!staffArea.classList.contains('hidden')&&currentStaffVoteType)renderStaffVote(currentStaffVoteType,staffContent);})
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_votes'},()=>{if(!adminArea.classList.contains('hidden')&&adminContent.querySelector('[data-admin-vote]'))renderVoteManager(adminContent);})
     .subscribe();
 }
 
-// V97: V71 교직원 로그인 구조 + DOM 명시 참조로 브라우저 호환성 강화
-const staffLoginBtnEl=document.getElementById('staffLoginBtn');
-const staffNameEl=document.getElementById('staffName');
-const staffPwEl=document.getElementById('staffPw');
-const staffLoginEl=document.getElementById('staffLogin');
-const staffAreaEl=document.getElementById('staffArea');
-if(staffLoginBtnEl){
-  staffLoginBtnEl.onclick=()=>{
-    const name=(staffNameEl?.value||'').trim();
-    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-    if((staffPwEl?.value||'')==='rudejr26**'){
-      currentStaffName=name;
-      sessionStorage.setItem('kd_staff_name',name);
-      staffLoginEl?.classList.add('hidden');
-      staffAreaEl?.classList.remove('hidden');
-      setupVoteRealtime();
-      if(pendingStaffView) staffView(pendingStaffView);
-    } else alert('비밀번호를 확인해 주세요.');
-  };
-}
-if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
+staffLoginBtn.onclick=()=>{
+  const name=(staffName.value||'').trim();
+  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
+  else alert('비밀번호를 확인해 주세요.');
+};
+if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
-async function staffView(v, contentEl=document.getElementById('staffContent')){
+function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
-    await renderVoteManager(contentEl);
+    renderVoteManager(contentEl);
   } else if(v==='songmanager'){
-    await renderSongManager(contentEl);
+    renderSongManager(contentEl);
   } else if(v==='flagimages'){
     contentEl.innerHTML=`<div class="flag-admin-head"><small>CLASS FLAG IMAGE</small><h3>🚩 학급 깃발 이미지 관리</h3><p>사진을 한 번 등록하면 학급 깃발 탭과 교직원 깃발 투표 화면에 함께 표시됩니다.</p></div><div class="flag-admin-controls"><select id="fiGrade">${[1,2,3].map(g=>`<option value="${g}">${g}학년</option>`).join('')}</select><select id="fiClass"></select><input type="file" id="fiFile" accept="image/*" capture="environment"><button id="fiSave">사진 등록</button></div><div id="fiPreview" class="flag-admin-preview">등록할 학급과 사진을 선택해 주세요.</div>`;
     const fill=()=>{const g=Number(fiGrade.value);fiClass.innerHTML=Array.from({length:classCount(g)},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')};fill();fiGrade.onchange=fill;
@@ -703,250 +640,99 @@ async function staffView(v, contentEl=document.getElementById('staffContent')){
   } else if(v==='preliminput'){
     contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
-  } else if(v==='recordinput'){
-    const recordEvents={
-      '축구':{label:'⚽ 축구(남)',mode:'rank',desc:'사전경기 최종 순위를 입력하면 배점(50·40·30·20·10점)을 자동 반영합니다.'},
-      '피구':{label:'🔴 피구(여)',mode:'rank',desc:'사전경기 최종 순위를 입력하면 배점(50·40·30·20·10점)을 자동 반영합니다.'},
-      '바운드배구':{label:'🏐 바운드 배구',mode:'rank',desc:'결선 결과의 최종 순위를 입력하면 배점(60·50·40·30·20점)을 자동 반영합니다.'},
-      '8자줄넘기':{label:'🪢 8자 줄넘기',mode:'sum2',unit:'회',desc:'종이 기록지의 1차·2차 횟수를 입력하면 합계·공동순위·배점을 자동 계산합니다.'},
-      '슈팅릴레이':{label:'🏀 슈팅 릴레이',mode:'sum2',unit:'개',desc:'99초 1차·2차 성공 개수를 입력하면 합계·공동순위·배점을 자동 계산합니다.'},
-      '2인3각':{label:'👟 2인 3각',mode:'time',unit:'초',desc:'최종 기록을 초 단위(0.1초까지)로 입력하면 빠른 기록 순으로 자동 계산합니다.'},
-      '달리는줄다리기':{label:'🧑‍🤝‍🧑 달리는 줄다리기',mode:'rank',desc:'준결승·결승 종료 후 최종 순위를 입력하면 배점(120·100·80·60·40점)을 자동 반영합니다.'},
-      '미션이어달리기':{label:'🏃 미션 이어달리기',mode:'rank',desc:'도착 순위를 입력하면 배점(40·30·20·10점, 5위 이하 10점)을 자동 반영합니다.'},
-      '이어달리기':{label:'🏁 이어달리기',mode:'rank',desc:'결선 최종 순위를 입력하면 배점(120·100·80·60·40점)을 자동 반영합니다.'},
-      '학급깃발':{label:'🚩 학급 깃발',mode:'rank',desc:'교직원 투표 결과 순위를 입력하면 1·2위 30점 / 3·4위 20점 / 그 외 10점으로 반영합니다.'}
-    };
-    const recordKey=(g,e)=>`kd_office_record_${g}_${e}`;
-    const stateKey=(g,e)=>`kd_office_record_state_${g}_${e}`;
-    const getState=(g,e)=>load(stateKey(g,e),{locked:false,committedAt:''});
-    const setState=(g,e,state)=>save(stateKey(g,e),state);
-    const savedCount=(g,e)=>{
-      const ev=recordEvents[e],saved=load(recordKey(g,e),{});
-      return Array.from({length:classCount(g)},(_,i)=>saved[`${g}-${i+1}`]).filter(r=>{
-        if(!r)return false;
-        if(ev.mode==='sum2')return r.a!==''&&r.a!=null&&r.b!==''&&r.b!=null;
-        if(ev.mode==='time')return r.time!==''&&r.time!=null;
-        return r.rank!==''&&r.rank!=null;
-      }).length;
-    };
-    const statusFor=(g,e)=>{
-      const state=getState(g,e),count=savedCount(g,e);
-      if(state.locked)return {key:'done',label:'완료',icon:'✓'};
-      if(count>0)return {key:'progress',label:`입력중 ${count}/${classCount(g)}`,icon:'●'};
-      return {key:'waiting',label:'미입력',icon:'○'};
-    };
-    const rankOptions=(value='')=>`<option value="">선택</option><option value="1" ${String(value)==='1'?'selected':''}>1위</option><option value="2" ${String(value)==='2'?'selected':''}>2위</option><option value="3" ${String(value)==='3'?'selected':''}>3위</option><option value="4" ${String(value)==='4'?'selected':''}>4위</option><option value="5" ${String(value)==='5'?'selected':''}>5위 이하</option>`;
-    const renderOverview=()=>{
-      if(!riOverview)return;
-      const cards=Object.entries(recordEvents).map(([e,ev])=>{
-        const grades=[1,2,3].map(g=>{const s=statusFor(g,e);return `<button class="record-status ${s.key}" data-jump-grade="${g}" data-jump-event="${e}"><b>${g}학년</b><span>${s.icon} ${s.label}</span></button>`}).join('');
-        return `<div class="record-overview-card"><strong>${ev.label}</strong><div>${grades}</div></div>`;
-      }).join('');
-      const total=Object.keys(recordEvents).length*3;
-      const done=Object.keys(recordEvents).reduce((n,e)=>n+[1,2,3].filter(g=>getState(g,e).locked).length,0);
-      riOverview.innerHTML=`<div class="record-overview-title"><div><b>📊 기록 입력 완료 현황</b><small>종목·학년별 확정 상태를 한눈에 확인합니다.</small></div><span>${done}/${total} 완료</span></div><div class="record-overview-grid">${cards}</div>`;
-      riOverview.querySelectorAll('[data-jump-grade]').forEach(btn=>btn.onclick=()=>{riGrade.value=btn.dataset.jumpGrade;riEvent.value=btn.dataset.jumpEvent;makeRows();});
-    };
-    const makeRows=()=>{
-      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], saved=load(recordKey(g,event),{}),state=getState(g,event);
-      riDesc.innerHTML=`<div><b>${ev.label}</b><span>${ev.desc}</span></div>${state.locked?`<em>🔒 ${state.committedAt||'결과 확정됨'}</em>`:''}`;
-      const rankMode=ev.mode==='rank';
-      riHead1.textContent=rankMode?'최종 순위':(ev.mode==='sum2'?'1차':'기록');
-      riHead2.textContent=rankMode?'결과':(ev.mode==='sum2'?'2차':'-');
-      riHeadTotal.textContent=rankMode?'확인':'합계·기록';
-      riRows.innerHTML=Array.from({length:classCount(g)},(_,i)=>{
-        const cls=`${g}-${i+1}`,r=saved[cls]||{};
-        if(ev.mode==='sum2') return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td><input class="r1" type="number" min="0" inputmode="numeric" value="${r.a??''}" placeholder="1차"></td><td><input class="r2" type="number" min="0" inputmode="numeric" value="${r.b??''}" placeholder="2차"></td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
-        if(ev.mode==='time') return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td colspan="2"><input class="rt" type="number" min="0" step="0.1" inputmode="decimal" value="${r.time??''}" placeholder="예: 42.7"></td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
-        return `<tr data-cls="${cls}"><td><b>${cls}</b></td><td><select class="rrankinput">${rankOptions(r.rank)}</select></td><td class="rresult">${r.rank?`${r.rank==='5'?'5위 이하':r.rank+'위'}`:'-'}</td><td class="rtotal">-</td><td class="rrank">-</td><td class="rpoint">-</td></tr>`;
-      }).join('');
-      riRows.querySelectorAll('input,select').forEach(el=>el.disabled=!!state.locked);
-      riCalc.disabled=!!state.locked;
-      riApply.disabled=!!state.locked;
-      riApply.textContent=state.locked?'🔒 결과 확정됨':'✓ 결과 확정 · 점수 반영 · 잠금';
-      riUnlock.classList.toggle('hidden',!state.locked);
-      calcOfficeRecords(false,true);
-      renderOverview();
-    };
-    const calcOfficeRecords=(commit=false,skipSave=false)=>{
-      const g=Number(riGrade.value), event=riEvent.value, ev=recordEvents[event], state=getState(g,event),rows=[...riRows.querySelectorAll('tr')];
-      const vals=[]; let saved={};
-      rows.forEach(tr=>{
-        const cls=tr.dataset.cls;
-        if(ev.mode==='sum2'){
-          const a=tr.querySelector('.r1').value,b=tr.querySelector('.r2').value;
-          saved[cls]={a,b};
-          if(a!==''&&b!=='') vals.push({tr,cls,val:Number(a)+Number(b)});
-          tr.querySelector('.rtotal').textContent=(a!==''&&b!=='')?`${Number(a)+Number(b)}${ev.unit}`:'-';
-        }else if(ev.mode==='time'){
-          const t=tr.querySelector('.rt').value;
-          saved[cls]={time:t};
-          if(t!=='') vals.push({tr,cls,val:Number(t)});
-          tr.querySelector('.rtotal').textContent=t!==''?`${Number(t).toFixed(1)}${ev.unit}`:'-';
-        }else{
-          const rank=tr.querySelector('.rrankinput').value;
-          saved[cls]={rank};
-          const result=tr.querySelector('.rresult');
-          result.textContent=rank?(rank==='5'?'5위 이하':`${rank}위`):'-';
-          tr.querySelector('.rtotal').textContent=rank?'입력 완료':'-';
-          if(rank!=='') vals.push({tr,cls,rank:Number(rank),point:pointsForRank(event,rank)});
-        }
-      });
-      if(ev.mode==='sum2'||ev.mode==='time'){
-        vals.sort((x,y)=>ev.mode==='time'?x.val-y.val:y.val-x.val);
-        let prev=null,rank=0;
-        vals.forEach((x,i)=>{if(prev===null||x.val!==prev)rank=i+1;prev=x.val;x.rank=rank;x.point=pointsForRank(event,rank);x.tr.querySelector('.rrank').textContent=`${rank}위`;x.tr.querySelector('.rpoint').textContent=`${x.point}점`;});
-      }else{
-        vals.forEach(x=>{x.tr.querySelector('.rrank').textContent=x.rank===5?'5위 이하':`${x.rank}위`;x.tr.querySelector('.rpoint').textContent=`${x.point}점`;});
-      }
-      rows.filter(tr=>!vals.some(x=>x.tr===tr)).forEach(tr=>{tr.querySelector('.rrank').textContent='-';tr.querySelector('.rpoint').textContent='-';});
-      if(!skipSave&&!state.locked)save(recordKey(g,event),saved);
-      riStatus.textContent=state.locked?'🔒 결과 확정':`입력 ${vals.length}/${classCount(g)}학급`;
-      if(!commit){if(!skipSave)renderOverview();return;}
-      if(state.locked){alert('이미 확정된 결과입니다. 수정하려면 먼저 잠금을 해제해 주세요.');return;}
-      if(vals.length!==classCount(g)){alert(`아직 결과가 입력되지 않은 학급이 있습니다. ${g}학년 전체 학급을 입력한 뒤 확정해 주세요.`);return;}
-      if(!confirm(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과를 확정할까요?\n점수표에 반영되고 입력 화면이 잠깁니다.`))return;
-      let scores=getScores();vals.forEach(x=>scores[x.cls][event]=x.point);save(STORE.scores,scores);renderScores();
-      const committedAt=new Date().toLocaleString();
-      setState(g,event,{locked:true,committedAt});
-      alert(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과 확정 완료\n점수표 반영 및 수정 잠금 처리했습니다.`);
-      makeRows();
-    };
-    contentEl.innerHTML=`<div class="score-admin-head"><div><small>OFFICE RECORD INPUT · V82</small><h3>📋 본부 통합 기록 입력</h3><p>종이 원본 기록을 입력하고, 확정된 결과는 잠금하여 당일 오입력을 방지합니다.</p></div><span id="riStatus">입력 0학급</span></div>
-      <div id="riOverview" class="record-overview"></div>
-      <div class="record-event-chips">${Object.values(recordEvents).map(x=>`<span>${x.label}</span>`).join('')}</div>
-      <div class="record-select"><label><span>① 학년</span><select id="riGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></label><label><span>② 종목</span><select id="riEvent">${Object.entries(recordEvents).map(([k,x])=>`<option value="${k}">${x.label}</option>`).join('')}</select></label></div>
-      <div id="riDesc" class="record-guide"></div>
-      <div class="record-table-wrap"><table class="record-table"><thead><tr><th>학급</th><th id="riHead1">기록</th><th id="riHead2">2차</th><th id="riHeadTotal">합계·기록</th><th>순위</th><th>점수</th></tr></thead><tbody id="riRows"></tbody></table></div>
-      <div class="record-actions"><button id="riCalc">↻ 순위·점수 다시 계산</button><button id="riUnlock" class="unlock-btn hidden">🔓 잠금 해제 · 수정</button><button id="riApply" class="score-save-btn">✓ 결과 확정 · 점수 반영 · 잠금</button></div>
-      <div class="record-flow"><b>당일 추천 흐름</b><span>실물 계수기·초시계 → 종이 기록지 확인 → 노트북 입력 → 결과 확정·잠금 → 실시간 순위 확인</span></div>
-      <div class="score-admin-foot"><b>현장 기록은 종이가 원본</b><span>확정 후에는 입력칸이 잠깁니다. 실제 수정이 필요할 때만 잠금을 해제하고 다시 확정하세요.</span></div>`;
-    riGrade.onchange=makeRows;riEvent.onchange=makeRows;
-    riRows.oninput=()=>calcOfficeRecords(false);riRows.onchange=()=>calcOfficeRecords(false);
-    riCalc.onclick=()=>calcOfficeRecords(false);riApply.onclick=()=>calcOfficeRecords(true);
-    riUnlock.onclick=()=>{const g=Number(riGrade.value),event=riEvent.value,ev=recordEvents[event];if(!confirm(`${g}학년 ${ev.label.replace(/^[^ ]+ /,'')} 결과 잠금을 해제할까요?\n수정 후 반드시 다시 확정해 주세요.`))return;setState(g,event,{locked:false,committedAt:''});makeRows();};
-    makeRows();
-  } else if(v==='backup'){
-    const collectBackup=()=>{
-      const data={};
-      Object.keys(localStorage).filter(k=>k.startsWith('kd_')).sort().forEach(k=>{
-        const raw=localStorage.getItem(k);
-        try{data[k]=JSON.parse(raw)}catch{data[k]=raw}
-      });
-      return {
-        app:'2026 경덕 ALL PLAY 체육한마당',
-        version:'V83',
-        createdAt:new Date().toISOString(),
-        createdAtLocal:new Date().toLocaleString(),
-        note:'당일 본부 노트북 브라우저(localStorage) 데이터 백업',
-        data
-      };
-    };
-    const downloadBackup=(backup,prefix='경덕_ALLPLAY_백업')=>{
-      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
-      const url=URL.createObjectURL(blob);
-      const d=new Date(),pad=n=>String(n).padStart(2,'0');
-      const filename=`${prefix}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`;
-      const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-    };
-    const countRecordStates=()=>Object.keys(localStorage).filter(k=>k.startsWith('kd_office_record_state_')).reduce((n,k)=>{const s=load(k,{});return n+(s.locked?1:0)},0);
-    const refreshBackupSummary=()=>{
-      const b=collectBackup(),keys=Object.keys(b.data);
-      backupSummary.innerHTML=`<div><b>${keys.length}</b><span>저장 항목</span></div><div><b>${countRecordStates()}</b><span>확정 기록</span></div><div><b>${Object.keys(getScores()).length}</b><span>학급 점수표</span></div>`;
-    };
-    contentEl.innerHTML=`<div class="backup-admin-head"><div><small>EVENT DAY BACKUP & RESTORE · V83</small><h3>💾 당일 데이터 백업 · 복원</h3><p>현재 노트북의 경기 데이터를 JSON 파일로 보관하고, 필요할 때 그 시점으로 되돌릴 수 있습니다.</p></div><span>LOCAL SAFETY</span></div>
-      <div id="backupSummary" class="backup-summary"></div>
-      <div class="backup-card">
-        <div class="backup-icon">💾</div>
-        <div><b>현재 상태를 파일로 저장</b><p>경기 중간에도 수시로 눌러 백업하세요. 현재 데이터는 변경되지 않습니다.</p></div>
-        <button id="backupDownload">백업 파일 다운로드</button>
-      </div>
-      <div class="backup-card restore-card">
-        <div class="backup-icon">♻️</div>
-        <div><b>백업 파일에서 데이터 복원</b><p>이전에 내려받은 경덕 ALL PLAY 백업(.json)을 선택하면 그 시점의 점수·기록·잠금상태 등으로 되돌립니다.</p></div>
-        <button id="backupRestore">백업 파일 선택 · 복원</button>
-        <input id="backupRestoreFile" type="file" accept="application/json,.json" class="hidden" />
-      </div>
-      <div class="restore-warning"><b>⚠️ 복원 전 확인</b><span>복원을 시작하면 현재 kd_ 데이터가 백업 파일 내용으로 교체됩니다. 안전을 위해 복원 직전에 현재 상태를 자동으로 한 번 더 내려받습니다.</span></div>
-      <div class="backup-note"><b>추천</b><span>오전 순환경기 종료 후 1회 · 점심 전후 1회 · 이어달리기 종료 후 1회 저장하면 충분합니다.</span></div>`;
-    refreshBackupSummary();
-    backupDownload.onclick=()=>{downloadBackup(collectBackup());refreshBackupSummary();};
-    backupRestore.onclick=()=>backupRestoreFile.click();
-    backupRestoreFile.onchange=()=>{
-      const file=backupRestoreFile.files&&backupRestoreFile.files[0];
-      if(!file)return;
-      const reader=new FileReader();
-      reader.onload=()=>{
-        try{
-          const restored=JSON.parse(String(reader.result||''));
-          if(!restored||typeof restored!=='object'||!restored.data||typeof restored.data!=='object'||Array.isArray(restored.data)) throw new Error('백업 데이터 형식을 확인할 수 없습니다.');
-          const keys=Object.keys(restored.data);
-          if(!keys.length||keys.some(k=>!k.startsWith('kd_'))) throw new Error('경덕 ALL PLAY 백업 파일이 아니거나 저장 항목이 올바르지 않습니다.');
-          if(restored.app && !String(restored.app).includes('경덕 ALL PLAY')) throw new Error('다른 앱의 백업 파일입니다.');
-          const when=restored.createdAtLocal||restored.createdAt||'저장 시각 정보 없음';
-          if(!confirm(`선택한 백업으로 복원할까요?\n\n백업 시각: ${when}\n저장 항목: ${keys.length}개\n\n현재 데이터는 먼저 안전 백업 파일로 자동 저장한 뒤 교체됩니다.`)){backupRestoreFile.value='';return;}
-          downloadBackup(collectBackup(),'경덕_ALLPLAY_복원전_자동백업');
-          Object.keys(localStorage).filter(k=>k.startsWith('kd_')).forEach(k=>localStorage.removeItem(k));
-          keys.forEach(k=>{
-            const v=restored.data[k];
-            localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));
-          });
-          alert(`복원이 완료되었습니다.\n백업 시각: ${when}\n저장 항목: ${keys.length}개\n\n웹앱을 새로고침합니다.`);
-          location.reload();
-        }catch(err){
-          alert(`복원할 수 없습니다.\n${err&&err.message?err.message:'백업 파일을 확인해 주세요.'}`);
-          backupRestoreFile.value='';
-        }
-      };
-      reader.onerror=()=>{alert('백업 파일을 읽는 중 오류가 발생했습니다.');backupRestoreFile.value='';};
-      reader.readAsText(file,'utf-8');
-    };
   } else if(v==='scoreinput'){
-    contentEl.innerHTML=`
-      <div class="score-admin-head">
-        <div><small>ADMIN SCORE INPUT</small><h3>🏆 경기 결과 입력</h3><p>학급·종목·순위만 선택하면 배점표에 맞는 점수가 자동으로 입력됩니다.</p></div>
-        <span>관리자 직접 입력</span>
-      </div>
-      <div class="score-admin-panel">
-        <label><span>① 학급</span><select id="siClass">${[1,2,3].flatMap(g=>Array.from({length:classCount(g)},(_,i)=>`<option>${g}-${i+1}</option>`)).join('')}</select></label>
-        <label><span>② 종목</span><select id="siEvent">${scoreEvents.map(x=>`<option>${x}</option>`).join('')}</select></label>
-        <label><span>③ 순위</span><select id="siRank"><option value="1">1위</option><option value="2">2위</option><option value="3">3위</option><option value="4">4위</option><option value="5">5위 이하</option></select></label>
-        <div class="score-preview"><small>자동 입력 점수</small><strong id="siPointPreview">50점</strong></div>
-        <button id="siSave" class="score-save-btn">결과 저장 → 순위 반영</button>
-      </div>
-      <div class="score-admin-foot">
-        <b>✓ 승인 과정 없이 즉시 반영</b>
-        <span>잘못 입력한 경우 같은 학급·종목을 다시 선택해 저장하면 수정됩니다.</span>
-      </div>`;
-    const updatePreview=()=>{siPointPreview.textContent=pointsForRank(siEvent.value,siRank.value)+'점';};
-    siEvent.onchange=updatePreview; siRank.onchange=updatePreview; updatePreview();
-    siSave.onclick=()=>{
-      const pts=pointsForRank(siEvent.value,siRank.value);
-      let scores=getScores();
-      scores[siClass.value][siEvent.value]=pts;
-      save(STORE.scores,scores);
-      renderScores();
-      alert(`${siClass.value} · ${siEvent.value} · ${siRank.options[siRank.selectedIndex].text} → ${pts}점 반영 완료`);
+    const scoreInputEvents = scoreEvents;
+    let quickEvent = sessionStorage.getItem('kd_score_event') || scoreInputEvents[0];
+    let quickGrade = Number(sessionStorage.getItem('kd_score_grade') || 1);
+    let lastScoreAction = null;
+
+    const drawQuickScore = ()=>{
+      const scores=getScores();
+      const pts=rankPoints[quickEvent]||[0,0,0,0,0];
+      const n=classCount(quickGrade);
+      const rows=Array.from({length:n},(_,i)=>{
+        const cls=`${quickGrade}-${i+1}`;
+        const current=Number(scores[cls]?.[quickEvent]||0);
+        const currentRank=current?pts.findIndex(x=>x===current)+1:0;
+        const rankText=currentRank ? (currentRank===5?'5위 이하':`${currentRank}위`) : '미입력';
+        return `<article class="quick-score-class ${current?'done':''}">
+          <div class="quick-score-class-head"><strong>${cls}</strong><span>${current?`✓ ${rankText} · ${current}점`:'미입력'}</span></div>
+          <div class="quick-rank-buttons">
+            ${pts.map((point,idx)=>`<button type="button" data-quick-score="${cls}" data-rank="${idx+1}" class="${current===point?'selected':''}"><b>${idx===4?'5위↓':`${idx+1}위`}</b><small>${point}점</small></button>`).join('')}
+          </div>
+        </article>`;
+      }).join('');
+      const done=Array.from({length:n},(_,i)=>`${quickGrade}-${i+1}`).filter(c=>Number(scores[c]?.[quickEvent]||0)>0).length;
+      contentEl.innerHTML=`
+        <div class="score-admin-head quick-score-head">
+          <div><small>GAME DAY QUICK SCORE</small><h3>🏆 당일 점수 빠른 입력</h3><p>종목과 학년을 고른 뒤 학급별 순위 버튼만 누르세요. 점수는 즉시 자동 반영됩니다.</p></div>
+          <span>${done}/${n} 입력</span>
+        </div>
+        <div class="quick-score-toolbar">
+          <label><span>① 종목 선택</span><select id="quickEvent">${scoreInputEvents.map(x=>`<option ${x===quickEvent?'selected':''}>${x}</option>`).join('')}</select></label>
+          <div class="quick-grade-tabs"><span>② 학년 선택</span><div>${[1,2,3].map(g=>`<button type="button" data-score-grade="${g}" class="${g===quickGrade?'active':''}">${g}학년</button>`).join('')}</div></div>
+          <div class="quick-progress"><small>입력 진행률</small><strong>${done}/${n}</strong><span>${done===n?'✓ 입력 완료':'학급'}</span></div>
+        </div>
+        <div class="quick-score-notice">💡 <b>순위 버튼을 누르는 즉시 저장됩니다.</b> 잘못 눌렀다면 다른 순위를 다시 누르거나 아래 <b>실행취소</b>를 사용하세요.</div>
+        <div class="quick-score-grid">${rows}</div>
+        <div class="quick-score-bottom"><button type="button" id="quickUndo" ${lastScoreAction?'':'disabled'}>↩ 마지막 입력 실행취소</button><span id="quickScoreStatus">${lastScoreAction?escapeHtml(lastScoreAction.message):'입력 대기 중'}</span></div>`;
+
+      quickEventEl=document.getElementById('quickEvent');
+      quickEventEl.onchange=()=>{quickEvent=quickEventEl.value;sessionStorage.setItem('kd_score_event',quickEvent);lastScoreAction=null;drawQuickScore();};
+      contentEl.querySelectorAll('[data-score-grade]').forEach(b=>b.onclick=()=>{quickGrade=Number(b.dataset.scoreGrade);sessionStorage.setItem('kd_score_grade',quickGrade);lastScoreAction=null;drawQuickScore();});
+      contentEl.querySelectorAll('[data-quick-score]').forEach(b=>b.onclick=()=>{
+        const cls=b.dataset.quickScore, rank=Number(b.dataset.rank), point=pointsForRank(quickEvent,rank);
+        const all=getScores(); const prev=Number(all[cls]?.[quickEvent]||0);
+        all[cls][quickEvent]=point; save(STORE.scores,all); renderScores();
+        lastScoreAction={cls,event:quickEvent,prev,message:`✓ ${cls} · ${quickEvent} · ${rank===5?'5위 이하':rank+'위'} · ${point}점 반영 완료`};
+        drawQuickScore();
+      });
+      const undo=document.getElementById('quickUndo');
+      if(undo) undo.onclick=()=>{
+        if(!lastScoreAction)return;
+        const a=lastScoreAction, all=getScores(); all[a.cls][a.event]=a.prev; save(STORE.scores,all); renderScores();
+        const msg=`↩ ${a.cls} · ${a.event} 입력을 이전 상태로 되돌렸습니다.`; lastScoreAction=null; drawQuickScore();
+        const st=document.getElementById('quickScoreStatus'); if(st) st.textContent=msg;
+      };
     };
+    drawQuickScore();
   } else if(v==='noticeinput'){
     contentEl.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
     contentEl.innerHTML=`
-      <div class="faq-admin-head qna-manager-v85"><div><small>Q&A MANAGER</small><h3>❓ 학생 Q&A 답변 관리</h3><p>학생이 등록한 질문을 확인하고 바로 답변할 수 있습니다.</p></div><span>실시간 공유</span></div>
-      <div class="faq-admin-note">학생 질문 → 관리자 답변 → 모든 학생 화면에 자동 반영됩니다. 답변은 수정하거나 삭제할 수 있습니다.</div>
-      <div id="staffQnaItems" class="faq-admin-list"><div class="info-note">질문을 불러오는 중입니다.</div></div>`;
-    const drawFaqAdmin=async()=>{
-      const list=await getQnaData();
-      staffQnaItems.innerHTML=list.length?list.map(x=>{const done=!!(x.answer&&String(x.answer).trim());return `<article class="staff-faq-card ${done?'answered':''}" data-faq-card="${x.id}">
-        <div class="staff-faq-top"><span>${escapeHtml(x.category||'일반')} · ${escapeHtml(x.cls||'')} ${escapeHtml(maskQnaName(x.name))}</span><span class="qna-status ${done?'done':'wait'}">${done?'✓ 답변완료':'● 답변대기'}</span></div>
-        <div class="admin-qna-question"><small>학생 질문</small><b>${escapeHtml(x.question||'')}</b></div>
-        <label><small>본부 답변</small><textarea id="fqa_${x.id}" maxlength="500" placeholder="답변을 입력하세요.">${escapeHtml(x.answer||'')}</textarea></label>
-        <div class="admin-qna-actions"><button class="faq-save" data-qna-save="${x.id}">${done?'답변 수정':'답변 등록'}</button>${done?`<button class="faq-answer-delete" data-qna-answer-delete="${x.id}">답변만 삭제</button>`:''}<button class="faq-delete" data-qna-delete="${x.id}">질문 삭제</button></div>
-      </article>`}).join(''):'<div class="info-note">아직 학생이 등록한 질문이 없습니다.</div>';
-      document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{const a=document.getElementById(`fqa_${btn.dataset.qnaSave}`).value.trim();if(!a){alert('답변을 입력해 주세요.');return;}await answerQna(btn.dataset.qnaSave,a);await renderQna();await drawFaqAdmin();alert('답변을 등록했습니다.');});
-      document.querySelectorAll('[data-qna-answer-delete]').forEach(btn=>btn.onclick=async()=>{if(!confirm('답변만 삭제하고 답변대기 상태로 돌릴까요?'))return;await answerQna(btn.dataset.qnaAnswerDelete,'');await renderQna();await drawFaqAdmin();});
-      document.querySelectorAll('[data-qna-delete]').forEach(btn=>btn.onclick=async()=>{if(!confirm('이 질문을 완전히 삭제할까요?'))return;await deleteQna(btn.dataset.qnaDelete);await renderQna();await drawFaqAdmin();});
+      <div class="faq-admin-head"><div><small>FAQ MANAGER</small><h3>❓ Q&A 관리</h3><p>학생들이 자주 궁금해하는 내용을 질문과 답변 형태로 정리합니다.</p></div><span>간편 등록</span></div>
+      <div class="faq-admin-new">
+        <label><span>분류</span><input id="faqCategory" placeholder="예: 일정 · 경기 · 준비물" maxlength="20"></label>
+        <label class="faq-wide"><span>질문</span><input id="faqQuestion" placeholder="예: 체육한마당은 몇 시에 시작하나요?" maxlength="120"></label>
+        <label class="faq-wide"><span>답변</span><textarea id="faqAnswer" placeholder="학생들에게 보여줄 답변을 입력하세요." maxlength="500"></textarea></label>
+        <button id="faqAdd">＋ Q&A 등록</button>
+      </div>
+      <div class="faq-admin-note">※ 등록 내용은 현재 브라우저에 저장됩니다. 모든 학생 기기에 동일하게 공개하려면 확정된 Q&A를 웹앱 파일에 반영해 GitHub에 올려야 합니다.</div>
+      <div id="staffQnaItems" class="faq-admin-list"></div>`;
+    const drawFaqAdmin=()=>{
+      const list=load(STORE.qna,[]).slice().reverse();
+      staffQnaItems.innerHTML=list.length?list.map(x=>`<article class="staff-faq-card" data-faq-card="${x.id}">
+        <div class="staff-faq-top"><span>${escapeHtml(x.category||'일반')}</span><button class="faq-delete" data-qna-delete="${x.id}" title="삭제">삭제</button></div>
+        <label><small>질문</small><input id="fqq_${x.id}" value="${escapeHtml(x.question||'')}" maxlength="120"></label>
+        <label><small>답변</small><textarea id="fqa_${x.id}" maxlength="500">${escapeHtml(x.answer||'')}</textarea></label>
+        <button class="faq-save" data-qna-save="${x.id}">수정 저장</button>
+      </article>`).join(''):'<div class="info-note">아직 등록된 Q&A가 없습니다. 위 입력창에서 첫 Q&A를 등록해 주세요.</div>';
+      document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{
+        const list=load(STORE.qna,[]), item=list.find(x=>String(x.id)===String(btn.dataset.qnaSave));
+        if(item){item.question=document.getElementById(`fqq_${item.id}`).value.trim();item.answer=document.getElementById(`fqa_${item.id}`).value.trim();save(STORE.qna,list);}
+        await renderQna();drawFaqAdmin();alert('Q&A를 수정했습니다.');
+      });
+      document.querySelectorAll('[data-qna-delete]').forEach(btn=>btn.onclick=async()=>{
+        if(!confirm('이 Q&A를 삭제할까요?')) return;
+        let list=load(STORE.qna,[]).filter(x=>String(x.id)!==String(btn.dataset.qnaDelete));save(STORE.qna,list);await renderQna();drawFaqAdmin();
+      });
+    };
+    faqAdd.onclick=async()=>{
+      const q=faqQuestion.value.trim(), a=faqAnswer.value.trim();
+      if(!q||!a){alert('질문과 답변을 모두 입력해 주세요.');return;}
+      let list=load(STORE.qna,[]);list.push({id:'faq'+Date.now(),category:faqCategory.value.trim()||'일반',question:q,answer:a,time:new Date().toLocaleString()});save(STORE.qna,list);
+      faqCategory.value='';faqQuestion.value='';faqAnswer.value='';await renderQna();drawFaqAdmin();alert('Q&A를 등록했습니다.');
     };
     drawFaqAdmin();
   } else if(v==='performance'){
@@ -960,31 +746,17 @@ async function staffView(v, contentEl=document.getElementById('staffContent')){
 
 
 
-// v92 관리자 전용: ID + 비밀번호 — 버튼 클릭만 사용하는 독립형 단순 로그인
-const ADMIN_ID='leekj1212';
-const ADMIN_PW='rkrkrk121212!@';
-const adminLoginEl=document.getElementById('adminLogin');
-const adminIdEl=document.getElementById('adminId');
-const adminPwEl=document.getElementById('adminPw');
-const adminLoginBtnEl=document.getElementById('adminLoginBtn');
-const adminAreaEl=document.getElementById('adminArea');
-const adminContentEl=document.getElementById('adminContent');
-if(adminLoginBtnEl){
-  adminLoginBtnEl.onclick=function(){
-    const id=(adminIdEl && adminIdEl.value ? adminIdEl.value : '').trim();
-    const pw=adminPwEl ? adminPwEl.value : '';
-    if(id===ADMIN_ID && pw===ADMIN_PW){
-      if(adminLoginEl) adminLoginEl.classList.add('hidden');
-      if(adminAreaEl) adminAreaEl.classList.remove('hidden');
-      setupVoteRealtime();
-      if(adminContentEl) adminContentEl.innerHTML='<h3>관리자 메뉴</h3><p>위 메뉴에서 필요한 관리 기능을 선택하세요.</p>';
-    }else{
-      alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
-    }
-  };
-}
-document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContentEl));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=97', {updateViaCache:'none'}).catch(()=>{})}
+// v60 관리자 전용: 운영 입력 기능은 관리자만 사용
+adminLoginBtn.onclick=()=>{
+  if(adminPw.value==='rkrk1212!@'){
+    adminLogin.classList.add('hidden');
+    adminArea.classList.remove('hidden');
+    setupVoteRealtime();
+    renderVoteManager(adminContent);
+  } else alert('관리자 비밀번호를 확인해 주세요.');
+};
+document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 
 
 

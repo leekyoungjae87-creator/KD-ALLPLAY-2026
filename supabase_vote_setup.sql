@@ -1,5 +1,5 @@
--- 2026 경덕 ALL PLAY V95 교직원 실시간 투표 복구/보강 SQL
--- 기존 투표 데이터는 삭제하지 않습니다. Supabase > SQL Editor에서 한 번 실행하세요.
+-- 2026 경덕 ALL PLAY V61 교직원 실시간 투표
+-- Supabase > SQL Editor에서 한 번만 실행하세요.
 
 create table if not exists public.kd_vote_state (
   vote_type text primary key check (vote_type in ('performance','flag')),
@@ -25,30 +25,28 @@ create table if not exists public.kd_votes (
 alter table public.kd_vote_state enable row level security;
 alter table public.kd_votes enable row level security;
 
--- API 권한을 명시적으로 보장합니다.
-grant usage on schema public to anon, authenticated;
-grant select, insert, update, delete on public.kd_vote_state to anon, authenticated;
-grant select, insert, update, delete on public.kd_votes to anon, authenticated;
-grant usage, select on all sequences in schema public to anon, authenticated;
+-- 학교 행사 내부용 간편 정책: anon 사용자가 투표 상태/투표 데이터를 읽고 쓰도록 허용합니다.
+-- 중복은 DB unique 제약으로 막습니다. 관리자 비밀번호는 웹앱 UI 진입용입니다.
+do $$ begin
+  create policy "vote_state_read" on public.kd_vote_state for select to anon using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "vote_state_update" on public.kd_vote_state for update to anon using (true) with check (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "votes_read" on public.kd_votes for select to anon using (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "votes_insert" on public.kd_votes for insert to anon with check (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "votes_update" on public.kd_votes for update to anon using (true) with check (true);
+exception when duplicate_object then null; end $$;
+do $$ begin
+  create policy "votes_delete" on public.kd_votes for delete to anon using (true);
+exception when duplicate_object then null; end $$;
 
--- 같은 이름의 정책이 있으면 안전하게 다시 만듭니다.
-drop policy if exists "vote_state_read" on public.kd_vote_state;
-drop policy if exists "vote_state_insert" on public.kd_vote_state;
-drop policy if exists "vote_state_update" on public.kd_vote_state;
-drop policy if exists "votes_read" on public.kd_votes;
-drop policy if exists "votes_insert" on public.kd_votes;
-drop policy if exists "votes_update" on public.kd_votes;
-drop policy if exists "votes_delete" on public.kd_votes;
-
-create policy "vote_state_read" on public.kd_vote_state for select to anon, authenticated using (true);
-create policy "vote_state_insert" on public.kd_vote_state for insert to anon, authenticated with check (true);
-create policy "vote_state_update" on public.kd_vote_state for update to anon, authenticated using (true) with check (true);
-create policy "votes_read" on public.kd_votes for select to anon, authenticated using (true);
-create policy "votes_insert" on public.kd_votes for insert to anon, authenticated with check (true);
-create policy "votes_update" on public.kd_votes for update to anon, authenticated using (true) with check (true);
-create policy "votes_delete" on public.kd_votes for delete to anon, authenticated using (true);
-
--- Realtime 등록: 이미 등록된 경우는 그대로 둡니다.
+-- Realtime 반영
 do $$ begin
   alter publication supabase_realtime add table public.kd_vote_state;
 exception when duplicate_object then null; end $$;
