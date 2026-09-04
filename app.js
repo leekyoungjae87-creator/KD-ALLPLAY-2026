@@ -321,32 +321,7 @@ opsSearch.oninput=e=>renderOps(e.target.value);renderOps();
 
 
 
-const SUPA_ENABLED = false;
-const kdSupa = null;
-
-async function getQnaData(){
-  return load(STORE.qna,[]).slice().reverse();
-}
-
-async function renderQna(){
-  let a=await getQnaData();
-  qnaList.innerHTML=a.length?a.map((x,i)=>`
-    <article class="qna-card faq-card">
-      <div class="faq-number">Q${String(i+1).padStart(2,'0')}</div>
-      <div class="faq-copy">
-        <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b>${x.category?`<span class="faq-category">${escapeHtml(x.category)}</span>`:''}</div>
-        <div class="qna-answer faq-answer"><b>💬 답변</b><p>${escapeHtml(x.answer||'답변 준비 중입니다.')}</p></div>
-      </div>
-    </article>`).join(''):`<div class="faq-empty"><span>❔</span><b>등록된 Q&A가 아직 없습니다.</b><small>운영자가 확인된 내용을 순서대로 안내합니다.</small></div>`;
-
-  let recent=a.slice(0,3);
-  homeQnaList.innerHTML=recent.length?recent.map(x=>`
-    <div class="home-qna-item">
-      <b>${escapeHtml((x.question||'').length>36?(x.question||'').slice(0,36)+'…':(x.question||''))}</b>
-      <small>답변 완료</small>
-    </div>`).join(''):`<div class="home-qna-empty">등록된 Q&A가 아직 없습니다.</div>`;
-}
-renderQna();
+// Q&A shared implementation is initialized after Supabase client setup.
 
 
 function safeLink(raw){
@@ -385,6 +360,83 @@ const VOTE_STATE_LOCAL_KEY='kd_v61_vote_state';
 const kdSbConfig=window.KD_SUPABASE||{};
 const kdSbReady=!!(kdSbConfig.url&&kdSbConfig.anonKey&&window.supabase&&window.supabase.createClient);
 const kdSb=kdSbReady?window.supabase.createClient(kdSbConfig.url,kdSbConfig.anonKey):null;
+// ===== V76.3 공용 Q&A — 학생 질문 → 관리자 답변 → 실시간 반영 =====
+async function getQnaData(){
+  if(kdSbReady){
+    try{
+      const {data,error}=await kdSb.from('kd_qna').select('*').order('created_at',{ascending:false});
+      if(error) throw error;
+      return (data||[]).map(x=>({id:x.id,cls:x.class_name,name:x.name,category:x.category,question:x.question,answer:x.answer||'',status:x.status||'pending',time:x.created_at,answeredAt:x.answered_at}));
+    }catch(e){console.warn('shared qna',e);}
+  }
+  return load(STORE.qna,[]).slice().reverse();
+}
+async function addQnaQuestion(row){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_qna').insert({class_name:row.cls,name:row.name,category:row.category,question:row.question,status:'pending'});
+    if(!error)return true;
+    console.warn('qna insert',error);
+  }
+  let a=load(STORE.qna,[]);a.push({...row,id:'q'+Date.now(),answer:'',status:'pending',time:new Date().toISOString()});save(STORE.qna,a);return false;
+}
+async function answerQna(id,answer){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_qna').update({answer,status:answer?'answered':'pending',answered_at:answer?new Date().toISOString():null}).eq('id',id);
+    if(!error)return true;
+    console.warn('qna update',error);
+  }
+  let a=load(STORE.qna,[]),x=a.find(v=>String(v.id)===String(id));if(x){x.answer=answer;x.status=answer?'answered':'pending';x.answeredAt=answer?new Date().toISOString():null;save(STORE.qna,a);}return false;
+}
+async function deleteQna(id){
+  if(kdSbReady){
+    const {error}=await kdSb.from('kd_qna').delete().eq('id',id);
+    if(!error)return true;
+    console.warn('qna delete',error);
+  }
+  save(STORE.qna,load(STORE.qna,[]).filter(x=>String(x.id)!==String(id)));return false;
+}
+function maskQnaName(name){const s=String(name||'').trim();if(s.length<=1)return s||'익명';if(s.includes('○'))return s;return s[0]+'○'+(s.length>2?s.slice(2):'');}
+async function renderQna(){
+  const qnaListEl=document.getElementById('qnaList'), homeQnaListEl=document.getElementById('homeQnaList');
+  if(!qnaListEl)return;
+  let a=await getQnaData();
+  qnaListEl.innerHTML=a.length?a.map((x,i)=>{
+    const answered=!!(x.answer&&String(x.answer).trim());
+    return `<article class="qna-card faq-card ${answered?'is-answered':'is-pending'}">
+      <div class="faq-number">Q${String(i+1).padStart(2,'0')}</div>
+      <div class="faq-copy">
+        <div class="qna-meta"><span>${escapeHtml(x.cls||'')}</span><span>${escapeHtml(maskQnaName(x.name))}</span><span class="faq-category">${escapeHtml(x.category||'일반')}</span><em class="qna-status ${answered?'done':'wait'}">${answered?'✓ 답변완료':'● 답변대기'}</em></div>
+        <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b></div>
+        ${answered?`<div class="qna-answer faq-answer"><b>🏫 본부 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<div class="qna-answer faq-answer qna-wait-answer"><b>💬 답변 준비 중</b><p>관리자가 확인 후 답변하겠습니다.</p></div>`}
+      </div>
+    </article>`}).join(''):`<div class="faq-empty"><span>❔</span><b>등록된 질문이 아직 없습니다.</b><small>궁금한 내용을 첫 번째로 남겨보세요.</small></div>`;
+  let recent=a.slice(0,3);
+  if(homeQnaListEl) homeQnaListEl.innerHTML=recent.length?recent.map(x=>`<div class="home-qna-item"><b>${escapeHtml((x.question||'').length>36?(x.question||'').slice(0,36)+'…':(x.question||''))}</b><small>${x.answer?'✓ 답변완료':'● 답변대기'}</small></div>`).join(''):`<div class="home-qna-empty">등록된 Q&A가 아직 없습니다.</div>`;
+}
+const qnaAskFormEl=document.getElementById('qnaAskForm');
+if(qnaAskFormEl){
+  qnaAskFormEl.onsubmit=async e=>{
+    e.preventDefault();
+    const cls=document.getElementById('qnaAskClass').value.trim(),name=document.getElementById('qnaAskName').value.trim(),category=document.getElementById('qnaAskCategory').value,question=document.getElementById('qnaAskQuestion').value.trim();
+    if(!/^\d{4}$/.test(cls)){alert('학번은 4자리 숫자로 입력해 주세요. 예: 3211');document.getElementById('qnaAskClass').focus();return;}
+    if(!name||!question){alert('학번, 이름, 질문을 모두 입력해 주세요.');return;}
+    const btn=qnaAskFormEl.querySelector('button[type="submit"]'), before=btn.textContent;btn.disabled=true;btn.textContent='등록 중…';
+    try{const shared=await addQnaQuestion({cls,name,category,question});document.getElementById('qnaAskQuestion').value='';await renderQna();alert(shared?'질문을 등록했습니다. 관리자가 확인 후 답변합니다.':'이 기기에 임시 등록했습니다. Supabase Q&A 설정을 확인해 주세요.');}
+    catch(err){console.error(err);alert('질문 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');}
+    finally{btn.disabled=false;btn.textContent=before;}
+  };
+}
+let qnaRealtimeChannel=null;
+function startQnaRealtime(){
+  if(!kdSbReady||qnaRealtimeChannel)return;
+  qnaRealtimeChannel=kdSb.channel('kd-qna-live-v763').on('postgres_changes',{event:'*',schema:'public',table:'kd_qna'},async()=>{
+    await renderQna();
+    const adminAreaEl=document.getElementById('adminArea'),adminContentEl=document.getElementById('adminContent');
+    if(adminAreaEl&&!adminAreaEl.classList.contains('hidden')&&adminContentEl&&adminContentEl.querySelector('.qna-manager-v763')) staffView('qnaanswer',adminContentEl);
+  }).subscribe();
+}
+renderQna();
+startQnaRealtime();
 // ===== V74 신청곡 Supabase 공용 저장 · 관리자 승인 =====
 const SONG_LOCAL_KEY=STORE.songs;
 let songRealtimeChannel=null;
@@ -627,7 +679,7 @@ staffLoginBtn.onclick=()=>{
 };
 if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
-function staffView(v, contentEl=staffContent){
+async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
     renderVoteManager(contentEl);
   } else if(v==='songmanager'){
@@ -701,40 +753,23 @@ function staffView(v, contentEl=staffContent){
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
   } else if(v==='qnaanswer'){
     contentEl.innerHTML=`
-      <div class="faq-admin-head"><div><small>FAQ MANAGER</small><h3>❓ Q&A 관리</h3><p>학생들이 자주 궁금해하는 내용을 질문과 답변 형태로 정리합니다.</p></div><span>간편 등록</span></div>
-      <div class="faq-admin-new">
-        <label><span>분류</span><input id="faqCategory" placeholder="예: 일정 · 경기 · 준비물" maxlength="20"></label>
-        <label class="faq-wide"><span>질문</span><input id="faqQuestion" placeholder="예: 체육한마당은 몇 시에 시작하나요?" maxlength="120"></label>
-        <label class="faq-wide"><span>답변</span><textarea id="faqAnswer" placeholder="학생들에게 보여줄 답변을 입력하세요." maxlength="500"></textarea></label>
-        <button id="faqAdd">＋ Q&A 등록</button>
-      </div>
-      <div class="faq-admin-note">※ 등록 내용은 현재 브라우저에 저장됩니다. 모든 학생 기기에 동일하게 공개하려면 확정된 Q&A를 웹앱 파일에 반영해 GitHub에 올려야 합니다.</div>
-      <div id="staffQnaItems" class="faq-admin-list"></div>`;
-    const drawFaqAdmin=()=>{
-      const list=load(STORE.qna,[]).slice().reverse();
-      staffQnaItems.innerHTML=list.length?list.map(x=>`<article class="staff-faq-card" data-faq-card="${x.id}">
-        <div class="staff-faq-top"><span>${escapeHtml(x.category||'일반')}</span><button class="faq-delete" data-qna-delete="${x.id}" title="삭제">삭제</button></div>
-        <label><small>질문</small><input id="fqq_${x.id}" value="${escapeHtml(x.question||'')}" maxlength="120"></label>
-        <label><small>답변</small><textarea id="fqa_${x.id}" maxlength="500">${escapeHtml(x.answer||'')}</textarea></label>
-        <button class="faq-save" data-qna-save="${x.id}">수정 저장</button>
-      </article>`).join(''):'<div class="info-note">아직 등록된 Q&A가 없습니다. 위 입력창에서 첫 Q&A를 등록해 주세요.</div>';
-      document.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{
-        const list=load(STORE.qna,[]), item=list.find(x=>String(x.id)===String(btn.dataset.qnaSave));
-        if(item){item.question=document.getElementById(`fqq_${item.id}`).value.trim();item.answer=document.getElementById(`fqa_${item.id}`).value.trim();save(STORE.qna,list);}
-        await renderQna();drawFaqAdmin();alert('Q&A를 수정했습니다.');
-      });
-      document.querySelectorAll('[data-qna-delete]').forEach(btn=>btn.onclick=async()=>{
-        if(!confirm('이 Q&A를 삭제할까요?')) return;
-        let list=load(STORE.qna,[]).filter(x=>String(x.id)!==String(btn.dataset.qnaDelete));save(STORE.qna,list);await renderQna();drawFaqAdmin();
-      });
+      <div class="faq-admin-head qna-manager-v763"><div><small>Q&A MANAGER</small><h3>❓ 학생 Q&A 답변 관리</h3><p>학생이 등록한 질문을 확인하고 바로 답변할 수 있습니다.</p></div><span>${kdSbReady?'☁️ 실시간 공유':'📱 이 기기 저장'}</span></div>
+      <div class="faq-admin-note">학생 질문 → 관리자 답변 → 학생 화면에 자동 반영됩니다. 답변은 수정하거나 삭제할 수 있습니다.</div>
+      <div id="staffQnaItems" class="faq-admin-list"><div class="info-note">질문을 불러오는 중입니다.</div></div>`;
+    const drawFaqAdmin=async()=>{
+      const list=await getQnaData(), itemsEl=document.getElementById('staffQnaItems');
+      if(!itemsEl)return;
+      itemsEl.innerHTML=list.length?list.map(x=>{const done=!!(x.answer&&String(x.answer).trim());return `<article class="staff-faq-card ${done?'answered':''}" data-faq-card="${x.id}">
+        <div class="staff-faq-top"><span>${escapeHtml(x.category||'일반')} · ${escapeHtml(x.cls||'')} ${escapeHtml(maskQnaName(x.name))}</span><span class="qna-status ${done?'done':'wait'}">${done?'✓ 답변완료':'● 답변대기'}</span></div>
+        <div class="admin-qna-question"><small>학생 질문</small><b>${escapeHtml(x.question||'')}</b></div>
+        <label><small>본부 답변</small><textarea id="fqa_${x.id}" maxlength="500" placeholder="답변을 입력하세요.">${escapeHtml(x.answer||'')}</textarea></label>
+        <div class="admin-qna-actions"><button class="faq-save" data-qna-save="${x.id}">${done?'답변 수정':'답변 등록'}</button>${done?`<button class="faq-answer-delete" data-qna-answer-delete="${x.id}">답변만 삭제</button>`:''}<button class="faq-delete" data-qna-delete="${x.id}">질문 삭제</button></div>
+      </article>`}).join(''):'<div class="info-note">아직 학생이 등록한 질문이 없습니다.</div>';
+      itemsEl.querySelectorAll('[data-qna-save]').forEach(btn=>btn.onclick=async()=>{const ta=document.getElementById(`fqa_${btn.dataset.qnaSave}`),a=ta?ta.value.trim():'';if(!a){alert('답변을 입력해 주세요.');return;}await answerQna(btn.dataset.qnaSave,a);await renderQna();await drawFaqAdmin();alert('답변을 등록했습니다.');});
+      itemsEl.querySelectorAll('[data-qna-answer-delete]').forEach(btn=>btn.onclick=async()=>{if(!confirm('답변만 삭제하고 답변대기 상태로 돌릴까요?'))return;await answerQna(btn.dataset.qnaAnswerDelete,'');await renderQna();await drawFaqAdmin();});
+      itemsEl.querySelectorAll('[data-qna-delete]').forEach(btn=>btn.onclick=async()=>{if(!confirm('이 질문을 완전히 삭제할까요?'))return;await deleteQna(btn.dataset.qnaDelete);await renderQna();await drawFaqAdmin();});
     };
-    faqAdd.onclick=async()=>{
-      const q=faqQuestion.value.trim(), a=faqAnswer.value.trim();
-      if(!q||!a){alert('질문과 답변을 모두 입력해 주세요.');return;}
-      let list=load(STORE.qna,[]);list.push({id:'faq'+Date.now(),category:faqCategory.value.trim()||'일반',question:q,answer:a,time:new Date().toLocaleString()});save(STORE.qna,list);
-      faqCategory.value='';faqQuestion.value='';faqAnswer.value='';await renderQna();drawFaqAdmin();alert('Q&A를 등록했습니다.');
-    };
-    drawFaqAdmin();
+    await drawFaqAdmin();
   } else if(v==='performance'){
     currentStaffVoteType='performance';
     renderStaffVote('performance',contentEl);
@@ -746,17 +781,28 @@ function staffView(v, contentEl=staffContent){
 
 
 
-// v60 관리자 전용: 운영 입력 기능은 관리자만 사용
-adminLoginBtn.onclick=()=>{
-  if(adminPw.value==='rkrk1212!@'){
-    adminLogin.classList.add('hidden');
-    adminArea.classList.remove('hidden');
-    setupVoteRealtime();
-    renderVoteManager(adminContent);
-  } else alert('관리자 비밀번호를 확인해 주세요.');
-};
-document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+// V76.3 관리자 전용: ID + 비밀번호
+const ADMIN_ID='leekj1212';
+const ADMIN_PW='rkrk1212!@';
+const adminLoginEl=document.getElementById('adminLogin');
+const adminIdEl=document.getElementById('adminId');
+const adminPwEl=document.getElementById('adminPw');
+const adminLoginBtnEl=document.getElementById('adminLoginBtn');
+const adminAreaEl=document.getElementById('adminArea');
+const adminContentEl=document.getElementById('adminContent');
+if(adminLoginBtnEl){
+  adminLoginBtnEl.onclick=()=>{
+    const id=(adminIdEl?.value||'').trim(), pw=adminPwEl?.value||'';
+    if(id===ADMIN_ID&&pw===ADMIN_PW){
+      adminLoginEl?.classList.add('hidden');adminAreaEl?.classList.remove('hidden');setupVoteRealtime();startQnaRealtime();
+      if(adminContentEl)adminContentEl.innerHTML='<h3>관리자 메뉴</h3><p>위 메뉴에서 필요한 관리 기능을 선택하세요.</p>';
+    }else alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
+  };
+  [adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')adminLoginBtnEl.click();}));
+}
+
+document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.3',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
