@@ -641,32 +641,61 @@ function staffView(v, contentEl=staffContent){
     contentEl.innerHTML=`<h3>예선 결과 입력</h3><div class="staff-form"><select id="piEvent">${prelimEvents.map(x=>`<option>${x}</option>`).join('')}</select><select id="piGrade"><option>1</option><option>2</option><option>3</option></select><input id="piResult" placeholder="예: 1반 결승 진출"><button id="piSave">저장</button></div>`;
     piSave.onclick=()=>{let s=load(STORE.prelim,{});s[`${piEvent.value}_${piGrade.value}`]=piResult.value;save(STORE.prelim,s);renderBrackets();alert('저장했습니다.')};
   } else if(v==='scoreinput'){
-    contentEl.innerHTML=`
-      <div class="score-admin-head">
-        <div><small>ADMIN SCORE INPUT</small><h3>🏆 경기 결과 입력</h3><p>학급·종목·순위만 선택하면 배점표에 맞는 점수가 자동으로 입력됩니다.</p></div>
-        <span>관리자 직접 입력</span>
-      </div>
-      <div class="score-admin-panel">
-        <label><span>① 학급</span><select id="siClass">${[1,2,3].flatMap(g=>Array.from({length:classCount(g)},(_,i)=>`<option>${g}-${i+1}</option>`)).join('')}</select></label>
-        <label><span>② 종목</span><select id="siEvent">${scoreEvents.map(x=>`<option>${x}</option>`).join('')}</select></label>
-        <label><span>③ 순위</span><select id="siRank"><option value="1">1위</option><option value="2">2위</option><option value="3">3위</option><option value="4">4위</option><option value="5">5위 이하</option></select></label>
-        <div class="score-preview"><small>자동 입력 점수</small><strong id="siPointPreview">50점</strong></div>
-        <button id="siSave" class="score-save-btn">결과 저장 → 순위 반영</button>
-      </div>
-      <div class="score-admin-foot">
-        <b>✓ 승인 과정 없이 즉시 반영</b>
-        <span>잘못 입력한 경우 같은 학급·종목을 다시 선택해 저장하면 수정됩니다.</span>
-      </div>`;
-    const updatePreview=()=>{siPointPreview.textContent=pointsForRank(siEvent.value,siRank.value)+'점';};
-    siEvent.onchange=updatePreview; siRank.onchange=updatePreview; updatePreview();
-    siSave.onclick=()=>{
-      const pts=pointsForRank(siEvent.value,siRank.value);
-      let scores=getScores();
-      scores[siClass.value][siEvent.value]=pts;
-      save(STORE.scores,scores);
-      renderScores();
-      alert(`${siClass.value} · ${siEvent.value} · ${siRank.options[siRank.selectedIndex].text} → ${pts}점 반영 완료`);
+    const scoreInputEvents = scoreEvents;
+    let quickEvent = sessionStorage.getItem('kd_score_event') || scoreInputEvents[0];
+    let quickGrade = Number(sessionStorage.getItem('kd_score_grade') || 1);
+    let lastScoreAction = null;
+
+    const drawQuickScore = ()=>{
+      const scores=getScores();
+      const pts=rankPoints[quickEvent]||[0,0,0,0,0];
+      const n=classCount(quickGrade);
+      const rows=Array.from({length:n},(_,i)=>{
+        const cls=`${quickGrade}-${i+1}`;
+        const current=Number(scores[cls]?.[quickEvent]||0);
+        const currentRank=current?pts.findIndex(x=>x===current)+1:0;
+        const rankText=currentRank ? (currentRank===5?'5위 이하':`${currentRank}위`) : '미입력';
+        return `<article class="quick-score-class ${current?'done':''}">
+          <div class="quick-score-class-head"><strong>${cls}</strong><span>${current?`✓ ${rankText} · ${current}점`:'미입력'}</span></div>
+          <div class="quick-rank-buttons">
+            ${pts.map((point,idx)=>`<button type="button" data-quick-score="${cls}" data-rank="${idx+1}" class="${current===point?'selected':''}"><b>${idx===4?'5위↓':`${idx+1}위`}</b><small>${point}점</small></button>`).join('')}
+          </div>
+        </article>`;
+      }).join('');
+      const done=Array.from({length:n},(_,i)=>`${quickGrade}-${i+1}`).filter(c=>Number(scores[c]?.[quickEvent]||0)>0).length;
+      contentEl.innerHTML=`
+        <div class="score-admin-head quick-score-head">
+          <div><small>GAME DAY QUICK SCORE</small><h3>🏆 당일 점수 빠른 입력</h3><p>종목과 학년을 고른 뒤 학급별 순위 버튼만 누르세요. 점수는 즉시 자동 반영됩니다.</p></div>
+          <span>${done}/${n} 입력</span>
+        </div>
+        <div class="quick-score-toolbar">
+          <label><span>① 종목 선택</span><select id="quickEvent">${scoreInputEvents.map(x=>`<option ${x===quickEvent?'selected':''}>${x}</option>`).join('')}</select></label>
+          <div class="quick-grade-tabs"><span>② 학년 선택</span><div>${[1,2,3].map(g=>`<button type="button" data-score-grade="${g}" class="${g===quickGrade?'active':''}">${g}학년</button>`).join('')}</div></div>
+          <div class="quick-progress"><small>입력 진행률</small><strong>${done}/${n}</strong><span>${done===n?'✓ 입력 완료':'학급'}</span></div>
+        </div>
+        <div class="quick-score-notice">💡 <b>순위 버튼을 누르는 즉시 저장됩니다.</b> 잘못 눌렀다면 다른 순위를 다시 누르거나 아래 <b>실행취소</b>를 사용하세요.</div>
+        <div class="quick-score-grid">${rows}</div>
+        <div class="quick-score-bottom"><button type="button" id="quickUndo" ${lastScoreAction?'':'disabled'}>↩ 마지막 입력 실행취소</button><span id="quickScoreStatus">${lastScoreAction?escapeHtml(lastScoreAction.message):'입력 대기 중'}</span></div>`;
+
+      quickEventEl=document.getElementById('quickEvent');
+      quickEventEl.onchange=()=>{quickEvent=quickEventEl.value;sessionStorage.setItem('kd_score_event',quickEvent);lastScoreAction=null;drawQuickScore();};
+      contentEl.querySelectorAll('[data-score-grade]').forEach(b=>b.onclick=()=>{quickGrade=Number(b.dataset.scoreGrade);sessionStorage.setItem('kd_score_grade',quickGrade);lastScoreAction=null;drawQuickScore();});
+      contentEl.querySelectorAll('[data-quick-score]').forEach(b=>b.onclick=()=>{
+        const cls=b.dataset.quickScore, rank=Number(b.dataset.rank), point=pointsForRank(quickEvent,rank);
+        const all=getScores(); const prev=Number(all[cls]?.[quickEvent]||0);
+        all[cls][quickEvent]=point; save(STORE.scores,all); renderScores();
+        lastScoreAction={cls,event:quickEvent,prev,message:`✓ ${cls} · ${quickEvent} · ${rank===5?'5위 이하':rank+'위'} · ${point}점 반영 완료`};
+        drawQuickScore();
+      });
+      const undo=document.getElementById('quickUndo');
+      if(undo) undo.onclick=()=>{
+        if(!lastScoreAction)return;
+        const a=lastScoreAction, all=getScores(); all[a.cls][a.event]=a.prev; save(STORE.scores,all); renderScores();
+        const msg=`↩ ${a.cls} · ${a.event} 입력을 이전 상태로 되돌렸습니다.`; lastScoreAction=null; drawQuickScore();
+        const st=document.getElementById('quickScoreStatus'); if(st) st.textContent=msg;
+      };
     };
+    drawQuickScore();
   } else if(v==='noticeinput'){
     contentEl.innerHTML=`<h3>공지 등록</h3><div class="staff-form"><input id="niTitle" placeholder="제목"><input id="niBody" placeholder="내용" style="grid-column:span 2"><button id="niSave">등록</button></div>`;
     niSave.onclick=()=>{let a=load(STORE.notices,[]);a.push({title:niTitle.value,body:niBody.value,time:new Date().toLocaleString()});save(STORE.notices,a);renderBoard();alert('등록했습니다.')};
