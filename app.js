@@ -772,35 +772,71 @@ function staffView(v, contentEl=staffContent){
       });
       return {
         app:'2026 경덕 ALL PLAY 체육한마당',
-        version:'V82',
+        version:'V83',
         createdAt:new Date().toISOString(),
         createdAtLocal:new Date().toLocaleString(),
         note:'당일 본부 노트북 브라우저(localStorage) 데이터 백업',
         data
       };
     };
+    const downloadBackup=(backup,prefix='경덕_ALLPLAY_백업')=>{
+      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const d=new Date(),pad=n=>String(n).padStart(2,'0');
+      const filename=`${prefix}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`;
+      const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    };
     const countRecordStates=()=>Object.keys(localStorage).filter(k=>k.startsWith('kd_office_record_state_')).reduce((n,k)=>{const s=load(k,{});return n+(s.locked?1:0)},0);
     const refreshBackupSummary=()=>{
       const b=collectBackup(),keys=Object.keys(b.data);
       backupSummary.innerHTML=`<div><b>${keys.length}</b><span>저장 항목</span></div><div><b>${countRecordStates()}</b><span>확정 기록</span></div><div><b>${Object.keys(getScores()).length}</b><span>학급 점수표</span></div>`;
     };
-    contentEl.innerHTML=`<div class="backup-admin-head"><div><small>EVENT DAY BACKUP · V82</small><h3>💾 당일 데이터 백업</h3><p>현재 노트북 브라우저에 저장된 점수·기록·확정상태·예선결과·공지 등을 JSON 파일로 내려받습니다.</p></div><span>LOCAL BACKUP</span></div>
+    contentEl.innerHTML=`<div class="backup-admin-head"><div><small>EVENT DAY BACKUP & RESTORE · V83</small><h3>💾 당일 데이터 백업 · 복원</h3><p>현재 노트북의 경기 데이터를 JSON 파일로 보관하고, 필요할 때 그 시점으로 되돌릴 수 있습니다.</p></div><span>LOCAL SAFETY</span></div>
       <div id="backupSummary" class="backup-summary"></div>
       <div class="backup-card">
         <div class="backup-icon">💾</div>
-        <div><b>현재 상태를 파일로 저장</b><p>경기 중간에도 수시로 눌러 백업해 두세요. 기존 데이터는 변경되지 않습니다.</p></div>
+        <div><b>현재 상태를 파일로 저장</b><p>경기 중간에도 수시로 눌러 백업하세요. 현재 데이터는 변경되지 않습니다.</p></div>
         <button id="backupDownload">백업 파일 다운로드</button>
       </div>
+      <div class="backup-card restore-card">
+        <div class="backup-icon">♻️</div>
+        <div><b>백업 파일에서 데이터 복원</b><p>이전에 내려받은 경덕 ALL PLAY 백업(.json)을 선택하면 그 시점의 점수·기록·잠금상태 등으로 되돌립니다.</p></div>
+        <button id="backupRestore">백업 파일 선택 · 복원</button>
+        <input id="backupRestoreFile" type="file" accept="application/json,.json" class="hidden" />
+      </div>
+      <div class="restore-warning"><b>⚠️ 복원 전 확인</b><span>복원을 시작하면 현재 kd_ 데이터가 백업 파일 내용으로 교체됩니다. 안전을 위해 복원 직전에 현재 상태를 자동으로 한 번 더 내려받습니다.</span></div>
       <div class="backup-note"><b>추천</b><span>오전 순환경기 종료 후 1회 · 점심 전후 1회 · 이어달리기 종료 후 1회 저장하면 충분합니다.</span></div>`;
     refreshBackupSummary();
-    backupDownload.onclick=()=>{
-      const backup=collectBackup();
-      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
-      const url=URL.createObjectURL(blob);
-      const d=new Date(),pad=n=>String(n).padStart(2,'0');
-      const filename=`경덕_ALLPLAY_백업_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`;
-      const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-      refreshBackupSummary();
+    backupDownload.onclick=()=>{downloadBackup(collectBackup());refreshBackupSummary();};
+    backupRestore.onclick=()=>backupRestoreFile.click();
+    backupRestoreFile.onchange=()=>{
+      const file=backupRestoreFile.files&&backupRestoreFile.files[0];
+      if(!file)return;
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const restored=JSON.parse(String(reader.result||''));
+          if(!restored||typeof restored!=='object'||!restored.data||typeof restored.data!=='object'||Array.isArray(restored.data)) throw new Error('백업 데이터 형식을 확인할 수 없습니다.');
+          const keys=Object.keys(restored.data);
+          if(!keys.length||keys.some(k=>!k.startsWith('kd_'))) throw new Error('경덕 ALL PLAY 백업 파일이 아니거나 저장 항목이 올바르지 않습니다.');
+          if(restored.app && !String(restored.app).includes('경덕 ALL PLAY')) throw new Error('다른 앱의 백업 파일입니다.');
+          const when=restored.createdAtLocal||restored.createdAt||'저장 시각 정보 없음';
+          if(!confirm(`선택한 백업으로 복원할까요?\n\n백업 시각: ${when}\n저장 항목: ${keys.length}개\n\n현재 데이터는 먼저 안전 백업 파일로 자동 저장한 뒤 교체됩니다.`)){backupRestoreFile.value='';return;}
+          downloadBackup(collectBackup(),'경덕_ALLPLAY_복원전_자동백업');
+          Object.keys(localStorage).filter(k=>k.startsWith('kd_')).forEach(k=>localStorage.removeItem(k));
+          keys.forEach(k=>{
+            const v=restored.data[k];
+            localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));
+          });
+          alert(`복원이 완료되었습니다.\n백업 시각: ${when}\n저장 항목: ${keys.length}개\n\n웹앱을 새로고침합니다.`);
+          location.reload();
+        }catch(err){
+          alert(`복원할 수 없습니다.\n${err&&err.message?err.message:'백업 파일을 확인해 주세요.'}`);
+          backupRestoreFile.value='';
+        }
+      };
+      reader.onerror=()=>{alert('백업 파일을 읽는 중 오류가 발생했습니다.');backupRestoreFile.value='';};
+      reader.readAsText(file,'utf-8');
     };
   } else if(v==='scoreinput'){
     contentEl.innerHTML=`
