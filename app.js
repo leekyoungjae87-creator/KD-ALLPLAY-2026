@@ -915,15 +915,26 @@ function staffView(v, contentEl=staffContent){
 
 
 
-// v60 관리자 전용: 운영 입력 기능은 관리자만 사용
-adminLoginBtn.onclick=()=>{
-  if(adminPw.value==='rkrk1212!@'){
+// v84 관리자 전용: ID + 비밀번호 로그인 (자동 로그아웃 없음)
+const ADMIN_ID='leekj1212';
+const ADMIN_PW='rkrkrk121212!@';
+function adminSignIn(){
+  const id=(adminId.value||'').trim();
+  const pw=adminPw.value||'';
+  if(id===ADMIN_ID && pw===ADMIN_PW){
     adminLogin.classList.add('hidden');
     adminArea.classList.remove('hidden');
+    adminPw.value='';
     setupVoteRealtime();
     renderVoteManager(adminContent);
-  } else alert('관리자 비밀번호를 확인해 주세요.');
-};
+  } else {
+    alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
+    adminPw.value='';
+    adminPw.focus();
+  }
+}
+adminLoginBtn.onclick=adminSignIn;
+[adminId,adminPw].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter') adminSignIn();}));
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContent));
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 
