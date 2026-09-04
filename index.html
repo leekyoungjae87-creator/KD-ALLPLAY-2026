@@ -924,7 +924,7 @@
   <section class="page" id="staff">
     <div class="page-title gold"><div class="icon">🔒</div><div><small>STAFF VOTE</small><h2>교직원 전용</h2><p>응원 퍼포먼스와 학급 깃발 투표만 이용할 수 있습니다.</p></div></div>
     <div id="staffLogin" class="login-card staff-login-card">
-      <input type="text" id="staffName" placeholder="교직원 이름 (예: 홍길동)" maxlength="20" autocomplete="name">
+      <input type="text" id="staffName" placeholder="교직원 이름 (예: 홍길동)" maxlength="20" autocomplete="name" lang="ko" inputmode="text" autocapitalize="off" spellcheck="false">
       <input type="password" id="staffPw" placeholder="교직원 비밀번호">
       <button id="staffLoginBtn">투표 입장</button>
     </div>
@@ -1022,51 +1022,8 @@
   <img src="assets/allplay-footer-logo.png" alt="우리 함께, 경덕 로고" class="allplay-footer-logo">
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=90"></script>
-<script src="app.js?v=90"></script>
-<script>
-// V90 로그인 안전장치: 메인 스크립트의 다른 기능에서 오류가 나더라도 로그인 UI는 독립 작동
-(function(){
-  const byId=(id)=>document.getElementById(id);
-  const staffBtn=byId('staffLoginBtn'), staffName=byId('staffName'), staffPw=byId('staffPw');
-  const staffLogin=byId('staffLogin'), staffArea=byId('staffArea');
-  if(staffBtn && !staffBtn.dataset.v90bound){
-    staffBtn.dataset.v90bound='1';
-    staffBtn.addEventListener('click',function(){
-      const name=(staffName&&staffName.value||'').trim();
-      const pw=staffPw&&staffPw.value||'';
-      if(name.length<2){ alert('교직원 이름을 입력해 주세요.'); return; }
-      if(pw!=='rudejr26**'){ alert('비밀번호를 확인해 주세요.'); return; }
-      try{ sessionStorage.setItem('kd_staff_name',name); }catch(e){}
-      if(staffLogin) staffLogin.classList.add('hidden');
-      if(staffArea) staffArea.classList.remove('hidden');
-    });
-  }
-  const adminBtn=byId('adminLoginBtn'), adminId=byId('adminId'), adminPw=byId('adminPw');
-  const adminLogin=byId('adminLogin'), adminArea=byId('adminArea');
-  function safeAdminLogin(){
-    const id=(adminId&&adminId.value||'').trim();
-    const pw=adminPw&&adminPw.value||'';
-    if(id==='leekj1212' && pw==='rkrkrk121212!@'){
-      if(adminLogin) adminLogin.classList.add('hidden');
-      if(adminArea) adminArea.classList.remove('hidden');
-      try{
-        if(typeof setupVoteRealtime==='function') setupVoteRealtime();
-        if(typeof renderVoteManager==='function' && byId('adminContent')) renderVoteManager(byId('adminContent'));
-      }catch(e){ console.error(e); }
-    }else{
-      alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
-      if(adminPw){ adminPw.value=''; adminPw.focus(); }
-    }
-  }
-  if(adminBtn && !adminBtn.dataset.v90bound){
-    adminBtn.dataset.v90bound='1';
-    adminBtn.addEventListener('click',safeAdminLogin);
-  }
-  [staffName,staffPw,adminId,adminPw].filter(Boolean).forEach(function(el){
-    el.style.pointerEvents='auto'; el.style.touchAction='manipulation';
-  });
-})();
-</script>
+<script src="config.js?v=91"></script>
+<script src="app.js?v=91"></script>
+
 </body>
 </html>

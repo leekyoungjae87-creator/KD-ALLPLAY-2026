@@ -662,7 +662,7 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// v90 교직원 로그인: HTML id 전역변수에 의존하지 않고 DOM을 직접 연결
+// v91 교직원 로그인: HTML id 전역변수에 의존하지 않고 DOM을 직접 연결
 const staffLoginBtnEl=document.getElementById('staffLoginBtn');
 const staffNameEl=document.getElementById('staffName');
 const staffPwEl=document.getElementById('staffPw');
@@ -682,6 +682,15 @@ if(staffLoginBtnEl) staffLoginBtnEl.onclick=()=>{
   } else alert('비밀번호를 확인해 주세요.');
 };
 if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
+// 한글 IME 조합 중 Enter가 로그인으로 처리되지 않도록 보호
+[staffNameEl,staffPwEl].filter(Boolean).forEach(el=>{
+  el.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.isComposing && e.keyCode!==229){
+      e.preventDefault();
+      staffLoginBtnEl?.click();
+    }
+  });
+});
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView,document.getElementById('staffContent')));
 function staffView(v, contentEl=document.getElementById('staffContent')){
   if(v==='votemanager'){
@@ -953,7 +962,7 @@ function staffView(v, contentEl=document.getElementById('staffContent')){
 
 
 
-// v90 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
+// v91 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
 const ADMIN_ID='leekj1212';
 const ADMIN_PW='rkrkrk121212!@';
 const adminLoginEl=document.getElementById('adminLogin');
@@ -983,9 +992,9 @@ function adminSignIn(){
   }
 }
 if(adminLoginBtnEl) adminLoginBtnEl.addEventListener('click',adminSignIn);
-[adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adminSignIn();}}));
+[adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();adminSignIn();}}));
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=90', {updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=91', {updateViaCache:'none'}).catch(()=>{})}
 
 
 
