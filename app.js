@@ -177,7 +177,7 @@ let pendingStaffView='';
 document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
   pendingStaffView=b.dataset.staffTarget;
   showPage('staff');
-  if(!staffArea.classList.contains('hidden')) staffView(pendingStaffView);
+  {const sa=document.getElementById('staffArea'); if(sa && !sa.classList.contains('hidden')) staffView(pendingStaffView);}
 });
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
@@ -668,20 +668,27 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// V96: 교직원 로그인은 정상 작동했던 V71 방식으로 복원
-staffLoginBtn.onclick=()=>{
-  const name=(staffName.value||'').trim();
-  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-  if(staffPw.value==='rudejr26**'){
-    currentStaffName=name;
-    sessionStorage.setItem('kd_staff_name',name);
-    staffLogin.classList.add('hidden');
-    staffArea.classList.remove('hidden');
-    setupVoteRealtime();
-    if(pendingStaffView) staffView(pendingStaffView);
-  } else alert('비밀번호를 확인해 주세요.');
-};
-if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+// V97: V71 교직원 로그인 구조 + DOM 명시 참조로 브라우저 호환성 강화
+const staffLoginBtnEl=document.getElementById('staffLoginBtn');
+const staffNameEl=document.getElementById('staffName');
+const staffPwEl=document.getElementById('staffPw');
+const staffLoginEl=document.getElementById('staffLogin');
+const staffAreaEl=document.getElementById('staffArea');
+if(staffLoginBtnEl){
+  staffLoginBtnEl.onclick=()=>{
+    const name=(staffNameEl?.value||'').trim();
+    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+    if((staffPwEl?.value||'')==='rudejr26**'){
+      currentStaffName=name;
+      sessionStorage.setItem('kd_staff_name',name);
+      staffLoginEl?.classList.add('hidden');
+      staffAreaEl?.classList.remove('hidden');
+      setupVoteRealtime();
+      if(pendingStaffView) staffView(pendingStaffView);
+    } else alert('비밀번호를 확인해 주세요.');
+  };
+}
+if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=document.getElementById('staffContent')){
   if(v==='votemanager'){
@@ -977,7 +984,7 @@ if(adminLoginBtnEl){
   };
 }
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContentEl));
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=96', {updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=97', {updateViaCache:'none'}).catch(()=>{})}
 
 
 
