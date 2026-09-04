@@ -501,10 +501,6 @@ renderSongs();setupSongRealtime();
 let currentStaffName=sessionStorage.getItem('kd_staff_name')||'';
 let voteRealtimeChannel=null;
 let currentStaffVoteType='';
-let voteCloudOk=kdSbReady;
-let voteCloudLastError='';
-function markVoteCloudError(err){ voteCloudOk=false; voteCloudLastError=String(err?.message||err||'Supabase vote error'); console.warn('vote cloud fallback:',err); }
-function markVoteCloudOk(){ voteCloudOk=true; voteCloudLastError=''; }
 
 function voteTypeLabel(type){return type==='performance'?'응원 퍼포먼스':'학급 깃발'}
 function performanceCandidates(){
@@ -547,77 +543,52 @@ function localVoteState(){return load(VOTE_STATE_LOCAL_KEY,{performance:false,fl
 function localVotes(){return load(VOTE_LOCAL_KEY,[])}
 async function getVoteState(type){
   if(kdSbReady){
-    try{
-      const {data,error}=await kdSb.from('kd_vote_state').select('is_open').eq('vote_type',type).maybeSingle();
-      if(error) throw error;
-      markVoteCloudOk();
-      if(data) return !!data.is_open;
-    }catch(e){ markVoteCloudError(e); }
+    const {data,error}=await kdSb.from('kd_vote_state').select('is_open').eq('vote_type',type).maybeSingle();
+    if(!error&&data) return !!data.is_open;
   }
   return !!localVoteState()[type];
 }
 async function setVoteState(type,isOpen){
   if(kdSbReady){
-    try{
-      const {error}=await kdSb.from('kd_vote_state').upsert({vote_type:type,is_open:isOpen,updated_at:new Date().toISOString()},{onConflict:'vote_type'});
-      if(error) throw error;
-      markVoteCloudOk();
-      return;
-    }catch(e){ markVoteCloudError(e); }
+    const {error}=await kdSb.from('kd_vote_state').update({is_open:isOpen,updated_at:new Date().toISOString()}).eq('vote_type',type);
+    if(error) throw error;
+  }else{
+    const st=localVoteState();st[type]=isOpen;save(VOTE_STATE_LOCAL_KEY,st);
   }
-  const st=localVoteState();st[type]=isOpen;save(VOTE_STATE_LOCAL_KEY,st);
 }
 async function getMyVotes(type,name){
   if(kdSbReady){
-    try{
-      const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
-      if(error) throw error;
-      markVoteCloudOk();
-      return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
-    }catch(e){ markVoteCloudError(e); }
+    const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
+    if(!error) return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
   }
   return Object.fromEntries(localVotes().filter(x=>x.vote_type===type&&x.voter_name===name).map(x=>[x.grade,x.class_no]));
 }
 async function saveMyVote(type,grade,classNo,name){
-  const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
   if(kdSbReady){
-    try{
-      const {error}=await kdSb.from('kd_votes').upsert(row,{onConflict:'voter_name,vote_type,grade'});
-      if(error) throw error;
-      markVoteCloudOk();
-      return;
-    }catch(e){ markVoteCloudError(e); }
+    const {error}=await kdSb.from('kd_votes').upsert({voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()},{onConflict:'voter_name,vote_type,grade'});
+    if(error) throw error;
+  }else{
+    let list=localVotes();
+    const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
+    const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
+    if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
   }
-  let list=localVotes();
-  const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
-  if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
 }
 async function getAllVotes(type){
   if(kdSbReady){
-    try{
-      const {data,error}=await kdSb.from('kd_votes').select('voter_name,grade,class_no,updated_at').eq('vote_type',type);
-      if(error) throw error;
-      markVoteCloudOk();
-      return data||[];
-    }catch(e){ markVoteCloudError(e); }
+    const {data,error}=await kdSb.from('kd_votes').select('voter_name,grade,class_no,updated_at').eq('vote_type',type);
+    if(error) throw error; return data||[];
   }
   return localVotes().filter(x=>x.vote_type===type);
 }
 async function clearVotes(type){
   if(kdSbReady){
-    try{
-      const {error}=await kdSb.from('kd_votes').delete().eq('vote_type',type);
-      if(error) throw error;
-      markVoteCloudOk();
-      return;
-    }catch(e){ markVoteCloudError(e); }
-  }
-  save(VOTE_LOCAL_KEY,localVotes().filter(x=>x.vote_type!==type));
+    const {error}=await kdSb.from('kd_votes').delete().eq('vote_type',type);
+    if(error) throw error;
+  } else save(VOTE_LOCAL_KEY,localVotes().filter(x=>x.vote_type!==type));
 }
 function voteModeBadge(){
-  if(kdSbReady && voteCloudOk) return '<span class="vote-mode live">● 실시간 공동 투표</span>';
-  if(kdSbReady && !voteCloudOk) return '<span class="vote-mode local">⚠ Supabase 연결 오류 · 이 기기 임시 저장</span>';
-  return '<span class="vote-mode local">⚠ 설정 전 · 이 기기에서만 저장</span>';
+  return kdSbReady?'<span class="vote-mode live">● 실시간 공동 투표</span>':'<span class="vote-mode local">⚠ 설정 전 · 이 기기에서만 저장</span>';
 }
 async function renderStaffVote(type,contentEl=staffContent){
   const name=currentStaffName||sessionStorage.getItem('kd_staff_name')||'';
@@ -697,32 +668,21 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// v92 교직원 로그인: V83 방식으로 단순화 — 버튼 클릭만 사용, 한글 IME 이벤트 개입 없음
-const staffLoginBtnEl=document.getElementById('staffLoginBtn');
-const staffNameEl=document.getElementById('staffName');
-const staffPwEl=document.getElementById('staffPw');
-const staffLoginEl=document.getElementById('staffLogin');
-const staffAreaEl=document.getElementById('staffArea');
-const staffContentEl=document.getElementById('staffContent');
-if(staffLoginBtnEl){
-  staffLoginBtnEl.onclick=function(){
-    const name=(staffNameEl && staffNameEl.value ? staffNameEl.value : '').trim();
-    const pw=staffPwEl ? staffPwEl.value : '';
-    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-    if(pw==='rudejr26**'){
-      currentStaffName=name;
-      sessionStorage.setItem('kd_staff_name',name);
-      if(staffLoginEl) staffLoginEl.classList.add('hidden');
-      if(staffAreaEl) staffAreaEl.classList.remove('hidden');
-      setupVoteRealtime();
-      if(pendingStaffView) staffView(pendingStaffView,staffContentEl);
-    }else{
-      alert('비밀번호를 확인해 주세요.');
-    }
-  };
-}
-if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
-document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView,document.getElementById('staffContent')));
+// V96: 교직원 로그인은 정상 작동했던 V71 방식으로 복원
+staffLoginBtn.onclick=()=>{
+  const name=(staffName.value||'').trim();
+  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+  if(staffPw.value==='rudejr26**'){
+    currentStaffName=name;
+    sessionStorage.setItem('kd_staff_name',name);
+    staffLogin.classList.add('hidden');
+    staffArea.classList.remove('hidden');
+    setupVoteRealtime();
+    if(pendingStaffView) staffView(pendingStaffView);
+  } else alert('비밀번호를 확인해 주세요.');
+};
+if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=document.getElementById('staffContent')){
   if(v==='votemanager'){
     await renderVoteManager(contentEl);
@@ -1016,8 +976,8 @@ if(adminLoginBtnEl){
     }
   };
 }
-document.querySelectorAll('[data-admin-view]').forEach(b=>{b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=95', {updateViaCache:'none'}).catch(()=>{})}
+document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.adminView,adminContentEl));
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=96', {updateViaCache:'none'}).catch(()=>{})}
 
 
 

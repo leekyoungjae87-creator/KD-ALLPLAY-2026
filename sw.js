@@ -1,4 +1,4 @@
-const CACHE='kd-allplay-v95';
+const CACHE='kd-allplay-v96';
 const CORE=['./','./index.html','./styles.css','./app.js','./config.js','./manifest.webmanifest','./kakao-thumbnail-v69.png'];
 
 self.addEventListener('install',event=>{
