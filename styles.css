@@ -2609,26 +2609,3 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
   .seat-photo-map .seat-legend{gap:5px!important;margin-top:8px!important;font-size:9px!important;flex-wrap:wrap}
   .seat-photo-map .seat-legend span{font-size:9px!important}
 }
-
-
-/* V90 로그인 입력 안정화 — 모바일 포함 */
-#staffLogin,#adminLogin{position:relative!important;z-index:20!important;pointer-events:auto!important}
-#staffLogin input,#adminLogin input,#staffLogin button,#adminLogin button{
-  position:relative!important;z-index:21!important;pointer-events:auto!important;opacity:1!important;
-  touch-action:manipulation!important;-webkit-user-select:text;user-select:text;
-}
-#staffLogin input,#adminLogin input{color:#263c53!important;-webkit-text-fill-color:#263c53!important;caret-color:#234a7b!important;background:#fff!important}
-@media(max-width:700px){
-  #staffLogin,#adminLogin{display:grid!important;grid-template-columns:1fr!important;max-width:none!important;width:100%!important;box-sizing:border-box}
-  #staffLogin input,#adminLogin input,#staffLogin button,#adminLogin button{width:100%!important;box-sizing:border-box!important;min-height:46px!important;font-size:16px!important}
-}
-
-
-/* v91 login input stability — Korean IME + mobile focus */
-#staffName,#staffPw,#adminId,#adminPw{
-  position:relative!important; z-index:2!important; pointer-events:auto!important; touch-action:manipulation!important;
-  user-select:text!important; -webkit-user-select:text!important; opacity:1!important;
-  -webkit-text-fill-color:currentColor!important; text-transform:none!important;
-}
-#staffName{ime-mode:active;}
-#staffLogin,#adminLogin{position:relative;isolation:isolate;}

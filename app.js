@@ -662,35 +662,31 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// v91 교직원 로그인: HTML id 전역변수에 의존하지 않고 DOM을 직접 연결
+// v92 교직원 로그인: V83 방식으로 단순화 — 버튼 클릭만 사용, 한글 IME 이벤트 개입 없음
 const staffLoginBtnEl=document.getElementById('staffLoginBtn');
 const staffNameEl=document.getElementById('staffName');
 const staffPwEl=document.getElementById('staffPw');
 const staffLoginEl=document.getElementById('staffLogin');
 const staffAreaEl=document.getElementById('staffArea');
 const staffContentEl=document.getElementById('staffContent');
-if(staffLoginBtnEl) staffLoginBtnEl.onclick=()=>{
-  const name=(staffNameEl?.value||'').trim();
-  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-  if((staffPwEl?.value||'')==='rudejr26**'){
-    currentStaffName=name;
-    sessionStorage.setItem('kd_staff_name',name);
-    staffLoginEl?.classList.add('hidden');
-    staffAreaEl?.classList.remove('hidden');
-    setupVoteRealtime();
-    if(pendingStaffView) staffView(pendingStaffView,staffContentEl);
-  } else alert('비밀번호를 확인해 주세요.');
-};
-if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
-// 한글 IME 조합 중 Enter가 로그인으로 처리되지 않도록 보호
-[staffNameEl,staffPwEl].filter(Boolean).forEach(el=>{
-  el.addEventListener('keydown',e=>{
-    if(e.key==='Enter' && !e.isComposing && e.keyCode!==229){
-      e.preventDefault();
-      staffLoginBtnEl?.click();
+if(staffLoginBtnEl){
+  staffLoginBtnEl.onclick=function(){
+    const name=(staffNameEl && staffNameEl.value ? staffNameEl.value : '').trim();
+    const pw=staffPwEl ? staffPwEl.value : '';
+    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+    if(pw==='rudejr26**'){
+      currentStaffName=name;
+      sessionStorage.setItem('kd_staff_name',name);
+      if(staffLoginEl) staffLoginEl.classList.add('hidden');
+      if(staffAreaEl) staffAreaEl.classList.remove('hidden');
+      setupVoteRealtime();
+      if(pendingStaffView) staffView(pendingStaffView,staffContentEl);
+    }else{
+      alert('비밀번호를 확인해 주세요.');
     }
-  });
-});
+  };
+}
+if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView,document.getElementById('staffContent')));
 function staffView(v, contentEl=document.getElementById('staffContent')){
   if(v==='votemanager'){
@@ -962,7 +958,7 @@ function staffView(v, contentEl=document.getElementById('staffContent')){
 
 
 
-// v91 관리자 전용: ID + 비밀번호 로그인 — DOM 요소를 명시적으로 연결해 브라우저별 로그인 오류 방지
+// v92 관리자 전용: ID + 비밀번호 — 버튼 클릭만 사용하는 독립형 단순 로그인
 const ADMIN_ID='leekj1212';
 const ADMIN_PW='rkrkrk121212!@';
 const adminLoginEl=document.getElementById('adminLogin');
@@ -971,28 +967,20 @@ const adminPwEl=document.getElementById('adminPw');
 const adminLoginBtnEl=document.getElementById('adminLoginBtn');
 const adminAreaEl=document.getElementById('adminArea');
 const adminContentEl=document.getElementById('adminContent');
-
-function adminSignIn(){
-  if(!adminIdEl||!adminPwEl||!adminLoginEl||!adminAreaEl||!adminContentEl){
-    alert('관리자 로그인 화면을 불러오지 못했습니다. 페이지를 새로고침해 주세요.');
-    return;
-  }
-  const id=(adminIdEl.value||'').trim();
-  const pw=adminPwEl.value||'';
-  if(id===ADMIN_ID && pw===ADMIN_PW){
-    adminLoginEl.classList.add('hidden');
-    adminAreaEl.classList.remove('hidden');
-    adminPwEl.value='';
-    setupVoteRealtime();
-    renderVoteManager(adminContentEl);
-  } else {
-    alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
-    adminPwEl.value='';
-    adminPwEl.focus();
-  }
+if(adminLoginBtnEl){
+  adminLoginBtnEl.onclick=function(){
+    const id=(adminIdEl && adminIdEl.value ? adminIdEl.value : '').trim();
+    const pw=adminPwEl ? adminPwEl.value : '';
+    if(id===ADMIN_ID && pw===ADMIN_PW){
+      if(adminLoginEl) adminLoginEl.classList.add('hidden');
+      if(adminAreaEl) adminAreaEl.classList.remove('hidden');
+      setupVoteRealtime();
+      if(adminContentEl) renderVoteManager(adminContentEl);
+    }else{
+      alert('관리자 ID 또는 비밀번호를 확인해 주세요.');
+    }
+  };
 }
-if(adminLoginBtnEl) adminLoginBtnEl.addEventListener('click',adminSignIn);
-[adminIdEl,adminPwEl].filter(Boolean).forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();adminSignIn();}}));
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.addEventListener('click',()=>staffView(b.dataset.adminView,adminContentEl)));
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=91', {updateViaCache:'none'}).catch(()=>{})}
 
