@@ -825,7 +825,7 @@
       <div class="form-section-label"><span>02</span><div><b>듣고 싶은 노래</b><small>곡명과 가수를 함께 적으면 더 정확해요.</small></div></div>
       <input id="songTitle" placeholder="🎶 곡명 / 가수" maxlength="80" required>
       <textarea id="songMsg" placeholder="💬 신청 메시지나 사연을 자유롭게 남겨주세요. · 300자 이내" maxlength="300"></textarea>
-      <div class="form-foot"><small><span id="songCount">0</span>/300자 · 이름은 공개 화면에서 가운데 글자를 가려 표시합니다.</small><button class="song-submit-btn">🎵 신청하기</button></div>
+      <div class="form-foot"><small><span id="songCount">0</span>/300자 · 이름은 공개 화면에서 가운데 글자를 가려 표시합니다.</small><button type="submit" class="song-submit-btn">🎵 신청하기</button></div>
     </form>
     <div class="section-caption"><div><b>🎼 신청 플레이리스트</b><small>최근 신청곡부터 보여요.</small></div></div>
     <div id="songList" class="song-list-v39"></div>
@@ -895,6 +895,7 @@
     <div id="adminArea" class="staff-area hidden">
       <div class="staff-menu admin-menu">
         <button data-admin-view="votemanager">🗳️ 교직원 투표 관리</button>
+        <button data-admin-view="songmanager">🎵 신청곡 관리</button>
         <button data-admin-view="flagimages">🚩 깃발 이미지 관리</button>
         <button data-admin-view="preliminput">🏟️ 예선 결과 입력</button>
         <button data-admin-view="scoreinput">🏆 경기 결과 입력</button>

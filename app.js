@@ -348,21 +348,6 @@ async function renderQna(){
 }
 renderQna();
 
-songForm.onsubmit=e=>{
-  e.preventDefault();
-  let a=load(STORE.songs,[]);
-  a.push({cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300),time:new Date().toLocaleString()});
-  save(STORE.songs,a);e.target.reset();songCount.textContent='0';renderSongs();
-}
-songMsg.oninput=()=>songCount.textContent=String(songMsg.value.length);
-function renderSongs(){
-  let a=load(STORE.songs,[]);
-  if(document.getElementById('songTotal')) songTotal.textContent=String(a.length);
-  songList.innerHTML=a.length?a.slice().reverse().map((x,i)=>`<article class="song-request-card">
-    <div class="song-art"><span>♪</span></div>
-    <div class="song-request-copy"><div class="song-request-top"><span>REQUEST ${String(a.length-i).padStart(2,'0')}</span><small>${escapeHtml(x.cls)}</small></div><h3>${escapeHtml(x.title)}</h3><p class="song-requester">🎧 ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(x.time)}</p>${x.msg?`<blockquote>“${escapeHtml(x.msg)}”</blockquote>`:''}</div>
-  </article>`).join(''):`<div class="pretty-empty song-empty"><span>🎶</span><b>첫 번째 신청곡을 기다리고 있어요!</b><small>체육한마당 분위기를 띄울 한 곡을 남겨주세요.</small></div>`;
-}renderSongs();
 
 function safeLink(raw){
   try{const u=new URL(String(raw||'').trim()); return ['http:','https:'].includes(u.protocol)?u.href:'';}catch(e){return '';}
@@ -400,6 +385,70 @@ const VOTE_STATE_LOCAL_KEY='kd_v61_vote_state';
 const kdSbConfig=window.KD_SUPABASE||{};
 const kdSbReady=!!(kdSbConfig.url&&kdSbConfig.anonKey&&window.supabase&&window.supabase.createClient);
 const kdSb=kdSbReady?window.supabase.createClient(kdSbConfig.url,kdSbConfig.anonKey):null;
+// ===== V74 신청곡 Supabase 공용 저장 · 관리자 승인 =====
+const SONG_LOCAL_KEY=STORE.songs;
+let songRealtimeChannel=null;
+function songDisplayTime(x){
+  const raw=x.created_at||x.time||'';
+  if(!raw) return '';
+  const d=new Date(raw); return isNaN(d)?String(raw):d.toLocaleString('ko-KR');
+}
+async function getSongs({admin=false}={}){
+  if(kdSbReady){
+    try{
+      let q=kdSb.from('kd_song_requests').select('*').order('created_at',{ascending:false});
+      if(!admin) q=q.eq('status','approved');
+      const {data,error}=await q;if(error)throw error;return data||[];
+    }catch(e){console.warn('shared songs',e);}
+  }
+  let a=load(SONG_LOCAL_KEY,[]).slice().reverse();
+  return admin?a:a.filter(x=>(x.status||'approved')==='approved');
+}
+async function addSong(row){
+  if(kdSbReady){const {error}=await kdSb.from('kd_song_requests').insert({class_name:row.cls,name:row.name,title:row.title,message:row.msg,status:'pending'});if(error)throw error;return;}
+  let a=load(SONG_LOCAL_KEY,[]);a.push({...row,id:'local_'+Date.now(),status:'pending',created_at:new Date().toISOString()});save(SONG_LOCAL_KEY,a);
+}
+async function setSongStatus(id,status){
+  if(kdSbReady){const {error}=await kdSb.from('kd_song_requests').update({status,reviewed_at:new Date().toISOString()}).eq('id',id);if(error)throw error;return;}
+  let a=load(SONG_LOCAL_KEY,[]),x=a.find(v=>String(v.id)===String(id));if(x)x.status=status;save(SONG_LOCAL_KEY,a);
+}
+async function deleteSong(id){
+  if(kdSbReady){const {error}=await kdSb.from('kd_song_requests').delete().eq('id',id);if(error)throw error;return;}
+  save(SONG_LOCAL_KEY,load(SONG_LOCAL_KEY,[]).filter(v=>String(v.id)!==String(id)));
+}
+async function renderSongs(){
+  const a=await getSongs();
+  if(document.getElementById('songTotal')) songTotal.textContent=String(a.length);
+  songList.innerHTML=a.length?a.map((x,i)=>`<article class="song-request-card">
+    <div class="song-art"><span>♪</span></div>
+    <div class="song-request-copy"><div class="song-request-top"><span>REQUEST ${String(a.length-i).padStart(2,'0')}</span><small>${escapeHtml(x.class_name||x.cls||'')}</small></div><h3>${escapeHtml(x.title||'')}</h3><p class="song-requester">🎧 ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(songDisplayTime(x))}</p>${(x.message||x.msg)?`<blockquote>“${escapeHtml(x.message||x.msg)}”</blockquote>`:''}</div>
+  </article>`).join(''):`<div class="pretty-empty song-empty"><span>🎶</span><b>승인된 신청곡을 기다리고 있어요!</b><small>신청 후 관리자가 확인하면 플레이리스트에 공개됩니다.</small></div>`;
+}
+songForm.onsubmit=async e=>{
+  e.preventDefault();
+  const row={cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300)};
+  const btn=e.target.querySelector('button[type="submit"],button.song-submit-btn');btn.disabled=true;const before=btn.textContent;btn.textContent='신청 중…';
+  try{await addSong(row);e.target.reset();songCount.textContent='0';alert(kdSbReady?'신청곡을 접수했습니다. 관리자 승인 후 공개됩니다.':'이 기기에서 임시 접수했습니다. Supabase 설정 후 여러 기기에서 공유됩니다.');await renderSongs();}
+  catch(err){console.error(err);alert('신청곡 접수에 실패했습니다. Supabase 신청곡 설정을 확인해 주세요.');}
+  finally{btn.disabled=false;btn.textContent=before;}
+};
+songMsg.oninput=()=>songCount.textContent=String(songMsg.value.length);
+async function renderSongManager(contentEl=adminContent){
+  const rows=await getSongs({admin:true});
+  const pending=rows.filter(x=>(x.status||'pending')==='pending').length, approved=rows.filter(x=>x.status==='approved').length;
+  contentEl.innerHTML=`<div class="song-admin-head"><div><small>SONG REQUEST MANAGER</small><h3>🎵 신청곡 관리</h3><p>학생 신청곡을 확인한 뒤 승인하면 모든 기기의 신청곡 탭에 공개됩니다.</p></div><span>${kdSbReady?'☁️ Supabase 공용':'📱 이 기기 저장'}</span></div>
+  <div class="song-admin-summary"><b>대기 ${pending}곡</b><b>승인 ${approved}곡</b><b>전체 ${rows.length}곡</b></div>
+  <div class="song-admin-list">${rows.length?rows.map(x=>{const st=x.status||'pending';return `<article class="song-admin-card"><div><small>${escapeHtml(x.class_name||x.cls||'')} · ${escapeHtml(maskName(x.name||''))}</small><h4>${escapeHtml(x.title||'')}</h4>${(x.message||x.msg)?`<p>${escapeHtml(x.message||x.msg)}</p>`:''}<em>${escapeHtml(songDisplayTime(x))}</em></div><div class="song-admin-actions"><span class="song-status ${st}">${st==='approved'?'승인됨':st==='rejected'?'숨김':'승인 대기'}</span>${st!=='approved'?`<button data-song-approve="${x.id}">✓ 승인</button>`:`<button data-song-pending="${x.id}">↩ 승인 취소</button>`}<button class="danger" data-song-delete="${x.id}">삭제</button></div></article>`}).join(''):'<div class="info-note">접수된 신청곡이 없습니다.</div>'}</div>`;
+  contentEl.querySelectorAll('[data-song-approve]').forEach(b=>b.onclick=async()=>{await setSongStatus(b.dataset.songApprove,'approved');await renderSongManager(contentEl);await renderSongs();});
+  contentEl.querySelectorAll('[data-song-pending]').forEach(b=>b.onclick=async()=>{await setSongStatus(b.dataset.songPending,'pending');await renderSongManager(contentEl);await renderSongs();});
+  contentEl.querySelectorAll('[data-song-delete]').forEach(b=>b.onclick=async()=>{if(confirm('이 신청곡을 삭제할까요?')){await deleteSong(b.dataset.songDelete);await renderSongManager(contentEl);await renderSongs();}});
+}
+function setupSongRealtime(){
+  if(!kdSbReady||songRealtimeChannel)return;
+  songRealtimeChannel=kdSb.channel('kd-song-live').on('postgres_changes',{event:'*',schema:'public',table:'kd_song_requests'},async()=>{await renderSongs();if(!adminArea.classList.contains('hidden')&&adminContent.querySelector('.song-admin-list'))await renderSongManager(adminContent);}).subscribe();
+}
+renderSongs();setupSongRealtime();
+
 let currentStaffName=sessionStorage.getItem('kd_staff_name')||'';
 let voteRealtimeChannel=null;
 let currentStaffVoteType='';
@@ -581,6 +630,8 @@ document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffVie
 function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
     renderVoteManager(contentEl);
+  } else if(v==='songmanager'){
+    renderSongManager(contentEl);
   } else if(v==='flagimages'){
     contentEl.innerHTML=`<div class="flag-admin-head"><small>CLASS FLAG IMAGE</small><h3>🚩 학급 깃발 이미지 관리</h3><p>사진을 한 번 등록하면 학급 깃발 탭과 교직원 깃발 투표 화면에 함께 표시됩니다.</p></div><div class="flag-admin-controls"><select id="fiGrade">${[1,2,3].map(g=>`<option value="${g}">${g}학년</option>`).join('')}</select><select id="fiClass"></select><input type="file" id="fiFile" accept="image/*" capture="environment"><button id="fiSave">사진 등록</button></div><div id="fiPreview" class="flag-admin-preview">등록할 학급과 사진을 선택해 주세요.</div>`;
     const fill=()=>{const g=Number(fiGrade.value);fiClass.innerHTML=Array.from({length:classCount(g)},(_,i)=>`<option value="${i+1}">${g}-${i+1}</option>`).join('')};fill();fiGrade.onchange=fill;
