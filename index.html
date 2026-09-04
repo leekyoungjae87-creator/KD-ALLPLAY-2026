@@ -907,8 +907,8 @@
       <div class="qna-ask-head"><span>🙋</span><div><b>궁금한 점을 남겨주세요</b><small>관리자가 확인 후 이곳에 답변합니다.</small></div></div>
       <form id="qnaAskForm" class="qna-ask-form">
         <div class="qna-ask-grid">
-          <label><span>학급</span><input id="qnaAskClass" maxlength="10" placeholder="예: 2-3" required></label>
-          <label><span>이름</span><input id="qnaAskName" maxlength="20" placeholder="예: 김○○" required></label>
+          <label><span>학번</span><input id="qnaAskClass" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="예: 3211" required></label>
+          <label><span>이름</span><input id="qnaAskName" maxlength="10" placeholder="예: 김0수" required></label>
           <label><span>분류</span><select id="qnaAskCategory"><option>일반</option><option>일정</option><option>경기</option><option>참가자</option><option>응원 퍼포먼스</option><option>준비물</option><option>기타</option></select></label>
         </div>
         <label class="qna-question-field"><span>질문</span><textarea id="qnaAskQuestion" maxlength="300" placeholder="궁금한 내용을 입력하세요." required></textarea></label>

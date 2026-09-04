@@ -371,6 +371,7 @@ if(typeof qnaAskForm!=='undefined'&&qnaAskForm){
   qnaAskForm.onsubmit=async e=>{
     e.preventDefault();
     const cls=qnaAskClass.value.trim(),name=qnaAskName.value.trim(),category=qnaAskCategory.value,question=qnaAskQuestion.value.trim();
+    if(!/^\d{4}$/.test(cls)){alert('학번은 4자리 숫자로 입력해 주세요. 예: 3211');qnaAskClass.focus();return;}
     if(!cls||!name||!question){alert('학급, 이름, 질문을 모두 입력해 주세요.');return;}
     const btn=qnaAskForm.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='등록 중…';
     try{await addQnaQuestion({cls,name,category,question});qnaAskQuestion.value='';await renderQna();alert('질문을 등록했습니다. 관리자가 확인 후 답변합니다.');}
