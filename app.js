@@ -479,14 +479,14 @@ async function renderSongs(){
   if(document.getElementById('songTotal')) songTotal.textContent=String(a.length);
   songList.innerHTML=a.length?a.map((x,i)=>`<article class="song-request-card">
     <div class="song-art"><span>♪</span></div>
-    <div class="song-request-copy"><div class="song-request-top"><span>REQUEST ${String(a.length-i).padStart(2,'0')}</span><small>${escapeHtml(x.class_name||x.cls||'')}</small></div><h3>${escapeHtml(x.title||'')}</h3><p class="song-requester">🎧 ${escapeHtml(maskName(x.name||''))} · ${escapeHtml(songDisplayTime(x))}</p>${(x.message||x.msg)?`<blockquote>“${escapeHtml(x.message||x.msg)}”</blockquote>`:''}</div>
+    <div class="song-request-copy"><div class="song-request-top"><span>REQUEST ${String(a.length-i).padStart(2,'0')}</span><small>익명 신청</small></div><h3>${escapeHtml(x.title||'')}</h3><p class="song-requester">🎧 익명 · ${escapeHtml(songDisplayTime(x))}</p>${(x.message||x.msg)?`<blockquote>“${escapeHtml(x.message||x.msg)}”</blockquote>`:''}</div>
   </article>`).join(''):`<div class="pretty-empty song-empty"><span>🎶</span><b>승인된 신청곡을 기다리고 있어요!</b><small>신청 후 관리자가 확인하면 플레이리스트에 공개됩니다.</small></div>`;
 }
 songForm.onsubmit=async e=>{
   e.preventDefault();
   const row={cls:songClass.value.trim(),name:songName.value.trim(),title:songTitle.value.trim(),msg:songMsg.value.trim().slice(0,300)};
   const btn=e.target.querySelector('button[type="submit"],button.song-submit-btn');btn.disabled=true;const before=btn.textContent;btn.textContent='신청 중…';
-  try{await addSong(row);e.target.reset();songCount.textContent='0';alert(kdSbReady?'신청곡을 접수했습니다. 관리자 승인 후 공개됩니다.':'이 기기에서 임시 접수했습니다. Supabase 설정 후 여러 기기에서 공유됩니다.');await renderSongs();}
+  try{await addSong(row);e.target.reset();songCount.textContent='0';alert(kdSbReady?'익명 신청곡을 접수했습니다. 신청자 정보는 관리자만 확인하며, 승인 후 곡 정보만 공개됩니다.':'이 기기에서 임시 접수했습니다. Supabase 설정 후 여러 기기에서 공유됩니다.');await renderSongs();}
   catch(err){console.error(err);alert('신청곡 접수에 실패했습니다. Supabase 신청곡 설정을 확인해 주세요.');}
   finally{btn.disabled=false;btn.textContent=before;}
 };
@@ -496,7 +496,7 @@ async function renderSongManager(contentEl=adminContent){
   const pending=rows.filter(x=>(x.status||'pending')==='pending').length, approved=rows.filter(x=>x.status==='approved').length;
   contentEl.innerHTML=`<div class="song-admin-head"><div><small>SONG REQUEST MANAGER</small><h3>🎵 신청곡 관리</h3><p>학생 신청곡을 확인한 뒤 승인하면 모든 기기의 신청곡 탭에 공개됩니다.</p></div><span>${kdSbReady?'☁️ Supabase 공용':'📱 이 기기 저장'}</span></div>
   <div class="song-admin-summary"><b>대기 ${pending}곡</b><b>승인 ${approved}곡</b><b>전체 ${rows.length}곡</b></div>
-  <div class="song-admin-list">${rows.length?rows.map(x=>{const st=x.status||'pending';return `<article class="song-admin-card"><div><small>${escapeHtml(x.class_name||x.cls||'')} · ${escapeHtml(maskName(x.name||''))}</small><h4>${escapeHtml(x.title||'')}</h4>${(x.message||x.msg)?`<p>${escapeHtml(x.message||x.msg)}</p>`:''}<em>${escapeHtml(songDisplayTime(x))}</em></div><div class="song-admin-actions"><span class="song-status ${st}">${st==='approved'?'승인됨':st==='rejected'?'숨김':'승인 대기'}</span>${st!=='approved'?`<button data-song-approve="${x.id}">✓ 승인</button>`:`<button data-song-pending="${x.id}">↩ 승인 취소</button>`}<button class="danger" data-song-delete="${x.id}">삭제</button></div></article>`}).join(''):'<div class="info-note">접수된 신청곡이 없습니다.</div>'}</div>`;
+  <div class="song-admin-list">${rows.length?rows.map(x=>{const st=x.status||'pending';return `<article class="song-admin-card"><div><small>${escapeHtml(x.class_name||x.cls||'')} · ${escapeHtml(x.name||'')}</small><h4>${escapeHtml(x.title||'')}</h4>${(x.message||x.msg)?`<p>${escapeHtml(x.message||x.msg)}</p>`:''}<em>${escapeHtml(songDisplayTime(x))}</em></div><div class="song-admin-actions"><span class="song-status ${st}">${st==='approved'?'승인됨':st==='rejected'?'숨김':'승인 대기'}</span>${st!=='approved'?`<button data-song-approve="${x.id}">✓ 승인</button>`:`<button data-song-pending="${x.id}">↩ 승인 취소</button>`}<button class="danger" data-song-delete="${x.id}">삭제</button></div></article>`}).join(''):'<div class="info-note">접수된 신청곡이 없습니다.</div>'}</div>`;
   contentEl.querySelectorAll('[data-song-approve]').forEach(b=>b.onclick=async()=>{await setSongStatus(b.dataset.songApprove,'approved');await renderSongManager(contentEl);await renderSongs();});
   contentEl.querySelectorAll('[data-song-pending]').forEach(b=>b.onclick=async()=>{await setSongStatus(b.dataset.songPending,'pending');await renderSongManager(contentEl);await renderSongs();});
   contentEl.querySelectorAll('[data-song-delete]').forEach(b=>b.onclick=async()=>{if(confirm('이 신청곡을 삭제할까요?')){await deleteSong(b.dataset.songDelete);await renderSongManager(contentEl);await renderSongs();}});
