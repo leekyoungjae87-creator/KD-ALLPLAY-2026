@@ -411,7 +411,7 @@ async function renderQna(){
     return `<article class="qna-card faq-card ${answered?'is-answered':'is-pending'}">
       <div class="faq-number">Q${String(i+1).padStart(2,'0')}</div>
       <div class="faq-copy">
-        <div class="qna-meta"><span>${escapeHtml(x.cls||'')}</span><span>${escapeHtml(maskQnaName(x.name))}</span><span class="faq-category">${escapeHtml(x.category||'일반')}</span><em class="qna-status ${answered?'done':'wait'}">${answered?'✓ 답변완료':'● 답변대기'}</em></div>
+        <div class="qna-meta"><span>🔒 익명 질문</span><span class="faq-category">${escapeHtml(x.category||'일반')}</span><em class="qna-status ${answered?'done':'wait'}">${answered?'✓ 답변완료':'● 답변대기'}</em></div>
         <div class="qna-card-head"><b>${escapeHtml(x.question||'')}</b></div>
         ${answered?`<div class="qna-answer faq-answer"><b>🏫 본부 답변</b><p>${escapeHtml(x.answer)}</p></div>`:`<div class="qna-answer faq-answer qna-wait-answer"><b>💬 답변 준비 중</b><p>관리자가 확인 후 답변하겠습니다.</p></div>`}
       </div>
@@ -808,7 +808,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.4',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
