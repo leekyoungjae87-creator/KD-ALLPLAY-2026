@@ -655,3 +655,10 @@
 - 교직원 이름 입력/로그인 영역: V76.8 그대로 유지
 - 응원 퍼포먼스/학급 깃발: 학년별 2개 학급 선택
 - Supabase SQL Editor에서 `supabase_vote_v76_12_two_choices.sql` 1회 실행 필요
+
+
+## V76.13 모바일 한글 입력 우회 패치
+- V76.12의 2개 학급 투표 기능 유지
+- 교직원 이름 입력칸만 일반 input 대신 1줄 textarea로 변경하여 모바일 한글 IME 호환성 우회
+- 로그인 시 DOM 요소를 getElementById로 명시 참조
+- 캐시 버전 v76-13으로 갱신

@@ -688,13 +688,18 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-staffLoginBtn.onclick=()=>{
-  const name=(staffName.value||'').trim();
+const staffNameEl=document.getElementById('staffName');
+const staffPwEl=document.getElementById('staffPw');
+const staffLoginBtnEl=document.getElementById('staffLoginBtn');
+const staffLoginEl=document.getElementById('staffLogin');
+const staffAreaEl=document.getElementById('staffArea');
+staffLoginBtnEl.onclick=()=>{
+  const name=(staffNameEl.value||'').replace(/\s+/g,'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
+  if(staffPwEl.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLoginEl.classList.add('hidden');staffAreaEl.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
   else alert('비밀번호를 확인해 주세요.');
 };
-if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
