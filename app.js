@@ -177,14 +177,8 @@ document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-  if(id==='staff'){
-    window.scrollTo(0,0);
-    const nameEl=document.getElementById('staffName');
-    const loginEl=document.getElementById('staffLogin');
-    if(nameEl&&loginEl&&!loginEl.classList.contains('hidden')){
-      try{nameEl.focus({preventScroll:true});}catch(e){nameEl.focus();}
-    }
-  } else window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='staff') window.scrollTo(0,0);
+  else window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function updateCountdown(){
@@ -626,7 +620,7 @@ async function renderStaffVote(type,contentEl=staffContent){
   const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
   if(type==='flag') await loadSharedFlags();
   const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
-  const instruction='각 학년에서 가장 인상적인 2개 학급을 선택해 주세요.';
+  const instruction='<div class="vote-pick-two-emphasis">각 학년에서 가장 인상적인 <strong>2개 학급</strong>을 선택해주세요</div>';
   contentEl.innerHTML=`
     <div class="vote-head">
       <div><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p>${escapeHtml(name)} 선생님 · ${instruction}</p></div>
@@ -642,7 +636,7 @@ async function renderStaffVote(type,contentEl=staffContent){
     const article=document.createElement('article');article.className='vote-grade-card';
     article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen.length===2?'done':''}">${chosenText}</em></div>
       <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';const checked=chosen.includes(no);return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${checked?'selected':''}"><input type="checkbox" name="vote_${type}_${grade}" value="${no}" ${checked?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
-      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'이 학년 2표 저장'}</button>`;
+      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'2개 학급 선택 저장'}</button>`;
     wrap.appendChild(article);
   });
   contentEl.querySelectorAll('.vote-choice input').forEach(inp=>inp.onchange=()=>{
@@ -838,7 +832,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.18',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
