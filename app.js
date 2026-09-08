@@ -177,7 +177,8 @@ document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='staff') window.scrollTo(0,0);
+  else window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function updateCountdown(){
@@ -566,21 +567,34 @@ async function setVoteState(type,isOpen){
   }
 }
 async function getMyVotes(type,name){
+  const grouped={1:[],2:[],3:[]};
   if(kdSbReady){
     const {data,error}=await kdSb.from('kd_votes').select('grade,class_no').eq('vote_type',type).eq('voter_name',name);
-    if(!error) return Object.fromEntries((data||[]).map(x=>[x.grade,x.class_no]));
+    if(!error){
+      (data||[]).forEach(x=>{const g=Number(x.grade),c=Number(x.class_no);if(grouped[g]&&!grouped[g].includes(c))grouped[g].push(c);});
+      Object.values(grouped).forEach(a=>a.sort((a,b)=>a-b));
+      return grouped;
+    }
   }
-  return Object.fromEntries(localVotes().filter(x=>x.vote_type===type&&x.voter_name===name).map(x=>[x.grade,x.class_no]));
+  localVotes().filter(x=>x.vote_type===type&&x.voter_name===name).forEach(x=>{const g=Number(x.grade),c=Number(x.class_no);if(grouped[g]&&!grouped[g].includes(c))grouped[g].push(c);});
+  Object.values(grouped).forEach(a=>a.sort((a,b)=>a-b));
+  return grouped;
 }
-async function saveMyVote(type,grade,classNo,name){
+async function saveMyVotes(type,grade,classNos,name){
+  const g=Number(grade);
+  const choices=[...new Set((classNos||[]).map(Number))].slice(0,2);
+  if(choices.length!==2) throw new Error('exactly_two_votes_required');
+  const now=new Date().toISOString();
   if(kdSbReady){
-    const {error}=await kdSb.from('kd_votes').upsert({voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()},{onConflict:'voter_name,vote_type,grade'});
-    if(error) throw error;
+    const {error:delError}=await kdSb.from('kd_votes').delete().eq('voter_name',name).eq('vote_type',type).eq('grade',g);
+    if(delError) throw delError;
+    const rows=choices.map(classNo=>({voter_name:name,vote_type:type,grade:g,class_no:classNo,updated_at:now}));
+    const {error:insError}=await kdSb.from('kd_votes').insert(rows);
+    if(insError) throw insError;
   }else{
-    let list=localVotes();
-    const i=list.findIndex(x=>x.voter_name===name&&x.vote_type===type&&Number(x.grade)===Number(grade));
-    const row={voter_name:name,vote_type:type,grade:Number(grade),class_no:Number(classNo),updated_at:new Date().toISOString()};
-    if(i>=0) list[i]=row; else list.push(row); save(VOTE_LOCAL_KEY,list);
+    let list=localVotes().filter(x=>!(x.voter_name===name&&x.vote_type===type&&Number(x.grade)===g));
+    choices.forEach(classNo=>list.push({voter_name:name,vote_type:type,grade:g,class_no:classNo,updated_at:now}));
+    save(VOTE_LOCAL_KEY,list);
   }
 }
 async function getAllVotes(type){
@@ -606,35 +620,44 @@ async function renderStaffVote(type,contentEl=staffContent){
   const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
   if(type==='flag') await loadSharedFlags();
   const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
-  const instruction=type==='performance'?'각 학년에서 가장 인상적인 응원 퍼포먼스 학급을 1개씩 선택합니다.':'각 학년에서 가장 인상적인 학급 깃발을 1개씩 선택합니다.';
+  const instruction='<div class="vote-pick-two-emphasis">각 학년에서 가장 인상적인 <strong>2개 학급</strong>을 선택해주세요</div>';
   contentEl.innerHTML=`
     <div class="vote-head">
-      <div><small>STAFF ONE-VOTE</small><h3>${icon} ${title} 투표</h3><p>${escapeHtml(name)} 선생님 · ${instruction}</p></div>
+      <div><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p>${escapeHtml(name)} 선생님 · ${instruction}</p></div>
       ${voteModeBadge()}
     </div>
-    <div class="vote-open-state ${isOpen?'open':'closed'}"><b>${isOpen?'🟢 투표 진행 중':'🔒 현재 투표가 마감되어 있습니다.'}</b><span>${isOpen?'학년별로 1표씩 선택 후 각각 저장해 주세요.':'관리자가 투표를 시작하면 선택할 수 있습니다.'}</span></div>
+    <div class="vote-open-state ${isOpen?'open':'closed'}"><b>${isOpen?'🟢 투표 진행 중':'🔒 현재 투표가 마감되어 있습니다.'}</b><span>${isOpen?'교직원 1인당 학년별 2개 학급을 선택한 뒤 저장해 주세요.':'관리자가 투표를 시작하면 선택할 수 있습니다.'}</span></div>
     <div class="vote-grade-list" id="voteGradeList"></div>
-    <div class="vote-footnote">※ 학년별 1표만 저장됩니다. 투표가 열려 있는 동안에는 선택을 수정할 수 있습니다. 중간 득표수는 공개되지 않습니다.</div>`;
+    <div class="vote-footnote">※ 응원 퍼포먼스와 학급 깃발 모두 학년별 2표입니다. 투표가 열려 있는 동안에는 선택을 수정할 수 있으며, 중간 득표수는 공개되지 않습니다.</div>`;
   const wrap=contentEl.querySelector('#voteGradeList');
   [1,2,3].forEach(grade=>{
-    const candidates=voteCandidates(type,grade), chosen=Number(myVotes[grade]||0);
+    const candidates=voteCandidates(type,grade), chosen=Array.isArray(myVotes[grade])?myVotes[grade]:[];
+    const chosenText=chosen.length===2?`✓ ${chosen.map(no=>`${grade}-${no}`).join(' · ')} 투표 완료`:chosen.length?`${chosen.length}/2 선택됨`:'미투표';
     const article=document.createElement('article');article.className='vote-grade-card';
-    article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen?'done':''}">${chosen?`✓ ${grade}-${chosen} 투표 완료`:'미투표'}</em></div>
-      <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${chosen===no?'selected':''}"><input type="radio" name="vote_${type}_${grade}" value="${no}" ${chosen===no?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
-      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen?'선택 수정 저장':'이 학년 투표 저장'}</button>`;
+    article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen.length===2?'done':''}">${chosenText}</em></div>
+      <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';const checked=chosen.includes(no);return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${checked?'selected':''}"><input type="checkbox" name="vote_${type}_${grade}" value="${no}" ${checked?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
+      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'2개 학급 선택 저장'}</button>`;
     wrap.appendChild(article);
   });
   contentEl.querySelectorAll('.vote-choice input').forEach(inp=>inp.onchange=()=>{
-    const card=inp.closest('.vote-grade-card');card.querySelectorAll('.vote-choice').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked));
+    const card=inp.closest('.vote-grade-card');
+    const checked=[...card.querySelectorAll('.vote-choice input:checked')];
+    if(checked.length>2){inp.checked=false;alert('학년별로 최대 2개 학급까지 선택할 수 있습니다.');}
+    card.querySelectorAll('.vote-choice').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked));
+    const count=card.querySelectorAll('.vote-choice input:checked').length;
+    const status=card.querySelector('.vote-grade-top em');
+    if(count<2){status.textContent=count?`${count}/2 선택됨`:'미투표';status.classList.remove('done');}
   });
   contentEl.querySelectorAll('[data-vote-save]').forEach(btn=>btn.onclick=async()=>{
-    const grade=Number(btn.dataset.voteSave), checked=contentEl.querySelector(`input[name="vote_${type}_${grade}"]:checked`);
-    if(!checked){alert(`${grade}학년에서 한 학급을 선택해 주세요.`);return;}
+    const grade=Number(btn.dataset.voteSave);
+    const checked=[...contentEl.querySelectorAll(`input[name="vote_${type}_${grade}"]:checked`)];
+    if(checked.length!==2){alert(`${grade}학년에서 2개 학급을 선택해 주세요.`);return;}
     btn.disabled=true;btn.textContent='저장 중…';
-    try{await saveMyVote(type,grade,Number(checked.value),name);await renderStaffVote(type,contentEl);}
-    catch(e){console.error(e);alert('투표 저장 중 오류가 발생했습니다. Supabase 설정을 확인해 주세요.');btn.disabled=false;}
+    try{await saveMyVotes(type,grade,checked.map(x=>Number(x.value)),name);await renderStaffVote(type,contentEl);}
+    catch(e){console.error(e);alert('투표 저장 중 오류가 발생했습니다. Supabase 2표 설정 SQL이 적용되었는지 확인해 주세요.');btn.disabled=false;}
   });
 }
+
 function tallyVotes(rows,grade){
   const counts={};rows.filter(x=>Number(x.grade)===grade).forEach(x=>counts[x.class_no]=(counts[x.class_no]||0)+1);
   return Object.entries(counts).map(([no,count])=>({no:Number(no),count})).sort((a,b)=>b.count-a.count||a.no-b.no);
@@ -644,16 +667,17 @@ async function renderVoteManager(contentEl=adminContent){
   try{
     const [pOpen,fOpen,pRows,fRows]=await Promise.all([getVoteState('performance'),getVoteState('flag'),getAllVotes('performance'),getAllVotes('flag')]);
     const unique=(rows)=>new Set(rows.map(x=>x.voter_name)).size;
-    const completed=(rows)=>{const m={};rows.forEach(x=>(m[x.voter_name]||(m[x.voter_name]=new Set())).add(Number(x.grade)));return Object.values(m).filter(set=>set.size===3).length;};
+    const completed=(rows)=>{const m={};rows.forEach(x=>{const n=(x.voter_name||'').trim();if(!n)return;const g=Number(x.grade);m[n]||(m[n]={1:new Set(),2:new Set(),3:new Set()});m[n][g]?.add(Number(x.class_no));});return Object.values(m).filter(v=>[1,2,3].every(g=>v[g].size>=2)).length;};
     const participantList=(rows)=>{
       const map={};
-      rows.forEach(x=>{const n=(x.voter_name||'').trim();if(!n)return;(map[n]||(map[n]=new Set())).add(Number(x.grade));});
+      rows.forEach(x=>{const n=(x.voter_name||'').trim();if(!n)return;const g=Number(x.grade);map[n]||(map[n]={1:new Set(),2:new Set(),3:new Set()});map[n][g]?.add(Number(x.class_no));});
       const names=Object.keys(map).sort((a,b)=>a.localeCompare(b,'ko'));
       if(!names.length) return '<div class="vote-participant-empty">아직 참여한 교직원이 없습니다.</div>';
       return names.map(name=>{
         const grades=map[name];
-        const done=grades.size===3;
-        return `<div class="vote-participant-row"><div class="vote-participant-name"><b>${escapeHtml(name)}</b><small>${done?'3개 학년 완료':`${grades.size}/3 학년 완료`}</small></div><div class="vote-participant-grades">${[1,2,3].map(g=>`<span class="${grades.has(g)?'done':'pending'}">${grades.has(g)?'✓':'–'} ${g}학년</span>`).join('')}</div></div>`;
+        const done=[1,2,3].every(g=>grades[g].size>=2);
+        const doneGrades=[1,2,3].filter(g=>grades[g].size>=2).length;
+        return `<div class="vote-participant-row"><div class="vote-participant-name"><b>${escapeHtml(name)}</b><small>${done?'3개 학년 완료':`${doneGrades}/3 학년 완료`}</small></div><div class="vote-participant-grades">${[1,2,3].map(g=>`<span class="${grades[g].size>=2?'done':'pending'}">${grades[g].size>=2?'✓':'–'} ${g}학년 ${grades[g].size}/2</span>`).join('')}</div></div>`;
       }).join('');
     };
     const typePanel=(type,open,rows)=>`<section class="vote-admin-panel" data-admin-vote="${type}">
@@ -661,7 +685,7 @@ async function renderVoteManager(contentEl=adminContent){
       <div class="vote-admin-actions"><button data-vote-toggle="${type}" data-next="${open?'0':'1'}">${open?'🔒 투표 마감':'🟢 투표 시작'}</button><button class="danger" data-vote-clear="${type}">↻ 전체 투표 초기화</button></div>
       <button class="vote-participant-toggle" data-participant-toggle="${type}">👥 참여 교직원 보기 <b>${unique(rows)}명</b></button>
       <div class="vote-participant-list hidden" data-participant-list="${type}">${participantList(rows)}</div>
-      <div class="vote-result-grades">${[1,2,3].map(g=>{const t=tallyVotes(rows,g);const total=rows.filter(x=>Number(x.grade)===g).length;return `<div class="vote-result-grade"><div class="vote-result-title"><b>${g}학년</b><span>${total}명 투표</span></div>${t.length?t.map((r,i)=>`<div class="vote-result-row ${r.count===t[0].count?'leader':''}"><span>${g}-${r.no}</span><b>${r.count}표</b></div>`).join(''):'<div class="vote-no-result">아직 투표 없음</div>'}</div>`}).join('')}</div>
+      <div class="vote-result-grades">${[1,2,3].map(g=>{const t=tallyVotes(rows,g);const total=rows.filter(x=>Number(x.grade)===g).length;return `<div class="vote-result-grade"><div class="vote-result-title"><b>${g}학년</b><span>${total}표</span></div>${t.length?t.map((r,i)=>`<div class="vote-result-row ${r.count===t[0].count?'leader':''}"><span>${g}-${r.no}</span><b>${r.count}표</b></div>`).join(''):'<div class="vote-no-result">아직 투표 없음</div>'}</div>`}).join('')}</div>
     </section>`;
     contentEl.innerHTML=`<div class="vote-admin-head"><div><small>LIVE VOTE CONTROL</small><h3>🗳️ 교직원 투표 관리</h3><p>투표 시작·마감과 학년별 실시간 득표 현황을 관리자만 확인합니다.</p></div>${voteModeBadge()}</div><div class="vote-admin-grid">${typePanel('performance',pOpen,pRows)}${typePanel('flag',fOpen,fRows)}</div><div class="vote-admin-note">※ 동률은 임의로 순위를 정하지 않고 같은 득표수로 표시됩니다. 일반 교직원 화면에는 중간 득표수가 표시되지 않습니다.</div>`;
     contentEl.querySelectorAll('[data-vote-toggle]').forEach(btn=>btn.onclick=async()=>{try{await setVoteState(btn.dataset.voteToggle,btn.dataset.next==='1');await renderVoteManager(contentEl);}catch(e){console.error(e);alert('상태 변경에 실패했습니다.');}});
@@ -808,7 +832,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.23',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
