@@ -701,13 +701,37 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-staffLoginBtn.onclick=()=>{
-  const name=(staffName.value||'').trim();
-  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
-  else alert('비밀번호를 확인해 주세요.');
-};
-if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+// 교직원 로그인: 관리자 로그인과 동일하게 명시적 DOM 참조 + Enter 처리
+const staffLoginEl=document.getElementById('staffLogin');
+const staffNameEl=document.getElementById('staffName');
+const staffPwEl=document.getElementById('staffPw');
+const staffLoginBtnEl=document.getElementById('staffLoginBtn');
+const staffAreaEl=document.getElementById('staffArea');
+
+if(staffLoginBtnEl){
+  staffLoginBtnEl.onclick=()=>{
+    const name=(staffNameEl?.value||'').trim();
+    const pw=staffPwEl?.value||'';
+    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+    if(pw==='rudejr26**'){
+      currentStaffName=name;
+      sessionStorage.setItem('kd_staff_name',name);
+      staffLoginEl?.classList.add('hidden');
+      staffAreaEl?.classList.remove('hidden');
+      setupVoteRealtime();
+      if(pendingStaffView)staffView(pendingStaffView);
+    }else alert('비밀번호를 확인해 주세요.');
+  };
+  [staffNameEl,staffPwEl].filter(Boolean).forEach(el=>
+    el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){
+        e.preventDefault();
+        staffLoginBtnEl.click();
+      }
+    })
+  );
+}
+if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
@@ -832,7 +856,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.23',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.24',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
