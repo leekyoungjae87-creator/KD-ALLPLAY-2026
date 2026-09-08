@@ -19,14 +19,14 @@ create table if not exists public.kd_votes (
   class_no integer not null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint kd_votes_one_per_grade unique (voter_name, vote_type, grade)
+  constraint kd_votes_two_per_grade_unique unique (voter_name, vote_type, grade, class_no)
 );
 
 alter table public.kd_vote_state enable row level security;
 alter table public.kd_votes enable row level security;
 
 -- 학교 행사 내부용 간편 정책: anon 사용자가 투표 상태/투표 데이터를 읽고 쓰도록 허용합니다.
--- 중복은 DB unique 제약으로 막습니다. 관리자 비밀번호는 웹앱 UI 진입용입니다.
+-- 같은 학년에서 같은 학급을 중복 저장하는 것은 DB unique 제약으로 막고, 학년별 최대 2표는 웹앱 UI에서 제한합니다. 관리자 비밀번호는 웹앱 UI 진입용입니다.
 do $$ begin
   create policy "vote_state_read" on public.kd_vote_state for select to anon using (true);
 exception when duplicate_object then null; end $$;

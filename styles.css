@@ -2607,3 +2607,11 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .privacy-song{background:#fff0f7;border-color:#f3b6d2;color:#9b315f}.privacy-song p{color:#7c4a61}.privacy-song .privacy-badge{color:#a72f65}
 .privacy-qna{background:#eaf6ff;border-color:#acd8f4;color:#17669a}.privacy-qna p{color:#466d87}.privacy-qna .privacy-badge{color:#17669a}
 @media(max-width:520px){.privacy-assurance{padding:13px 12px;gap:10px;align-items:flex-start}.privacy-assurance .privacy-lock{flex-basis:38px;width:38px;height:38px;font-size:20px}.privacy-assurance b{font-size:14px}.privacy-assurance p{font-size:11px}.privacy-badge{padding:5px 8px;font-size:10px}}
+
+
+/* ===== V76.15 모바일 교직원 로그인 입력 안정화 ===== */
+.staff-login-card #staffName{position:relative;z-index:1;-webkit-user-select:text;user-select:text;touch-action:manipulation;caret-color:auto;}
+@media(max-width:760px){
+  .staff-login-card #staffName,.staff-login-card #staffPw{font-size:16px!important;line-height:1.4!important;min-height:48px!important;width:100%;}
+  .staff-login-card #staffLoginBtn{min-height:48px!important;font-size:14px!important;}
+}
