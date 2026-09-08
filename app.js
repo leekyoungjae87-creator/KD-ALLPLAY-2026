@@ -701,25 +701,6 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// 모바일 교직원 이름칸: 첫 터치 순간 바로 입력 활성화
-const staffNameInput=document.getElementById('staffName');
-if(staffNameInput){
-  const activateStaffNameNow=()=>{
-    if(document.activeElement!==staffNameInput){
-      try{staffNameInput.focus({preventScroll:true});}catch(e){staffNameInput.focus();}
-    }
-    try{
-      const end=staffNameInput.value.length;
-      staffNameInput.setSelectionRange(end,end);
-    }catch(e){}
-  };
-
-  // 키보드 호출은 '터치가 끝난 뒤'보다 실제 사용자 터치가 시작되는 순간이 더 안정적임
-  staffNameInput.addEventListener('touchstart',activateStaffNameNow,{passive:true});
-  staffNameInput.addEventListener('pointerdown',activateStaffNameNow);
-  staffNameInput.addEventListener('click',activateStaffNameNow);
-}
-
 staffLoginBtn.onclick=()=>{
   const name=(staffName.value||'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
@@ -851,7 +832,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.21',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.22',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
