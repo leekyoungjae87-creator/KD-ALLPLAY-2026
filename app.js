@@ -700,21 +700,13 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-const staffNameEl=document.getElementById('staffName');
-const staffPwEl=document.getElementById('staffPw');
-const staffLoginBtnEl=document.getElementById('staffLoginBtn');
-const staffLoginEl=document.getElementById('staffLogin');
-const staffAreaEl=document.getElementById('staffArea');
-
-// 모바일에서 이름칸을 터치했을 때 즉시 포커스/한글 IME가 열리도록 보조합니다.
-// 입력값 자체는 어떤 이벤트로도 가공하지 않아 한글 조합을 방해하지 않습니다.
-if(staffLoginBtnEl) staffLoginBtnEl.onclick=()=>{
-  const name=(staffNameEl?.value||'').trim();
-  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');staffNameEl?.focus();return;}
-  if((staffPwEl?.value||'')==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLoginEl?.classList.add('hidden');staffAreaEl?.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
+staffLoginBtn.onclick=()=>{
+  const name=(staffName.value||'').trim();
+  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
   else alert('비밀번호를 확인해 주세요.');
 };
-if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
+if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
@@ -839,7 +831,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js?v=76.16',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});});}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
