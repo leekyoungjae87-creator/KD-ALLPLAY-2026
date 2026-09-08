@@ -620,7 +620,7 @@ async function renderStaffVote(type,contentEl=staffContent){
   const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
   if(type==='flag') await loadSharedFlags();
   const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
-  const instruction='<div class="vote-pick-two-emphasis">각 학년에서 가장 인상적인 <strong>2개 학급</strong>을 선택해주세요</div>';
+  const instruction='각 학년에서 가장 인상적인 2개 학급을 선택해 주세요.';
   contentEl.innerHTML=`
     <div class="vote-head">
       <div><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p>${escapeHtml(name)} 선생님 · ${instruction}</p></div>
@@ -636,7 +636,7 @@ async function renderStaffVote(type,contentEl=staffContent){
     const article=document.createElement('article');article.className='vote-grade-card';
     article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen.length===2?'done':''}">${chosenText}</em></div>
       <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';const checked=chosen.includes(no);return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${checked?'selected':''}"><input type="checkbox" name="vote_${type}_${grade}" value="${no}" ${checked?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
-      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'2개 학급 선택 저장'}</button>`;
+      <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'이 학년 2표 저장'}</button>`;
     wrap.appendChild(article);
   });
   contentEl.querySelectorAll('.vote-choice input').forEach(inp=>inp.onchange=()=>{
@@ -701,37 +701,30 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
-// 교직원 로그인: 관리자 로그인과 동일하게 명시적 DOM 참조 + Enter 처리
-const staffLoginEl=document.getElementById('staffLogin');
-const staffNameEl=document.getElementById('staffName');
-const staffPwEl=document.getElementById('staffPw');
-const staffLoginBtnEl=document.getElementById('staffLoginBtn');
-const staffAreaEl=document.getElementById('staffArea');
-
-if(staffLoginBtnEl){
-  staffLoginBtnEl.onclick=()=>{
-    const name=(staffNameEl?.value||'').trim();
-    const pw=staffPwEl?.value||'';
-    if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
-    if(pw==='rudejr26**'){
-      currentStaffName=name;
-      sessionStorage.setItem('kd_staff_name',name);
-      staffLoginEl?.classList.add('hidden');
-      staffAreaEl?.classList.remove('hidden');
-      setupVoteRealtime();
-      if(pendingStaffView)staffView(pendingStaffView);
-    }else alert('비밀번호를 확인해 주세요.');
-  };
-  [staffNameEl,staffPwEl].filter(Boolean).forEach(el=>
-    el.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        e.preventDefault();
-        staffLoginBtnEl.click();
-      }
-    })
-  );
+staffLoginBtn.onclick=()=>{
+  const name=(staffName.value||'').trim();
+  if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
+  if(staffPw.value==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLogin.classList.add('hidden');staffArea.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}
+  else alert('비밀번호를 확인해 주세요.');
+};
+if(currentStaffName&&typeof staffName!=='undefined') staffName.value=currentStaffName;
+// V76.9: 모바일 한글 IME 안정화 — 이름칸은 순수 텍스트 입력으로 유지하고 Enter는 비밀번호칸으로 이동
+if(typeof staffName!=='undefined' && typeof staffPw!=='undefined'){
+  staffName.setAttribute('inputmode','text');
+  staffName.setAttribute('autocomplete','off');
+  staffName.setAttribute('autocapitalize','none');
+  staffName.setAttribute('spellcheck','false');
+  let staffNameComposing=false;
+  staffName.addEventListener('compositionstart',()=>{staffNameComposing=true;});
+  staffName.addEventListener('compositionend',()=>{staffNameComposing=false;});
+  staffName.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.isComposing && !staffNameComposing){e.preventDefault();staffPw.focus();}
+  });
+  staffPw.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.isComposing){e.preventDefault();staffLoginBtn.click();}
+  });
 }
-if(currentStaffName&&staffNameEl) staffNameEl.value=currentStaffName;
+
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
@@ -856,7 +849,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.24',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.9',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
