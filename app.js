@@ -177,7 +177,8 @@ document.querySelectorAll('[data-staff-target]').forEach(b=>b.onclick=()=>{
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='staff') window.scrollTo(0,0);
+  else window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function updateCountdown(){
