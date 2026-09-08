@@ -2610,7 +2610,7 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 
 
 /* ===== V76.15 모바일 교직원 로그인 입력 안정화 ===== */
-.staff-login-card #staffName{position:relative;z-index:1;-webkit-user-select:text;user-select:text;touch-action:manipulation;caret-color:auto;}
+.staff-login-card #staffName{position:relative;z-index:1;-webkit-user-select:text;user-select:text;caret-color:auto;}
 @media(max-width:760px){
   .staff-login-card #staffName,.staff-login-card #staffPw{font-size:16px!important;line-height:1.4!important;min-height:48px!important;width:100%;}
   .staff-login-card #staffLoginBtn{min-height:48px!important;font-size:14px!important;}

@@ -708,12 +708,6 @@ const staffAreaEl=document.getElementById('staffArea');
 
 // 모바일에서 이름칸을 터치했을 때 즉시 포커스/한글 IME가 열리도록 보조합니다.
 // 입력값 자체는 어떤 이벤트로도 가공하지 않아 한글 조합을 방해하지 않습니다.
-if(staffNameEl){
-  const focusStaffName=()=>{if(document.activeElement!==staffNameEl){try{staffNameEl.focus({preventScroll:true});}catch{staffNameEl.focus();}}};
-  staffNameEl.addEventListener('pointerup',focusStaffName,{passive:true});
-  staffNameEl.addEventListener('touchend',focusStaffName,{passive:true});
-  staffNameEl.addEventListener('click',focusStaffName);
-}
 if(staffLoginBtnEl) staffLoginBtnEl.onclick=()=>{
   const name=(staffNameEl?.value||'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');staffNameEl?.focus();return;}
@@ -845,7 +839,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js?v=76.15',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});});}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js?v=76.16',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});});}
 
 
 
