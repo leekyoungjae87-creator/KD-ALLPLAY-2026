@@ -701,6 +701,22 @@ function setupVoteRealtime(){
     .subscribe();
 }
 
+// 모바일에서 교직원 이름칸 첫 터치가 입력 상태로 완전히 활성화되지 않는 현상 보강
+const staffNameInput=document.getElementById('staffName');
+if(staffNameInput){
+  const activateStaffName=()=>{
+    if(document.activeElement!==staffNameInput){
+      try{staffNameInput.focus({preventScroll:true});}catch(e){staffNameInput.focus();}
+    }
+    try{
+      const end=staffNameInput.value.length;
+      staffNameInput.setSelectionRange(end,end);
+    }catch(e){}
+  };
+  staffNameInput.addEventListener('touchend',activateStaffName,{passive:true});
+  staffNameInput.addEventListener('pointerup',activateStaffName);
+}
+
 staffLoginBtn.onclick=()=>{
   const name=(staffName.value||'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');return;}
@@ -832,7 +848,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.18',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.20',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
