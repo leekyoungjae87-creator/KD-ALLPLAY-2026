@@ -692,20 +692,9 @@ const staffLoginBtnEl=document.getElementById('staffLoginBtn');
 const staffLoginEl=document.getElementById('staffLogin');
 const staffAreaEl=document.getElementById('staffArea');
 
-// V76.10: 모바일 한글 IME 안정화 — 조합 중에는 값을 건드리지 않고 완료된 문자열만 사용
-let staffNameComposing=false;
-if(staffNameEl){
-  staffNameEl.addEventListener('compositionstart',()=>{staffNameComposing=true;});
-  staffNameEl.addEventListener('compositionend',()=>{staffNameComposing=false;});
-}
-if(staffPwEl&&staffNameEl){
-  staffNameEl.addEventListener('keydown',e=>{
-    if(e.key==='Enter'&&!e.isComposing&&!staffNameComposing){e.preventDefault();staffPwEl.focus();}
-  });
-}
-
+// V76.11: 교직원 이름 입력은 모바일 한글 IME와 충돌하지 않도록 일반 text input 그대로 사용
+// composition/input/keydown 이벤트로 입력값을 제어하지 않는다.
 staffLoginBtnEl.onclick=()=>{
-  if(staffNameComposing){staffNameEl.blur();staffNameEl.focus();return;}
   const name=(staffNameEl?.value||'').trim();
   if(name.length<2){alert('투표자 확인을 위해 교직원 이름을 입력해 주세요.');staffNameEl?.focus();return;}
   if((staffPwEl?.value||'')==='rudejr26**'){currentStaffName=name;sessionStorage.setItem('kd_staff_name',name);staffLoginEl.classList.add('hidden');staffAreaEl.classList.remove('hidden');setupVoteRealtime();if(pendingStaffView)staffView(pendingStaffView)}

@@ -2611,6 +2611,6 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .vote-result-guide{margin:12px 0 18px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.78);box-shadow:0 6px 18px rgba(0,0,0,.06);line-height:1.65;font-size:.94rem}
 .vote-result-guide b{font-weight:800}
 
-/* V76.10 모바일 한글 입력 안정화 */
-#staffName{font-size:16px;line-height:1.35;-webkit-user-select:text;user-select:text;touch-action:manipulation;}
-@media(min-width:761px){#staffName{font-size:10px;}}
+
+/* V76.11 mobile login input: native text behavior + iOS zoom prevention */
+@media(max-width:760px){.staff-login-card input{font-size:16px!important;line-height:1.35!important;}}

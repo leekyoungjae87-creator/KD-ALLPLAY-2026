@@ -662,3 +662,12 @@
 - IME 조합(composition) 중 값 변경 방지
 - 모바일에서 입력창 글자 크기를 16px로 적용해 브라우저 자동 확대/입력 불안정 완화
 - 기존 투표/관리자/신청곡/Q&A 기능은 변경하지 않음
+
+
+## V76.11 모바일 교직원 이름 입력 + 캐시 수정
+- 교직원 이름 입력창을 일반 text input으로 단순화
+- composition / keydown 등 한글 IME 개입 로직 제거
+- 모바일 로그인 input 16px 적용
+- Service Worker 캐시를 v76-11로 갱신
+- index/app/styles/config는 network-first로 변경해 구버전 캐시 재노출 방지
+- skipWaiting + clients.claim으로 새 서비스워커 즉시 활성화
