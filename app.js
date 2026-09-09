@@ -9,17 +9,19 @@ const STORE = {
 const schedule = [
   ["08:15-08:30","집결","학년별 기준"],
   ["08:30-09:00","개회식 · 준비운동(청소년체조) · 안전교육",""],
-  ["09:00-10:00","학급별 응원 퍼포먼스","1 → 2 → 3학년"],
+  ["09:00-09:45","학급별 응원 퍼포먼스","1 → 2 → 3학년"],
+  ["09:45-10:00","이동 및 경기 준비","오전 순환 경기 준비"],
   ["10:00-10:30","학년별 순환 경기","운동장: 1학년 8자 줄넘기 · 농구장: 2학년 슈팅 릴레이 · 강당: 3학년 바운드 배구 결승"],
   ["10:30-11:00","학년별 순환 경기","운동장: 2학년 8자 줄넘기 · 농구장: 3학년 슈팅 릴레이 · 강당: 1학년 바운드 배구 결승"],
   ["11:00-11:30","학년별 순환 경기","운동장: 3학년 8자 줄넘기 · 농구장: 1학년 슈팅 릴레이 · 강당: 2학년 바운드 배구 결승"],
   ["11:30-12:00","2인 3각","3 → 2 → 1학년"],
   ["12:00-13:00","점심 시간","사제 동행 스포츠 한판 12:20-12:50"],
-  ["13:00-13:20","집합 및 축하공연","댄스부"],
-  ["13:20-14:00","달리는 줄다리기 준결승 · 결승","1 → 2 → 3학년 · 9경기"],
+  ["13:00-13:20","림보왕 선발대회(이벤트 경기)","운동장"],
+  ["13:15-14:00","달리는 줄다리기 준결승 · 결승","1 → 2 → 3학년 · 9경기"],
   ["14:00-14:30","미션 이어달리기","학생자치회"],
   ["14:30-15:00","이어달리기 결승","1 → 2 → 3학년 · 3경기"],
-  ["15:00-15:30","점수집계 · 시상식 · 폐회식 · 뒷정리",""]
+  ["15:00-15:10","축하공연","댄스부"],
+  ["15:10-15:30","점수집계 · 시상식 · 폐회식 · 뒷정리",""]
 ];
 
 const eventRules = [
@@ -808,7 +810,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.8-event1',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
