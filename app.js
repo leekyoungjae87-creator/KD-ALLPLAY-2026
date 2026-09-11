@@ -108,9 +108,9 @@ const rankPoints = {
   "8자줄넘기":[60,50,40,30,20],
   "슈팅릴레이":[60,50,40,30,20],
   "2인3각":[80,70,60,50,40],
-  "달리는줄다리기":[100,85,70,55,40],
+  "달리는줄다리기":[100,80,60,50,40],
   "미션이어달리기":[40,30,20,10,10],
-  "이어달리기":[100,85,70,55,40],
+  "이어달리기":[100,80,60,50,40],
   "학급깃발":[30,30,20,20,10]
 };
 function pointsForRank(eventName, rankKey){
@@ -643,7 +643,7 @@ async function renderStaffVote(type,contentEl=staffContent){
   const [isOpen,myVotes]=await Promise.all([getVoteState(type),getMyVotes(type,name)]);
   if(type==='flag') await loadSharedFlags();
   const title=voteTypeLabel(type), icon=type==='performance'?'🎉':'🚩';
-  const instruction='각 학년에서 가장 인상적인 2개 학급을 선택해 주세요.';
+  const instruction='각 학년에서 가장 인상적인 <strong class="vote-red-emphasis">2개 학급을 선택</strong>해 주세요.';
   contentEl.innerHTML=`
     <div class="vote-head">
       <div class="vote-head-copy"><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p class="vote-voter-id">내선 ${escapeHtml(name)}</p><div class="vote-instruction-highlight"><span>✓</span><b>${instruction}</b></div></div>
@@ -869,7 +869,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.14',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.17',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
