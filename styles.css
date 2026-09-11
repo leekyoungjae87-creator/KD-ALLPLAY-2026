@@ -2607,3 +2607,42 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .privacy-song{background:#fff0f7;border-color:#f3b6d2;color:#9b315f}.privacy-song p{color:#7c4a61}.privacy-song .privacy-badge{color:#a72f65}
 .privacy-qna{background:#eaf6ff;border-color:#acd8f4;color:#17669a}.privacy-qna p{color:#466d87}.privacy-qna .privacy-badge{color:#17669a}
 @media(max-width:520px){.privacy-assurance{padding:13px 12px;gap:10px;align-items:flex-start}.privacy-assurance .privacy-lock{flex-basis:38px;width:38px;height:38px;font-size:20px}.privacy-assurance b{font-size:14px}.privacy-assurance p{font-size:11px}.privacy-badge{padding:5px 8px;font-size:10px}}
+
+
+/* ===== V76.11 readability polish ===== */
+/* 예선 진행 및 결과 */
+#bracketList .bracket-card-v40{border:1px solid #e1e9ef;border-radius:20px;background:#fff;box-shadow:0 8px 22px rgba(39,64,88,.055);overflow:hidden}
+#bracketList .bracket-card-head{padding:15px 16px 12px;background:linear-gradient(135deg,#f7fbff,#fbfdfd);border-bottom:1px solid #edf2f5}
+#bracketList .bracket-card-head>em{padding:5px 9px;border-radius:999px;background:#eef5fb;color:#4a6b89;font-size:8px;font-style:normal;font-weight:900;white-space:nowrap}
+#bracketList .bracket-date{display:flex;align-items:flex-start;gap:10px;margin:12px 14px 10px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e7edf2;color:#607387}
+#bracketList .bracket-date>span{flex:0 0 auto;font-size:8px;font-weight:900;color:#58728a;letter-spacing:.02em}
+#bracketList .bracket-date>b{font-size:9px;line-height:1.55;color:#4b6074;font-weight:800}
+#bracketList .bracket-grade-results{display:grid;gap:8px;padding:0 14px 14px}
+#bracketList .bracket-row{display:grid;grid-template-columns:82px 1fr auto;align-items:center;gap:10px;padding:11px 12px;border:1px solid #e9eef2;border-radius:13px;background:#fbfcfd}
+#bracketList .bracket-row.is-done{background:#f6fbf8;border-color:#dcece3}
+#bracketList .bracket-grade-badge{display:flex;align-items:center;gap:7px;min-width:0}
+#bracketList .bracket-grade-badge i{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:#355b80;color:#fff;font-size:9px;font-style:normal;font-weight:1000}
+#bracketList .bracket-grade-badge span{font-size:9px;font-weight:900;color:#354e65;white-space:nowrap}
+#bracketList .bracket-result-text{font-size:9px;line-height:1.65;color:#43596d;font-weight:800;word-break:keep-all}
+#bracketList .bracket-row>em{padding:4px 7px;border-radius:999px;background:#edf2f6;color:#71808e;font-size:7px;font-style:normal;font-weight:900}
+#bracketList .bracket-row.is-done>em{background:#e1f2e8;color:#377257}
+
+/* 교직원 투표 첫 화면 */
+.staff-vote-welcome{display:flex;align-items:center;gap:14px;padding:20px;border:1px solid #dce7ef;border-radius:18px;background:linear-gradient(135deg,#f2f7ff,#f5fbf8 55%,#fff9eb);box-shadow:0 8px 22px rgba(39,64,88,.05)}
+.staff-vote-welcome-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#fff;border:1px solid #dce6ee;font-size:23px;box-shadow:0 5px 14px rgba(52,77,101,.06)}
+.staff-vote-welcome small{font-size:8px;font-weight:1000;letter-spacing:.12em;color:#71889c}.staff-vote-welcome h3{margin:3px 0 5px;color:#274c71;font-size:19px}.staff-vote-welcome p{margin:0;color:#677b8c;font-size:10px;font-weight:700;line-height:1.6}
+
+/* 투표 핵심 안내 강조 */
+.vote-voter-id{margin:0 0 8px!important;font-size:9px!important;color:#708294!important}
+.vote-instruction-highlight{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:11px;background:#fff;border:1px solid #d8e5ef;box-shadow:0 4px 12px rgba(42,69,95,.04)}
+.vote-instruction-highlight>span{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;background:#284f77;color:#fff;font-size:10px;font-weight:1000}
+.vote-instruction-highlight>b{font-size:10px;color:#284f77;line-height:1.4;letter-spacing:-.02em}
+
+@media(max-width:700px){
+  #bracketList .bracket-row{grid-template-columns:72px 1fr;gap:7px 9px;padding:10px}
+  #bracketList .bracket-row>em{grid-column:1;grid-row:2;justify-self:start;margin-left:33px}
+  #bracketList .bracket-result-text{grid-column:2;grid-row:1 / span 2;font-size:9.5px}
+  #bracketList .bracket-date{flex-direction:column;gap:4px}
+  .staff-vote-welcome{padding:16px;align-items:flex-start}.staff-vote-welcome-icon{width:42px;height:42px;font-size:20px}
+  .vote-instruction-highlight{display:flex;width:100%;box-sizing:border-box}.vote-instruction-highlight>b{font-size:10px}
+}
