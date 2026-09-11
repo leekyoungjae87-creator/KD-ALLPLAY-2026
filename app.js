@@ -108,9 +108,9 @@ const rankPoints = {
   "8자줄넘기":[60,50,40,30,20],
   "슈팅릴레이":[60,50,40,30,20],
   "2인3각":[80,70,60,50,40],
-  "달리는줄다리기":[120,100,80,60,40],
+  "달리는줄다리기":[100,85,70,55,40],
   "미션이어달리기":[40,30,20,10,10],
-  "이어달리기":[120,100,80,60,40],
+  "이어달리기":[100,85,70,55,40],
   "학급깃발":[30,30,20,20,10]
 };
 function pointsForRank(eventName, rankKey){
@@ -280,10 +280,30 @@ bracketFilter.innerHTML=['전체',...prelimEvents].map((x,i)=>`<button class="${
 function renderBrackets(f='전체'){
   let store={...defaultPrelim,...load(STORE.prelim,{})}, arr=f==='전체'?prelimEvents:[f];
   const eventIcon={'축구(남)':'⚽','피구(여)':'🔴','바운드 배구':'🏐','달리는 줄다리기':'🪢','이어달리기':'🏃'};
+  const statusFor=(r)=>{
+    if(!r||r==='진행 예정') return ['예정','planned'];
+    if(r.includes('예선 결과')&&r.includes('준결승')) return ['준결승 예정','next'];
+    if(r.startsWith('결승:')) return ['결승 대진','next'];
+    if(r.includes('예선:')||r.includes('예선 1조')) return ['예선 예정','planned'];
+    return ['결과 확인','done'];
+  };
+  const formatResult=(r)=>{
+    if(!r||r==='진행 예정') return '<div class="prelim-detail-line muted"><span>안내</span><b>진행 예정</b></div>';
+    return r.split(' / ').map((part,idx)=>{
+      const safe=escapeHtml(part.trim());
+      let label='경기 정보', tone='info';
+      if(part.includes('예선 결과')){label='예선 결과';tone='result';}
+      else if(part.includes('준결승')){label='다음 경기';tone='next';}
+      else if(part.startsWith('결승:')){label='결승 대진';tone='next';}
+      else if(part.includes('예선')){label=idx===0?'예선 대진':'다음 경기';tone=idx===0?'match':'next';}
+      else if(part.includes('결승')){label='결승';tone='next';}
+      return `<div class="prelim-detail-line ${tone}"><span>${label}</span><b>${safe}</b></div>`;
+    }).join('');
+  };
   bracketList.innerHTML=arr.map(e=>`<article class="bracket-card bracket-card-v40">
     <div class="bracket-card-head"><span class="bracket-event-icon">${eventIcon[e]||'🏟️'}</span><div><small>PRE-GAME</small><h3>${e}</h3></div><em>예선 진행 · 결과</em></div>
-    <div class="bracket-date"><span>📅 경기 일정</span><b>${prelimSchedule[e]||''}</b></div>
-    <div class="bracket-grade-results">${[1,2,3].map(g=>{let r=store[`${e}_${g}`]||'진행 예정';let done=r!=='진행 예정';return `<div class="bracket-row ${done?'is-done':''}"><div class="bracket-grade-badge"><i>${g}</i><span>${g}학년</span></div><b class="bracket-result-text">${r}</b><em>${done?'확인':'예정'}</em></div>`}).join('')}</div>
+    <div class="bracket-date"><span>📅 전체 일정</span><b>${prelimSchedule[e]||''}</b></div>
+    <div class="bracket-grade-results">${[1,2,3].map(g=>{let r=store[`${e}_${g}`]||'진행 예정';let [status,tone]=statusFor(r);return `<section class="bracket-row status-${tone}"><div class="bracket-grade-badge"><i>${g}</i><span>${g}학년</span></div><div class="bracket-result-text">${formatResult(r)}</div><em class="bracket-status">${status}</em></section>`}).join('')}</div>
   </article>`).join('');
 }
 document.querySelectorAll('#bracketFilter button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#bracketFilter button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBrackets(b.dataset.bracket)});renderBrackets();
@@ -626,7 +646,7 @@ async function renderStaffVote(type,contentEl=staffContent){
   const instruction='각 학년에서 가장 인상적인 2개 학급을 선택해 주세요.';
   contentEl.innerHTML=`
     <div class="vote-head">
-      <div><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p>내선 ${escapeHtml(name)} · ${instruction}</p></div>
+      <div class="vote-head-copy"><small>STAFF TWO-VOTE</small><h3>${icon} ${title} 투표</h3><p class="vote-voter-id">내선 ${escapeHtml(name)}</p><div class="vote-instruction-highlight"><span>✓</span><b>${instruction}</b></div></div>
       ${voteModeBadge()}
     </div>
     <div class="vote-open-state ${isOpen?'open':'closed'}"><b>${isOpen?'🟢 투표 진행 중':'🔒 현재 투표가 마감되어 있습니다.'}</b><span>${isOpen?'교직원 1인당 학년별 2개 학급을 선택한 뒤 저장해 주세요.':'관리자가 투표를 시작하면 선택할 수 있습니다.'}</span></div>
@@ -849,7 +869,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.12',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.14',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
