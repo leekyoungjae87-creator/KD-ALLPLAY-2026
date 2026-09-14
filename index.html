@@ -48,6 +48,20 @@
 .lucky-winner-count{background:#f8fafc;border-color:#e6ebf0;color:#536272}
 @media(max-width:700px){.lucky-hero{padding:21px 19px}.lucky-hero h2{font-size:28px}.lucky-rule-chips span{font-size:10.5px}.lucky-date b{font-size:17px}}
 
+
+/* V76.27 Lucky Draw pastel prize cards */
+.lucky-prize-grid .lucky-prize:nth-child(1){background:linear-gradient(180deg,#fff1ef 0%,#fffaf9 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(2){background:linear-gradient(180deg,#eefbf4 0%,#fafffc 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(3){background:linear-gradient(180deg,#eef7ff 0%,#fbfdff 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(4){background:linear-gradient(180deg,#f8efff 0%,#fdfaff 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(5){background:linear-gradient(180deg,#fff8df 0%,#fffdf7 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(6){background:linear-gradient(180deg,#fff0f6 0%,#fffafd 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(7){background:linear-gradient(180deg,#edf9f0 0%,#fbfffc 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(8){background:linear-gradient(180deg,#fff1e6 0%,#fffaf6 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(9){background:linear-gradient(180deg,#f2efff 0%,#fbfaff 100%)}
+.lucky-prize-grid .lucky-prize:nth-child(10){background:linear-gradient(180deg,#eaf7ff 0%,#f9fdff 100%)}
+.lucky-prize-grid .lucky-prize.selected{border:2px solid #2d6da4;box-shadow:0 12px 26px rgba(45,109,164,.12)}
+.lucky-warning-bottom{max-width:900px;margin:24px auto 4px;padding:15px 16px}
 </style>
 
 <style>
@@ -1106,7 +1120,7 @@
   <section class="page" id="lucky">
     <div class="lucky-hero">
       <div class="lucky-kicker">ALL PLAY · LUCKY DRAW</div>
-      <div class="lucky-hero-row"><div><h2>🎁 행운권 응모</h2><p>갖고 싶은 상품 하나를 골라, 나의 행운에 응모하세요.</p></div><div class="lucky-date"><small>응모 기간</small><b>9.14.(월) — 9.30.(수)</b><span>체육한마당 당일 현장 추첨</span></div></div>
+      <div class="lucky-hero-row"><div><h2>🎁 행운권 응모</h2><p>갖고 싶은 상품을 하나 선택하세요. GOOD LUCK !</p></div><div class="lucky-date"><small>응모 기간</small><b>9.14.(월) — 9.30.(수)</b><span>체육한마당 당일 현장 추첨</span></div></div>
       <div class="lucky-rule-chips"><span>✓ 한 상품만 선택</span><span>↻ 마감 전 변경 가능</span><span>🔐 4자리 PIN (숫자)</span></div>
     </div>
     <div id="luckyStatus" class="lucky-status"></div>
@@ -1124,6 +1138,7 @@
       <div id="luckyPrizeGrid" class="lucky-prize-grid"></div>
 
     </div>
+    <div class="lucky-login-warning lucky-warning-bottom"><b>⚠️ 꼭 확인해 주세요</b><span>본인이 아닌 타인의 학번·이름을 도용하거나 시스템 해킹을 시도해서는 안 됩니다. 이러한 행위는 개인정보 보호 및 정보통신 관련 법령, 학교 규정에 따라 처벌 또는 조치될 수 있습니다.</span></div>
   </section>
 
   <section class="page" id="admin">
