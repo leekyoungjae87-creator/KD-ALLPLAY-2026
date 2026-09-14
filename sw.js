@@ -1,10 +1,10 @@
-const CACHE_NAME = 'kd-allplay-v76-19';
+const CACHE_NAME = 'kd-allplay-v76-20';
 const CORE = [
   './',
   './index.html',
   './styles.css',
-  './config.js?v=76.19',
-  './app.js?v=76.19'
+  './config.js?v=76.20',
+  './app.js?v=76.20'
 ];
 
 self.addEventListener('install', event => {

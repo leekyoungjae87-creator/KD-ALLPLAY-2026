@@ -20,14 +20,14 @@
   <link rel="stylesheet" href="styles.css" />
 
 <style>
-/* V76.19 LUCKY DRAW */
+/* V76.20 LUCKY DRAW */
 .lucky-hero{position:relative;overflow:hidden;border-radius:28px;padding:30px;margin-bottom:18px;background:linear-gradient(135deg,#172b4d 0%,#254b78 55%,#356fa0 100%);color:#fff;box-shadow:0 18px 50px rgba(25,55,90,.16)}
 .lucky-hero:after{content:"LUCKY";position:absolute;right:-18px;bottom:-42px;font-size:116px;font-weight:1000;letter-spacing:-8px;color:rgba(255,255,255,.055)}
 .lucky-kicker{font-size:11px;font-weight:900;letter-spacing:.18em;color:#ffd56a;margin-bottom:12px}.lucky-hero-row{display:flex;justify-content:space-between;gap:22px;align-items:flex-end;position:relative;z-index:1}.lucky-hero h2{font-size:34px;margin:0 0 7px;letter-spacing:-.05em}.lucky-hero p{margin:0;color:rgba(255,255,255,.76);font-weight:650}.lucky-date{min-width:245px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px 16px;backdrop-filter:blur(8px)}.lucky-date small,.lucky-date span{display:block;color:rgba(255,255,255,.7);font-size:11px}.lucky-date b{display:block;font-size:18px;margin:3px 0}.lucky-rule-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px;position:relative;z-index:1}.lucky-rule-chips span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.14);font-size:12px;font-weight:800}.lucky-status{margin:14px 0}.lucky-status>div{border-radius:16px;padding:13px 16px;font-weight:800}.lucky-status .open{background:#eefbf4;color:#16734a;border:1px solid #c9efdb}.lucky-status .before{background:#fff8e8;color:#8a6511;border:1px solid #f6e3aa}.lucky-status .closed{background:#f4f5f7;color:#596273;border:1px solid #e0e3e8}.lucky-auth{max-width:620px;margin:24px auto}.lucky-login-card{background:#fff;border:1px solid #e5e9ef;border-radius:24px;padding:24px;box-shadow:0 14px 36px rgba(34,57,86,.08)}.lucky-login-card .step{display:inline-block;font-size:10px;font-weight:900;letter-spacing:.15em;color:#2f6ca2;background:#eef6ff;padding:6px 9px;border-radius:999px}.lucky-login-card h3{margin:12px 0 5px;font-size:23px}.lucky-login-card p{margin:0 0 18px;color:#6d7581;font-size:13px}.lucky-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lucky-fields input{width:100%;border:1px solid #dce2ea;border-radius:13px;padding:13px 14px;background:#fbfcfe}.lucky-fields .full{grid-column:1/-1}.lucky-primary{width:100%;margin-top:11px;border:0;border-radius:14px;padding:14px;background:#244f7e;color:#fff;font-weight:900}.lucky-subnote{margin-top:12px;padding:11px 13px;border-radius:12px;background:#f7f8fa;color:#69717c;font-size:11px;line-height:1.55}.lucky-mybar{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #e5e9ef;border-radius:20px;padding:15px 17px;margin:18px 0}.lucky-mybar>div:first-child{min-width:145px}.lucky-mybar small{display:block;font-size:9px;letter-spacing:.14em;color:#7890a8;font-weight:900}.lucky-mybar b{font-size:14px}.lucky-myprize{flex:1;padding:10px 13px;border-radius:12px;background:#f3f7fb;font-size:13px;font-weight:850;color:#244f7e}.lucky-mybar button{border:1px solid #dce2ea;background:#fff;border-radius:11px;padding:9px 11px;color:#687382}.lucky-section-head{display:flex;justify-content:space-between;align-items:flex-end;margin:28px 2px 15px;gap:16px}.lucky-section-head small{font-size:10px;letter-spacing:.15em;color:#e17d2f;font-weight:950}.lucky-section-head h3{margin:5px 0 3px;font-size:24px;letter-spacing:-.04em}.lucky-section-head p{margin:0;color:#747d89;font-size:12px}.lucky-total{text-align:right;white-space:nowrap}.lucky-total small{display:block;color:#8b94a0}.lucky-total b{font-size:30px;color:#244f7e}.lucky-total span{font-weight:800;color:#6c7480}.lucky-prize-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.lucky-prize{position:relative;overflow:hidden;background:#fff;border:1px solid #e5e9ef;border-radius:21px;padding:18px;transition:.18s ease;box-shadow:0 8px 22px rgba(33,55,82,.045)}.lucky-prize:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(33,55,82,.09)}.lucky-prize.selected{border:2px solid #2d6da4;background:linear-gradient(180deg,#f5faff,#fff)}.lucky-prize.selected:after{content:"MY PICK";position:absolute;right:13px;top:13px;background:#2d6da4;color:#fff;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:950;letter-spacing:.08em}.lucky-prize-top{display:flex;align-items:center;gap:13px}.lucky-emoji{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:#f4f7fa;font-size:30px}.lucky-prize-copy{flex:1}.lucky-prize-copy small{display:block;color:#8b94a0;font-size:10px;font-weight:800}.lucky-prize-copy b{display:block;font-size:17px;margin-top:2px}.lucky-count{margin-top:15px;display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #edf0f3}.lucky-count span{font-size:11px;color:#7b8490}.lucky-count strong{font-size:16px;color:#244f7e}.lucky-prize button{width:100%;margin-top:11px;border:0;border-radius:12px;padding:11px;background:#edf3f8;color:#244f7e;font-weight:900}.lucky-prize.selected button{background:#244f7e;color:#fff}.lucky-prize button:disabled{opacity:.5}.lucky-bottom-note{display:grid;gap:5px;margin-top:18px;border-radius:17px;padding:16px;background:#fff9ed;border:1px solid #f3e3bd;color:#745e31;font-size:11px}.lucky-bottom-note b{font-size:12px;color:#5c481f}.lucky-admin-head{display:flex;justify-content:space-between;gap:14px;align-items:center}.lucky-admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.lucky-admin-actions button{border:0;border-radius:11px;padding:10px 12px;font-weight:850}.lucky-admin-list{display:grid;gap:9px}.lucky-admin-row{display:grid;grid-template-columns:90px 1fr 160px auto;gap:10px;align-items:center;padding:11px;border:1px solid #e6e9ee;border-radius:13px;background:#fff}.lucky-admin-row small{color:#818995}.lucky-admin-row button{border:1px solid #e0e4e9;background:#fff;border-radius:9px;padding:7px 9px}.lucky-draw-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.lucky-draw-card{border:1px solid #e5e9ef;border-radius:15px;padding:13px;background:#fff}.lucky-draw-card b{display:block}.lucky-draw-card small{color:#7c8591}.lucky-draw-card button{width:100%;margin-top:9px;border:0;border-radius:10px;padding:10px;background:#244f7e;color:#fff;font-weight:900}.lucky-winner{margin-top:8px;padding:8px;border-radius:9px;background:#fff5d9;color:#765710;font-weight:900}.lucky-draw-overlay{position:fixed;inset:0;z-index:9999;background:rgba(11,25,43,.94);display:grid;place-items:center;color:#fff;text-align:center;padding:25px}.lucky-draw-overlay .box{max-width:720px}.lucky-draw-overlay .emoji{font-size:78px}.lucky-draw-overlay small{letter-spacing:.2em;color:#ffd56a;font-weight:900}.lucky-draw-overlay h2{font-size:clamp(34px,7vw,68px);margin:10px 0}.lucky-draw-overlay p{font-size:22px}.lucky-draw-overlay button{margin-top:20px;border:0;border-radius:14px;padding:13px 24px;font-weight:900}.hidden{display:none!important}
 @media(max-width:700px){.lucky-hero{padding:22px;border-radius:22px}.lucky-hero-row{display:block}.lucky-date{margin-top:18px;min-width:0}.lucky-hero h2{font-size:29px}.lucky-prize-grid{grid-template-columns:1fr}.lucky-section-head{align-items:flex-start}.lucky-mybar{align-items:stretch;flex-direction:column}.lucky-mybar>div:first-child{min-width:0}.lucky-fields{grid-template-columns:1fr}.lucky-fields .full{grid-column:auto}.lucky-admin-row{grid-template-columns:75px 1fr}.lucky-admin-row>*:nth-child(3),.lucky-admin-row>*:nth-child(4){grid-column:2}.lucky-draw-grid{grid-template-columns:1fr}}
 .lucky-winner-count{margin-top:8px;font-size:12px;font-weight:900;color:#c2410c;background:#fff7ed;border:1px solid #fed7aa;border-radius:999px;padding:6px 10px;display:inline-block}
 
-/* V76.19 lucky draw polish */
+/* V76.20 lucky draw polish */
 .lucky-hero{padding:28px 30px;background:linear-gradient(135deg,#17365d 0%,#285f8f 100%);box-shadow:0 12px 32px rgba(28,63,99,.13)}
 .lucky-hero:after{font-size:102px;right:-8px;bottom:-38px;opacity:.75}
 .lucky-kicker{color:#ffe08a;letter-spacing:.16em}
@@ -51,7 +51,7 @@
 </style>
 
 <style>
-/* V76.19 Lucky Draw visual refinement */
+/* V76.20 Lucky Draw visual refinement */
 #page-lucky, .page[data-page="lucky"]{
   background:linear-gradient(180deg,#f7f9ff 0%,#fff8f3 46%,#f8fbff 100%);
 }
@@ -110,6 +110,15 @@
 }
 </style>
 
+
+<style>
+/* V76.20 Lucky wording polish */
+.lucky-count,.lucky-applicants{
+  font-size:12px!important;font-weight:800!important;color:#53619a!important;
+  background:#f3f5ff!important;border-radius:999px!important;padding:6px 9px!important
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -129,7 +138,7 @@
 
 <nav class="main-nav" id="mainNav">
   <button class="active" data-page="home">🏠 홈</button>
-  <button data-page="lucky">🎁 행운권 추첨</button>
+  <button data-page="lucky">🎁 행운권 응모</button>
   <button data-page="schedule">📅 일정</button>
   <button data-page="weather">🌤️ 당일 날씨</button>
   <button data-page="live">🏆 실시간 점수</button>
@@ -1135,7 +1144,7 @@
   <img src="assets/allplay-footer-logo.png" alt="우리 함께, 경덕 로고" class="allplay-footer-logo">
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=76.19"></script>
-<script src="app.js?v=76.19"></script>
+<script src="config.js?v=76.20"></script>
+<script src="app.js?v=76.20"></script>
 </body>
 </html>
