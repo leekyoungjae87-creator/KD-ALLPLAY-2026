@@ -851,7 +851,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.20',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.21',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
@@ -963,7 +963,7 @@ document.querySelectorAll('[data-cal-detail]').forEach(btn=>{
   });
 });
 
-// ===== V76.20 ALL PLAY 행운권 응모 · 현장 추첨 =====
+// ===== V76.21 ALL PLAY 행운권 응모 · 현장 추첨 =====
 const LUCKY_OPEN=new Date(2026,8,14,0,0,0), LUCKY_CLOSE=new Date(2026,9,1,0,0,0);
 const LUCKY_LOCAL='kd_lucky_entries_v7615';
 const LUCKY_PRIZES=[
@@ -978,6 +978,7 @@ const LUCKY_PRIZES=[
   {id:'waffle',emoji:'🧇',name:'와플대학 1만원권',tag:'SWEET PICK',winners:1},
   {id:'gym',emoji:'🏟️',name:'우리 반 강당 1시간 대관권',tag:'CLASS SPECIAL',winners:3}
 ];
+const LUCKY_TOTAL_STUDENTS=600;
 let luckyMe=null;
 const LUCKY_STATE_LOCAL='kd_lucky_state_v7615', LUCKY_WINNERS_LOCAL='kd_lucky_winners_v7615';
 
@@ -1015,63 +1016,178 @@ async function luckyCreate(studentId,name,pinHash){if(kdSbReady){const {error}=a
 async function luckySetPrize(studentId,prizeId){if(kdSbReady){const {error}=await kdSb.from('kd_lucky_entries').update({prize_id:prizeId,updated_at:new Date().toISOString()}).eq('student_id',studentId);if(!error)return;throw error}let a=luckyLocalRows(),x=a.find(v=>v.student_id===studentId);if(x){x.prize_id=prizeId;x.updated_at=new Date().toISOString();luckyLocalSave(a)}}
 async function luckyReset(studentId){if(kdSbReady){const {error}=await kdSb.from('kd_lucky_entries').delete().eq('student_id',studentId);if(!error)return;throw error}luckyLocalSave(luckyLocalRows().filter(x=>x.student_id!==studentId))}
 function luckyPrize(id){return LUCKY_PRIZES.find(x=>x.id===id)}
-function luckyStatusRender(){const el=document.getElementById('luckyStatus');if(!el)return;const st=luckyPeriod();el.innerHTML=st==='open'?'<div class="open">🟢 지금 응모 가능 · 9월 30일까지 상품 변경 가능</div>':st==='before'?'<div class="before">⏳ 행운권 응모는 9월 14일부터 시작됩니다.</div>':'<div class="closed">🔒 응모가 마감되었습니다 · 10월 1일 체육한마당에서 당첨자를 공개합니다.</div>'}
-function luckyAuthRender(){const el=document.getElementById('luckyAuth'),app=document.getElementById('luckyApp');if(!el||!app)return;if(luckyMe){el.classList.add('hidden');app.classList.remove('hidden');luckyAppRender();return}app.classList.add('hidden');el.classList.remove('hidden');el.innerHTML=`<div class="lucky-login-card"><span class="step">STEP 01 · MY TICKET</span><h3>행운권 응모하기</h3><p>학번·이름과 나만의 4자리 PIN (숫자)을 입력해 주세요.</p><div class="lucky-fields"><input id="luckySid" inputmode="numeric" maxlength="5" placeholder="학번 (예: 30715)"><input id="luckyName" maxlength="10" placeholder="이름"><input class="full" id="luckyPin" type="password" inputmode="numeric" maxlength="4" placeholder="4자리 PIN (숫자)"></div><button class="lucky-primary" id="luckyEnter">행운권 응모하기</button><div class="lucky-subnote">🔐 이미 참여한 학생은 <b>학번 + PIN</b>으로 다시 들어옵니다.<br>PIN을 잊었거나 내가 설정하지 않은 PIN이 등록되어 있다면 본부에서 초기화할 수 있습니다.</div></div>`;document.getElementById('luckyEnter').onclick=luckyEnter}
-async function luckyEnter(){const sid=document.getElementById('luckySid').value.trim(),name=document.getElementById('luckyName').value.trim(),pin=document.getElementById('luckyPin').value.trim();if(!/^\d{4,5}$/.test(sid)){alert('학번을 숫자로 정확히 입력해 주세요.');return}if(name.length<2){alert('이름을 입력해 주세요.');return}if(!/^\d{4}$/.test(pin)){alert('PIN은 숫자 4자리로 입력해 주세요.');return}try{let row=await luckyFind(sid),hash=await luckyHash(pin);if(row){if(row.pin_hash!==hash){alert('PIN이 맞지 않습니다. 본인이 설정하지 않은 PIN이라면 본부에 초기화를 요청해 주세요.');return}if(String(row.student_name||'').trim()!==name){alert('처음 등록한 이름과 일치하지 않습니다.');return}luckyMe=row}else{if(luckyPeriod()==='closed'){alert('행운권 응모가 마감되었습니다.');return}await luckyCreate(sid,name,hash);luckyMe=await luckyFind(sid)||{student_id:sid,student_name:name,prize_id:null,pin_hash:hash}}luckyAuthRender()}catch(e){console.error(e);alert('등록 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.')}}
-async function luckyAppRender(){if(!luckyMe)return;document.getElementById('luckyStudentLabel').textContent=`${luckyMe.student_id} · ${luckyMe.student_name}`;const rows=await luckyRows(),counts=Object.fromEntries(LUCKY_PRIZES.map(p=>[p.id,0]));rows.forEach(x=>{if(counts[x.prize_id]!=null)counts[x.prize_id]++});document.getElementById('luckyTotal').textContent=rows.filter(x=>x.prize_id).length;const mine=luckyPrize(luckyMe.prize_id);document.getElementById('luckyMyPrize').innerHTML=mine?`${mine.emoji} <b>${escapeHtml(mine.name)}</b>에 응모 중`:'아직 상품을 선택하지 않았습니다.';const state=await luckyState(),closed=luckyPeriod()!=='open'||state.is_finalized;document.getElementById('luckyPrizeGrid').innerHTML=LUCKY_PRIZES.map(p=>`<article class="lucky-prize ${luckyMe.prize_id===p.id?'selected':''}"><div class="lucky-prize-top"><div class="lucky-emoji">${p.emoji}</div><div class="lucky-prize-copy"><small>${p.tag}</small><b>${escapeHtml(p.name)}</b></div></div><div class="lucky-count"><span>현재 응모</span><strong>${counts[p.id]||0}명</strong></div><div class="lucky-winner-count">🎁 ${p.winners}명 추첨</div><button type="button" data-lucky-pick="${p.id}" ${closed?'disabled':''}>${luckyMe.prize_id===p.id?'✓ 나의 선택':'이 상품에 응모하기'}</button></article>`).join('');document.querySelectorAll('[data-lucky-pick]').forEach(b=>b.onclick=async()=>{const id=b.dataset.luckyPick,p=luckyPrize(id);if(!confirm(`${p.emoji} ${p.name}\n이 상품에 응모할까요?\n\n마감 전까지 변경할 수 있습니다.`))return;await luckySetPrize(luckyMe.student_id,id);luckyMe.prize_id=id;await luckyAppRender()})}
+function luckyStatusRender(){const el=document.getElementById('luckyStatus');if(!el)return;const st=luckyPeriod();el.innerHTML=st==='open'?'<div class="open">🟢 지금 응모 가능 · 9월 30일 23:59까지 응모 상품 변경 가능</div>':st==='before'?'<div class="before">⏳ 행운권 응모는 9월 14일부터 시작됩니다.</div>':'<div class="closed">🔒 응모가 마감되었습니다 · 10월 1일 체육한마당에서 당첨자를 공개합니다.</div>'}
+function luckyAuthRender(){const el=document.getElementById('luckyAuth'),app=document.getElementById('luckyApp');if(!el||!app)return;if(luckyMe){el.classList.add('hidden');app.classList.remove('hidden');luckyAppRender();return}app.classList.add('hidden');el.classList.remove('hidden');el.innerHTML=`<div class="lucky-login-card"><span class="step">STEP 01 · MY TICKET</span><h3>행운권 응모하기</h3><p>학번·이름과 나만의 4자리 PIN (숫자)을 입력해 주세요.</p><div class="lucky-fields"><input id="luckySid" inputmode="numeric" maxlength="4" placeholder="학번(예:1234)"><input id="luckyName" maxlength="10" placeholder="이름"><input class="full" id="luckyPin" type="password" inputmode="numeric" maxlength="4" placeholder="4자리 PIN (숫자)"></div><button class="lucky-primary" id="luckyEnter">행운권 응모하기</button><div class="lucky-subnote">🔐 이미 참여한 학생은 <b>학번 + PIN</b>으로 다시 들어옵니다.<br>PIN을 잊었거나 내가 설정하지 않은 PIN이 등록되어 있다면 본부에서 초기화할 수 있습니다.</div></div>`;document.getElementById('luckyEnter').onclick=luckyEnter}
+async function luckyEnter(){const sid=document.getElementById('luckySid').value.trim(),name=document.getElementById('luckyName').value.trim(),pin=document.getElementById('luckyPin').value.trim();if(!/^\d{4}$/.test(sid)){alert('학번을 4자리 숫자로 입력해 주세요. (예:1234)');return}if(name.length<2){alert('이름을 입력해 주세요.');return}if(!/^\d{4}$/.test(pin)){alert('PIN은 숫자 4자리로 입력해 주세요.');return}try{let row=await luckyFind(sid),hash=await luckyHash(pin);if(row){if(row.pin_hash!==hash){alert('PIN이 맞지 않습니다. 본인이 설정하지 않은 PIN이라면 본부에 초기화를 요청해 주세요.');return}if(String(row.student_name||'').trim()!==name){alert('처음 등록한 이름과 일치하지 않습니다.');return}luckyMe=row}else{if(luckyPeriod()==='closed'){alert('행운권 응모가 마감되었습니다.');return}await luckyCreate(sid,name,hash);luckyMe=await luckyFind(sid)||{student_id:sid,student_name:name,prize_id:null,pin_hash:hash}}luckyAuthRender()}catch(e){console.error(e);alert('등록 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.')}}
+async function luckyAppRender(){
+  if(!luckyMe)return;
+  document.getElementById('luckyStudentLabel').textContent=`${luckyMe.student_id} · ${maskName(luckyMe.student_name)}`;
+  const rows=await luckyRows(),counts=Object.fromEntries(LUCKY_PRIZES.map(p=>[p.id,0]));
+  rows.forEach(x=>{if(counts[x.prize_id]!=null)counts[x.prize_id]++});
+  const entered=rows.filter(x=>x.prize_id);
+  document.getElementById('luckyTotal').textContent=entered.length;
+  const mine=luckyPrize(luckyMe.prize_id);
+  const myPrizeEl=document.getElementById('luckyMyPrize');
+  const myMetaEl=document.getElementById('luckyMyMeta');
+  if(mine){
+    myPrizeEl.innerHTML=`<div class="lucky-my-selected"><span class="emoji">${mine.emoji}</span><div><small>현재 응모 상품</small><b>${escapeHtml(mine.name)}</b><span>${escapeHtml(mine.name)} 현재 응모 인원 <strong>${counts[mine.id]||0}명</strong></span></div></div>`;
+    if(myMetaEl)myMetaEl.innerHTML=`✓ 응모가 완료되었습니다. <b>9월 30일 23:59까지 응모 상품 변경 가능</b>`;
+  }else{
+    myPrizeEl.innerHTML=`<div class="lucky-my-empty"><b>아직 응모 상품을 선택하지 않았습니다.</b><span>아래 상품 중 가장 갖고 싶은 상품 하나를 선택해 주세요.</span></div>`;
+    if(myMetaEl)myMetaEl.textContent='9월 30일 23:59까지 응모 상품 변경 가능';
+  }
+  const state=await luckyState(),closed=luckyPeriod()!=='open'||state.is_finalized;
+  document.getElementById('luckyPrizeGrid').innerHTML=LUCKY_PRIZES.map(p=>`
+    <article class="lucky-prize ${luckyMe.prize_id===p.id?'selected':''}">
+      <div class="lucky-prize-top"><div class="lucky-emoji">${p.emoji}</div><div class="lucky-prize-copy"><small>${p.tag}</small><b>${escapeHtml(p.name)}</b></div></div>
+      <div class="lucky-count"><span>${escapeHtml(p.name)} 현재 응모 인원</span><strong>${counts[p.id]||0}명</strong></div>
+      <div class="lucky-winner-count">🎁 ${p.winners}명 추첨</div>
+      <button type="button" data-lucky-pick="${p.id}" ${closed?'disabled':''}>${luckyMe.prize_id===p.id?'✓ 현재 응모 상품':'이 상품에 응모하기'}</button>
+    </article>`).join('');
+  document.querySelectorAll('[data-lucky-pick]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.luckyPick,p=luckyPrize(id);
+    if(luckyMe.prize_id===id){alert('현재 응모 중인 상품입니다.');return}
+    if(!confirm(`${p.emoji} ${p.name}\n이 상품에 응모할까요?\n\n9월 30일 23:59까지 변경할 수 있습니다.`))return;
+    await luckySetPrize(luckyMe.student_id,id);
+    luckyMe.prize_id=id;
+    await luckyAppRender();
+  });
+}
 document.getElementById('luckyLogout')?.addEventListener('click',()=>{luckyMe=null;luckyAuthRender()});luckyStatusRender();luckyAuthRender();
 async function luckyAdminRender(contentEl){
   const rows=await luckyRows(), state=await luckyState(), saved=await luckyWinners();
-  const entered=rows.filter(x=>x.prize_id), counts=Object.fromEntries(LUCKY_PRIZES.map(p=>[p.id,entered.filter(x=>x.prize_id===p.id).length]));
+  const entered=rows.filter(x=>x.prize_id);
+  const counts=Object.fromEntries(LUCKY_PRIZES.map(p=>[p.id,entered.filter(x=>x.prize_id===p.id).length]));
   const finalized=!!state.is_finalized;
   const finalizedText=finalized?(state.finalized_at?new Date(state.finalized_at).toLocaleString('ko-KR'):'확정 완료'):'아직 확정 전';
+  const notEntered=Math.max(0,LUCKY_TOTAL_STUDENTS-entered.length);
+  const rate=LUCKY_TOTAL_STUDENTS?((entered.length/LUCKY_TOTAL_STUDENTS)*100).toFixed(1):'0.0';
+
   contentEl.innerHTML=`
-  <div class="lucky-admin-head"><div><small>LUCKY DRAW MANAGER · FINAL CHECK</small><h3>🎁 행운권 관리 · 명단 확정 · 추첨</h3>
-  <p>당일 아침 응모 현황을 확인한 뒤 명단을 확정하고 추첨합니다.</p></div><b>${entered.length}명 응모</b></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0 18px">
-    <div class="info-note"><b>전체 응모</b><br><strong style="font-size:24px">${entered.length}명</strong></div>
-    <div class="info-note"><b>미선택 등록</b><br><strong style="font-size:24px">${rows.length-entered.length}명</strong></div>
-    <div class="info-note"><b>명단 상태</b><br><strong>${finalized?'🔒 최종 확정':'🟡 확인 중'}</strong><br><small>${finalizedText}</small></div>
+  <div class="lucky-admin-head">
+    <div><small>LUCKY DRAW MANAGER · FINAL CHECK</small><h3>🎁 행운권 관리 · 명단 확정 · 추첨</h3>
+    <p>당일 아침 응모 현황을 확인하고 명단을 최종 확정한 뒤 추첨합니다.</p></div>
+    <b>${entered.length}명 응모</b>
   </div>
-  <div class="lucky-admin-actions"><input id="luckyAdminSearch" placeholder="학번 또는 이름 검색"><button id="luckyAdminRefresh">↻ 새로고침</button></div>
-  <div style="overflow:auto;margin:12px 0 18px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:8px">상품</th><th>응모</th><th>당첨</th><th>상태</th></tr></thead><tbody>
-  ${LUCKY_PRIZES.map(p=>`<tr style="border-top:1px solid #e5e7eb"><td style="padding:9px">${p.emoji} ${escapeHtml(p.name)}</td><td style="text-align:center">${counts[p.id]||0}명</td><td style="text-align:center">${p.winners}명</td><td style="text-align:center">${saved.some(w=>w.prize_id===p.id)?'✅ 추첨완료':'대기'}</td></tr>`).join('')}
-  </tbody></table></div>
+
+  <div class="lucky-admin-summary">
+    <div class="lucky-admin-stat"><small>전체 응모</small><strong>${entered.length}명</strong><span>실제 상품 선택 완료</span></div>
+    <div class="lucky-admin-stat"><small>미응모 추정</small><strong>${notEntered}명</strong><span>전교생 ${LUCKY_TOTAL_STUDENTS}명 기준</span></div>
+    <div class="lucky-admin-stat"><small>응모율</small><strong>${rate}%</strong><span>전교생 기준</span></div>
+    <div class="lucky-admin-stat"><small>등록 후 미선택</small><strong>${rows.length-entered.length}명</strong><span>PIN 등록 후 상품 미선택</span></div>
+    <div class="lucky-admin-stat ${finalized?'ok':'wait'}"><small>명단 상태</small><strong>${finalized?'🔒 최종 확정':'🟡 확인 중'}</strong><span>${finalizedText}</span></div>
+  </div>
+
+  <div class="lucky-admin-actions">
+    <input id="luckyAdminSearch" placeholder="학번 또는 이름 검색">
+    <button id="luckyAdminRefresh">↻ 새로고침</button>
+  </div>
+
+  <div class="lucky-admin-table-wrap">
+    <table class="lucky-admin-table">
+      <thead><tr><th>상품</th><th>현재 응모 인원</th><th>당첨 인원</th><th>추첨 상태</th></tr></thead>
+      <tbody>
+      ${LUCKY_PRIZES.map(p=>`<tr>
+        <td>${p.emoji} <b>${escapeHtml(p.name)}</b></td>
+        <td>${counts[p.id]||0}명</td>
+        <td>${p.winners}명</td>
+        <td>${saved.some(w=>w.prize_id===p.id)?'✅ 추첨 완료':'대기'}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="lucky-admin-guide">
+    <b>🔎 학생 응모 확인 · PIN 초기화</b>
+    <span>학번 또는 이름을 검색해 응모 상품을 확인할 수 있습니다. 명단 확정 전까지만 PIN 초기화가 가능합니다.</span>
+  </div>
   <div id="luckyAdminStudents" class="lucky-admin-list"></div>
-  <div style="margin:22px 0;padding:18px;border:2px solid ${finalized?'#16a34a':'#f59e0b'};border-radius:16px;background:#fff">
-    <h3 style="margin:0 0 6px">${finalized?'🔒 응모 명단 최종 확정 완료':'🔎 당일 아침 최종 확인'}</h3>
-    <p style="margin:0 0 12px;color:#64748b">${finalized?'학생의 신규 응모와 상품 변경을 막고 추첨 명단을 고정했습니다.':'학번·이름·상품별 인원을 확인한 뒤 확정하세요. 확정 후에는 학생 응모를 변경할 수 없습니다.'}</p>
-    <button id="luckyFinalize" ${finalized?'disabled':''} style="width:100%;padding:13px;font-weight:800">${finalized?'✓ 명단 확정됨':'🔒 2026 행운권 응모 명단 확정'}</button>
+
+  <div class="lucky-finalize-box ${finalized?'done':''}">
+    <h3>${finalized?'🔒 응모 명단 최종 확정 완료':'🔎 당일 아침 최종 확인'}</h3>
+    <p>${finalized?'학생의 신규 응모와 상품 변경을 막고 추첨 명단을 고정했습니다.':'상품별 응모 인원과 이상 응모를 확인한 뒤 명단을 확정하세요. 확정 후 학생의 신규 응모·상품 변경은 불가능합니다.'}</p>
+    <button id="luckyFinalize" ${finalized?'disabled':''}>${finalized?'✓ 명단 확정됨':'🔒 2026 행운권 응모 명단 최종 확정'}</button>
   </div>
-  <h3 style="margin-top:28px">🎉 상품별 현장 추첨</h3>
-  ${!finalized?'<div class="info-note">🔒 <b>명단을 확정해야 추첨 버튼이 활성화됩니다.</b></div>':''}
-  <div class="lucky-draw-grid">${LUCKY_PRIZES.map(p=>{const ws=saved.filter(w=>w.prize_id===p.id);return `<div class="lucky-draw-card"><b>${p.emoji} ${escapeHtml(p.name)}</b><small>${counts[p.id]||0}명 응모 · ${p.winners}명 당첨</small><button data-lucky-draw="${p.id}" ${(!finalized||!counts[p.id]||ws.length)?'disabled':''}>${ws.length?'✅ 추첨 완료':`${p.winners}명 당첨자 추첨`}</button><div id="winner_${p.id}">${ws.map((w,i)=>`<div class="lucky-winner">🎉 ${i+1}. ${escapeHtml(w.student_id)} ${escapeHtml(maskName(w.student_name))}</div>`).join('')}</div></div>`}).join('')}</div>`;
+
+  <h3 class="lucky-draw-title">🎉 상품별 현장 추첨</h3>
+  ${!finalized?'<div class="info-note">🔒 <b>명단을 최종 확정해야 추첨 버튼이 활성화됩니다.</b></div>':''}
+  <div class="lucky-draw-grid">
+    ${LUCKY_PRIZES.map(p=>{
+      const ws=saved.filter(w=>w.prize_id===p.id);
+      return `<div class="lucky-draw-card">
+        <b>${p.emoji} ${escapeHtml(p.name)}</b>
+        <small>${counts[p.id]||0}명 응모 · ${p.winners}명 당첨</small>
+        <button data-lucky-draw="${p.id}" ${(!finalized||!counts[p.id]||ws.length)?'disabled':''}>${ws.length?'✅ 추첨 완료':`${p.winners}명 당첨자 추첨`}</button>
+        <div id="winner_${p.id}">${ws.map((w,i)=>`<div class="lucky-winner">🎉 ${i+1}. ${escapeHtml(w.student_id)} ${escapeHtml(maskName(w.student_name))}</div>`).join('')}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
 
   const drawStudents=(q='')=>{
-    const box=document.getElementById('luckyAdminStudents'),f=rows.filter(x=>!q||x.student_id.includes(q)||x.student_name.includes(q));
-    box.innerHTML=f.length?f.map(x=>`<div class="lucky-admin-row"><b>${escapeHtml(x.student_id)}</b><span>${escapeHtml(x.student_name)}</span><small>${escapeHtml(luckyPrize(x.prize_id)?.name||'미응모')}</small><button data-lucky-reset="${x.student_id}" ${finalized?'disabled':''}>PIN 초기화</button></div>`).join(''):'<div class="info-note">검색 결과가 없습니다.</div>';
-    box.querySelectorAll('[data-lucky-reset]').forEach(b=>b.onclick=async()=>{const x=rows.find(v=>v.student_id===b.dataset.luckyReset);if(!confirm(`${x.student_id} ${x.student_name} 학생의 PIN과 기존 응모를 초기화할까요?`))return;await luckyReset(x.student_id);alert('초기화했습니다.');await luckyAdminRender(contentEl)});
+    const box=document.getElementById('luckyAdminStudents');
+    const f=rows.filter(x=>!q||x.student_id.includes(q)||x.student_name.includes(q));
+    box.innerHTML=f.length?f.map(x=>`
+      <div class="lucky-admin-row">
+        <b>${escapeHtml(x.student_id)}</b>
+        <span>${escapeHtml(x.student_name)}</span>
+        <small>${escapeHtml(luckyPrize(x.prize_id)?.name||'상품 미선택')}</small>
+        <button data-lucky-reset="${x.student_id}" ${finalized?'disabled':''}>PIN 초기화</button>
+      </div>`).join(''):'<div class="info-note">검색 결과가 없습니다.</div>';
+    box.querySelectorAll('[data-lucky-reset]').forEach(b=>b.onclick=async()=>{
+      const x=rows.find(v=>v.student_id===b.dataset.luckyReset);
+      if(!confirm(`${x.student_id} ${x.student_name} 학생의 PIN 등록을 초기화할까요?\n\n현재 방식에서는 기존 응모 정보도 함께 초기화됩니다.`))return;
+      await luckyReset(x.student_id);
+      alert('초기화했습니다.');
+      await luckyAdminRender(contentEl);
+    });
   };
+
   drawStudents();
   document.getElementById('luckyAdminSearch').oninput=e=>drawStudents(e.target.value.trim());
   document.getElementById('luckyAdminRefresh').onclick=()=>luckyAdminRender(contentEl);
+
   document.getElementById('luckyFinalize').onclick=async()=>{
     if(finalized)return;
     if(!confirm(`현재 ${entered.length}명의 응모 명단을 최종 확정합니다.\n\n확정 후 학생의 신규 응모·상품 변경이 잠기고 추첨이 활성화됩니다.\n진행할까요?`))return;
     if(!confirm('한 번 더 확인합니다.\n정말 최종 확정할까요?'))return;
-    await luckyFinalize(); alert('응모 명단을 최종 확정했습니다. 이제 추첨할 수 있습니다.'); await luckyAdminRender(contentEl);
+    await luckyFinalize();
+    alert('응모 명단을 최종 확정했습니다. 이제 추첨할 수 있습니다.');
+    await luckyAdminRender(contentEl);
   };
+
   contentEl.querySelectorAll('[data-lucky-draw]').forEach(b=>b.onclick=async()=>{
     const p=luckyPrize(b.dataset.luckyDraw), existing=(await luckyWinners()).filter(w=>w.prize_id===p.id);
     if(existing.length){alert('이미 추첨이 완료된 상품입니다.');return}
-    const pool=rows.filter(x=>x.prize_id===p.id);if(!pool.length)return;
+    const pool=rows.filter(x=>x.prize_id===p.id);
+    if(!pool.length)return;
     const n=Math.min(p.winners||1,pool.length);
     if(!confirm(`${p.name}\n응모자 ${pool.length}명 중 ${n}명을 추첨합니다.\n\n추첨 결과는 즉시 저장되며 일반 재추첨은 할 수 없습니다.`))return;
-    const shuffled=luckyShuffle(pool);let winners=[];
-    if(p.id==='gym'){const classes=new Set();for(const x of shuffled){const sid=String(x.student_id||'');const cls=sid.length>=2?sid.slice(0,2):sid;if(classes.has(cls))continue;classes.add(cls);winners.push(x);if(winners.length>=n)break}if(winners.length<n){for(const x of shuffled){if(!winners.includes(x)){winners.push(x);if(winners.length>=n)break}}}}
-    else winners=shuffled.slice(0,n);
-    try{await luckySaveWinners(p.id,winners)}catch(e){console.error(e);alert('당첨 결과 저장에 실패했습니다. 다시 추첨하지 말고 관리자에게 확인해 주세요.');return}
-    const ov=document.createElement('div');ov.className='lucky-draw-overlay';ov.innerHTML=`<div class="box"><small>ALL PLAY · LUCKY WINNER</small><div class="emoji">${p.emoji}</div><h2>${escapeHtml(p.name)}</h2><p>${winners.map((w,i)=>`🎉 ${i+1}. ${escapeHtml(w.student_id)} ${escapeHtml(maskName(w.student_name))}`).join('<br>')}</p>${p.id==='gym'?'<small>※ 강당 대관권은 서로 다른 학급을 우선 추첨합니다.</small>':''}<button>확인</button></div>`;ov.querySelector('button').onclick=async()=>{ov.remove();await luckyAdminRender(contentEl)};document.body.appendChild(ov);
+    const shuffled=luckyShuffle(pool);
+    let winners=[];
+    if(p.id==='gym'){
+      const classes=new Set();
+      for(const x of shuffled){
+        const sid=String(x.student_id||'');
+        const cls=sid.length>=2?sid.slice(0,2):sid;
+        if(classes.has(cls))continue;
+        classes.add(cls);winners.push(x);
+        if(winners.length>=n)break;
+      }
+      if(winners.length<n){
+        for(const x of shuffled){
+          if(!winners.includes(x)){winners.push(x);if(winners.length>=n)break}
+        }
+      }
+    } else winners=shuffled.slice(0,n);
+
+    try{await luckySaveWinners(p.id,winners)}
+    catch(e){console.error(e);alert('당첨 결과 저장에 실패했습니다. 다시 추첨하지 말고 관리자에게 확인해 주세요.');return}
+
+    const ov=document.createElement('div');
+    ov.className='lucky-draw-overlay';
+    ov.innerHTML=`<div class="box"><small>ALL PLAY · LUCKY WINNER</small><div class="emoji">${p.emoji}</div><h2>${escapeHtml(p.name)}</h2><p>${winners.map((w,i)=>`🎉 ${i+1}. ${escapeHtml(w.student_id)} ${escapeHtml(maskName(w.student_name))}`).join('<br>')}</p>${p.id==='gym'?'<small>※ 강당 대관권은 서로 다른 학급을 우선 추첨합니다.</small>':''}<button>확인</button></div>`;
+    ov.querySelector('button').onclick=async()=>{ov.remove();await luckyAdminRender(contentEl)};
+    document.body.appendChild(ov);
   });
 }
 
