@@ -764,6 +764,35 @@ if(typeof staffName!=='undefined' && typeof staffPw!=='undefined'){
   });
 }
 
+
+// ===== V76.29 쌤PICK · 교직원 승부예측 =====
+const SSAMPICK_LOCAL_KEY='kd_v7629_ssampick';
+const SSAMPICK_DEADLINE=new Date(2026,8,30,23,59,59);
+function ssamPickOpen(){return new Date()<=SSAMPICK_DEADLINE;}
+async function getMySsamPick(extension){
+  if(kdSbReady){
+    try{const {data,error}=await kdSb.from('kd_staff_picks').select('*').eq('extension',extension).maybeSingle();if(error)throw error;if(data)return {1:Number(data.grade1),2:Number(data.grade2),3:Number(data.grade3)};}catch(e){console.warn('ssampick select',e);}
+  }
+  const all=load(SSAMPICK_LOCAL_KEY,{});return all[extension]||null;
+}
+async function saveMySsamPick(extension,pick){
+  if(!ssamPickOpen())throw new Error('closed');
+  if(kdSbReady){
+    try{const {error}=await kdSb.from('kd_staff_picks').upsert({extension,grade1:pick[1],grade2:pick[2],grade3:pick[3],updated_at:new Date().toISOString()},{onConflict:'extension'});if(error)throw error;return true;}catch(e){console.warn('ssampick upsert',e);}
+  }
+  const all=load(SSAMPICK_LOCAL_KEY,{});all[extension]=pick;save(SSAMPICK_LOCAL_KEY,all);return false;
+}
+async function renderSsamPick(contentEl){
+  const extension=currentStaffName;
+  if(!extension){contentEl.innerHTML='<div class="vote-empty">교직원 인증 후 이용해 주세요.</div>';return;}
+  const saved=await getMySsamPick(extension);const pick=saved?{...saved}:{1:null,2:null,3:null};const open=ssamPickOpen();
+  const draw=()=>{
+    contentEl.innerHTML=`<div class="ssampick-wrap"><section class="ssampick-hero"><div class="ssampick-kicker">STAFF PREDICTION EVENT</div><h3>🎯 쌤PICK <small style="font-size:.52em;color:#9a3412">교직원 승부예측</small></h3><p><b>1·2·3학년 종합우승 학급을 예상해보세요!</b><br>학년별로 우승이 예상되는 학급을 하나씩 PICK 해주세요.</p><div class="ssampick-deadline">⏰ 9월 30일(수) 23:59 마감</div><div class="ssampick-prize-note">🎁 적중 결과에 따라 소소한 상품(?)도 준비되어 있습니다.</div></section><div class="ssampick-grades">${[1,2,3].map(g=>`<section class="ssampick-grade"><h4>${g}학년 우승 예상</h4><div class="ssampick-classes">${Array.from({length:classCount(g)},(_,i)=>i+1).map(no=>`<button type="button" class="ssampick-class ${pick[g]===no?'selected':''}" data-pick-grade="${g}" data-pick-class="${no}" ${open?'':'disabled'}>${no}반</button>`).join('')}</div></section>`).join('')}</div>${open?`<button type="button" class="ssampick-save" id="ssamPickSave" ${[1,2,3].every(g=>pick[g])?'':'disabled'}>🎯 나의 쌤PICK 저장</button>`:`<div class="ssampick-closed">🔒 쌤PICK 예측이 마감되었습니다.</div>`}<div class="ssampick-my">${[1,2,3].every(g=>pick[g])?`<b>MY PICK 🎯</b>　1학년 ${pick[1]}반 · 2학년 ${pick[2]}반 · 3학년 ${pick[3]}반${open?'<br><small>마감 전까지 언제든 변경할 수 있습니다.</small>':''}`:'세 학년의 우승 예상 학급을 모두 선택해 주세요.'}</div><div class="ssampick-levels"><div class="ssampick-level"><strong>🎯 NICE PICK</strong><span>1개 학년 적중</span></div><div class="ssampick-level"><strong>🎯🎯 GREAT PICK</strong><span>2개 학년 적중</span></div><div class="ssampick-level perfect"><strong>👑 PERFECT PICK</strong><span>3개 학년 모두 적중</span></div></div></div>`;
+    contentEl.querySelectorAll('[data-pick-grade]').forEach(btn=>btn.onclick=()=>{pick[Number(btn.dataset.pickGrade)]=Number(btn.dataset.pickClass);draw();});
+    const saveBtn=document.getElementById('ssamPickSave');if(saveBtn)saveBtn.onclick=async()=>{saveBtn.disabled=true;saveBtn.textContent='저장 중…';try{await saveMySsamPick(extension,pick);alert('쌤PICK을 저장했습니다. 🎯');await renderSsamPick(contentEl);}catch(e){alert(e.message==='closed'?'쌤PICK 참여가 마감되었습니다.':'저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');}};
+  };draw();
+}
+
 document.querySelectorAll('[data-staff-view]').forEach(b=>b.onclick=()=>staffView(b.dataset.staffView));
 async function staffView(v, contentEl=staffContent){
   if(v==='votemanager'){
@@ -858,6 +887,9 @@ async function staffView(v, contentEl=staffContent){
     await drawFaqAdmin();
   } else if(v==='luckymanager'){
     await luckyAdminRender(contentEl);
+  } else if(v==='ssampick'){
+    currentStaffVoteType=null;
+    await renderSsamPick(contentEl);
   } else if(v==='performance'){
     currentStaffVoteType='performance';
     renderStaffVote('performance',contentEl);

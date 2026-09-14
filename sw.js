@@ -3,8 +3,8 @@ const CORE = [
   './',
   './index.html',
   './styles.css',
-  './config.js?v=76.24',
-  './app.js?v=76.24'
+  './config.js?v=76.29',
+  './app.js?v=76.29'
 ];
 
 self.addEventListener('install', event => {
