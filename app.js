@@ -782,14 +782,74 @@ async function saveMySsamPick(extension,pick){
   }
   const all=load(SSAMPICK_LOCAL_KEY,{});all[extension]=pick;save(SSAMPICK_LOCAL_KEY,all);return false;
 }
+const SSAMPICK_RESULT_LOCAL_KEY='kd_v7631_ssampick_result';
+let ssamPickRealtimeChannel=null;
+async function getAllSsamPicks(){
+  if(kdSbReady){
+    try{const {data,error}=await kdSb.from('kd_staff_picks').select('*').order('updated_at',{ascending:true});if(error)throw error;return (data||[]).map(x=>({extension:String(x.extension||''),grade1:Number(x.grade1),grade2:Number(x.grade2),grade3:Number(x.grade3),updated_at:x.updated_at||''}));}catch(e){console.warn('ssampick all select',e);}
+  }
+  const all=load(SSAMPICK_LOCAL_KEY,{});return Object.entries(all).map(([extension,p])=>({extension,grade1:Number(p[1]),grade2:Number(p[2]),grade3:Number(p[3]),updated_at:''}));
+}
+async function getSsamPickResult(){
+  if(kdSbReady){
+    try{const {data,error}=await kdSb.from('kd_ssampick_result').select('*').eq('id',1).maybeSingle();if(error)throw error;if(data)return {1:Number(data.grade1)||null,2:Number(data.grade2)||null,3:Number(data.grade3)||null};}catch(e){console.warn('ssampick result select',e);}
+  }
+  return load(SSAMPICK_RESULT_LOCAL_KEY,{1:null,2:null,3:null});
+}
+async function saveSsamPickResult(result){
+  if(kdSbReady){
+    try{const {error}=await kdSb.from('kd_ssampick_result').upsert({id:1,grade1:result[1],grade2:result[2],grade3:result[3],updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;return true;}catch(e){console.warn('ssampick result upsert',e);}
+  }
+  save(SSAMPICK_RESULT_LOCAL_KEY,result);return false;
+}
+function ssamPickTier(row,result){
+  if(!result||![1,2,3].every(g=>Number(result[g])>0))return {hits:null,label:'결과 대기',cls:'none'};
+  const hits=[1,2,3].filter(g=>Number(row['grade'+g])===Number(result[g])).length;
+  if(hits===3)return {hits,label:'👑 PERFECT PICK',cls:'perfect'};
+  if(hits===2)return {hits,label:'🎯🎯 GREAT PICK',cls:'great'};
+  if(hits===1)return {hits,label:'🎯 NICE PICK',cls:'nice'};
+  return {hits,label:'0개 적중',cls:'none'};
+}
+function setupSsamPickRealtime(){
+  if(!kdSbReady||ssamPickRealtimeChannel)return;
+  ssamPickRealtimeChannel=kdSb.channel('kd-ssampick-live').on('postgres_changes',{event:'*',schema:'public',table:'kd_staff_picks'},()=>{
+    const a=document.getElementById('adminArea'),c=document.getElementById('adminContent');
+    if(a&&!a.classList.contains('hidden')&&c&&c.querySelector('.ssampick-admin'))renderSsamPickManager(c);
+  }).on('postgres_changes',{event:'*',schema:'public',table:'kd_ssampick_result'},()=>{
+    const a=document.getElementById('adminArea'),c=document.getElementById('adminContent');
+    if(a&&!a.classList.contains('hidden')&&c&&c.querySelector('.ssampick-admin'))renderSsamPickManager(c);
+  }).subscribe();
+}
+async function renderSsamPickManager(contentEl=adminContent){
+  setupSsamPickRealtime();
+  const [rows,result]=await Promise.all([getAllSsamPicks(),getSsamPickResult()]);
+  const complete=[1,2,3].every(g=>Number(result[g])>0);
+  const tiers=rows.map(r=>ssamPickTier(r,result));
+  const tierCount=cls=>tiers.filter(t=>t.cls===cls).length;
+  const counts={};
+  [1,2,3].forEach(g=>{counts[g]={};for(let c=1;c<=classCount(g);c++)counts[g][c]=rows.filter(r=>Number(r['grade'+g])===c).length;});
+  const gradePanel=g=>{const max=Math.max(1,...Object.values(counts[g]));return `<section class="ssampick-admin-grade g${g}"><h4>${g}학년 PICK 현황</h4>${Object.entries(counts[g]).map(([c,n])=>`<div class="ssampick-count-row"><b>${c}반</b><div class="ssampick-count-bar"><i style="width:${Math.round(n/max*100)}%"></i></div><strong>${n}명</strong></div>`).join('')}</section>`};
+  contentEl.innerHTML=`<div class="ssampick-admin">
+    <div class="ssampick-admin-head"><div><small>STAFF PREDICTION MANAGER</small><h3>🎯 쌤PICK 현황 · 결과</h3><p>교직원 예측 현황을 확인하고 최종 종합우승 학급을 확정하면 적중 결과를 자동 계산합니다.</p></div><button type="button" id="ssamPickRefresh">↻ 새로고침</button></div>
+    <div class="ssampick-admin-stats"><div class="ssampick-admin-stat"><small>참여 교직원</small><strong>${rows.length}명</strong></div><div class="ssampick-admin-stat nice"><small>NICE PICK</small><strong>${complete?tierCount('nice'):'—'}${complete?'명':''}</strong></div><div class="ssampick-admin-stat great"><small>GREAT PICK</small><strong>${complete?tierCount('great'):'—'}${complete?'명':''}</strong></div><div class="ssampick-admin-stat perfect"><small>PERFECT PICK</small><strong>${complete?tierCount('perfect'):'—'}${complete?'명':''}</strong></div></div>
+    <div class="ssampick-admin-panels">${[1,2,3].map(gradePanel).join('')}</div>
+    <section class="ssampick-result-box"><h4>🏆 최종 종합우승 학급 확정</h4><p>${complete?`현재 확정: <b>1-${result[1]} · 2-${result[2]} · 3-${result[3]}</b>`:'체육한마당 최종 점수 확인 후 각 학년 우승 학급을 선택해 주세요.'}</p><div class="ssampick-result-controls">${[1,2,3].map(g=>`<label>${g}학년 종합우승<select id="ssamResult${g}"><option value="">선택</option>${Array.from({length:classCount(g)},(_,i)=>i+1).map(c=>`<option value="${c}" ${Number(result[g])===c?'selected':''}>${g}-${c}반</option>`).join('')}</select></label>`).join('')}</div><div class="ssampick-result-actions"><button class="save" type="button" id="ssamResultSave">🏆 우승반 확정 · 결과 계산</button><button class="screen" type="button" id="ssamResultScreen" ${complete?'':'disabled'}>📺 결과 화면 보기</button><button class="clear" type="button" id="ssamResultClear">↻ 확정 해제</button></div></section>
+    <div class="ssampick-admin-table-wrap"><table class="ssampick-admin-table"><thead><tr><th>교직원</th><th>1학년 PICK</th><th>2학년 PICK</th><th>3학년 PICK</th><th>적중 결과</th></tr></thead><tbody>${rows.length?rows.map((r,i)=>{const t=tiers[i];return `<tr><td>내선 ${escapeHtml(r.extension)}</td><td>1-${r.grade1}</td><td>2-${r.grade2}</td><td>3-${r.grade3}</td><td><span class="ssampick-tier ${t.cls}">${t.label}</span></td></tr>`}).join(''):'<tr><td colspan="5" class="ssampick-empty">아직 쌤PICK 참여자가 없습니다.</td></tr>'}</tbody></table></div>
+    <div id="ssamPickResultScreenArea"></div><div class="ssampick-admin-note">※ 현재 교직원 인증은 내선번호 기준이므로 관리자 화면에도 내선번호로 표시됩니다. 일반 교직원에게는 다른 사람의 PICK 현황이 공개되지 않습니다.</div></div>`;
+  const refresh=document.getElementById('ssamPickRefresh');if(refresh)refresh.onclick=()=>renderSsamPickManager(contentEl);
+  const saveBtn=document.getElementById('ssamResultSave');if(saveBtn)saveBtn.onclick=async()=>{const next={1:Number(document.getElementById('ssamResult1').value)||null,2:Number(document.getElementById('ssamResult2').value)||null,3:Number(document.getElementById('ssamResult3').value)||null};if(![1,2,3].every(g=>next[g])){alert('1·2·3학년 종합우승 학급을 모두 선택해 주세요.');return;}if(!confirm(`최종 종합우승을 1-${next[1]}, 2-${next[2]}, 3-${next[3]}반으로 확정할까요?`))return;saveBtn.disabled=true;await saveSsamPickResult(next);alert('쌤PICK 결과를 계산했습니다.');await renderSsamPickManager(contentEl);};
+  const clearBtn=document.getElementById('ssamResultClear');if(clearBtn)clearBtn.onclick=async()=>{if(!confirm('확정된 우승반과 쌤PICK 결과 판정을 해제할까요?'))return;await saveSsamPickResult({1:null,2:null,3:null});await renderSsamPickManager(contentEl);};
+  const screenBtn=document.getElementById('ssamResultScreen');if(screenBtn&&!screenBtn.disabled)screenBtn.onclick=()=>{const area=document.getElementById('ssamPickResultScreenArea');const perfect=rows.filter((r,i)=>tiers[i].cls==='perfect');const great=rows.filter((r,i)=>tiers[i].cls==='great');const nice=rows.filter((r,i)=>tiers[i].cls==='nice');area.innerHTML=`<div class="ssampick-result-screen"><small>2026 KYONGDUG ALL PLAY</small><h3>🎯 쌤PICK RESULT</h3><div class="champions"><span>🏆 1학년 ${result[1]}반</span><span>🏆 2학년 ${result[2]}반</span><span>🏆 3학년 ${result[3]}반</span></div><div class="winners"><b>👑 PERFECT PICK · ${perfect.length}명</b>${perfect.length?perfect.map(r=>`<span>내선 ${escapeHtml(r.extension)}</span>`).join(''):'<span>PERFECT PICK 없음</span>'}</div><div class="winners"><b>🎯🎯 GREAT PICK · ${great.length}명</b>${great.length?great.map(r=>`<span>내선 ${escapeHtml(r.extension)}</span>`).join(''):'<span>GREAT PICK 없음</span>'}</div><div class="winners"><b>🎯 NICE PICK · ${nice.length}명</b>${nice.length?nice.map(r=>`<span>내선 ${escapeHtml(r.extension)}</span>`).join(''):'<span>NICE PICK 없음</span>'}</div></div>`;area.scrollIntoView({behavior:'smooth',block:'start'});};
+}
+
 async function renderSsamPick(contentEl){
   const extension=currentStaffName;
   if(!extension){contentEl.innerHTML='<div class="vote-empty">교직원 인증 후 이용해 주세요.</div>';return;}
   const saved=await getMySsamPick(extension);const pick=saved?{...saved}:{1:null,2:null,3:null};const open=ssamPickOpen();
   const draw=()=>{
-    contentEl.innerHTML=`<div class="ssampick-wrap"><section class="ssampick-hero"><div class="ssampick-kicker">STAFF PREDICTION EVENT</div><h3>🎯 쌤PICK <small style="font-size:.52em;color:#9a3412">교직원 승부예측</small></h3><p><b>1·2·3학년 종합우승 학급을 예상해보세요!</b><br>학년별로 우승이 예상되는 학급을 하나씩 PICK 해주세요.</p><div class="ssampick-deadline">⏰ 9월 30일(수) 23:59 마감</div><div class="ssampick-prize-note">🎁 적중 결과에 따라 소소한 상품(?)도 준비되어 있습니다.</div></section><div class="ssampick-grades">${[1,2,3].map(g=>`<section class="ssampick-grade"><h4>${g}학년 우승 예상</h4><div class="ssampick-classes">${Array.from({length:classCount(g)},(_,i)=>i+1).map(no=>`<button type="button" class="ssampick-class ${pick[g]===no?'selected':''}" data-pick-grade="${g}" data-pick-class="${no}" ${open?'':'disabled'}>${no}반</button>`).join('')}</div></section>`).join('')}</div>${open?`<button type="button" class="ssampick-save" id="ssamPickSave" ${[1,2,3].every(g=>pick[g])?'':'disabled'}>🎯 나의 쌤PICK 저장</button>`:`<div class="ssampick-closed">🔒 쌤PICK 예측이 마감되었습니다.</div>`}<div class="ssampick-my">${[1,2,3].every(g=>pick[g])?`<b>MY PICK 🎯</b>　1학년 ${pick[1]}반 · 2학년 ${pick[2]}반 · 3학년 ${pick[3]}반${open?'<br><small>마감 전까지 언제든 변경할 수 있습니다.</small>':''}`:'세 학년의 우승 예상 학급을 모두 선택해 주세요.'}</div><div class="ssampick-levels"><div class="ssampick-level"><strong>🎯 NICE PICK</strong><span>1개 학년 적중</span></div><div class="ssampick-level"><strong>🎯🎯 GREAT PICK</strong><span>2개 학년 적중</span></div><div class="ssampick-level perfect"><strong>👑 PERFECT PICK</strong><span>3개 학년 모두 적중</span></div></div></div>`;
+    contentEl.innerHTML=`<div class="ssampick-wrap"><section class="ssampick-hero"><div class="ssampick-kicker">STAFF PREDICTION EVENT</div><h3>🎯 쌤PICK <small>교직원 승부예측</small></h3><p><b>1·2·3학년 종합우승 학급을 예상해보세요!</b><br>선생님의 촉으로 학년별 우승 학급을 하나씩 PICK 해주세요.</p><div class="ssampick-deadline">⏰ 9월 30일(수) 23:59 마감</div></section><div class="ssampick-grades">${[1,2,3].map(g=>`<section class="ssampick-grade grade-${g}"><div class="ssampick-grade-head"><span class="ssampick-grade-badge">${g}</span><div><small>CHAMPION PICK</small><h4>${g}학년 우승 예상</h4></div></div><div class="ssampick-classes">${Array.from({length:classCount(g)},(_,i)=>i+1).map(no=>`<button type="button" class="ssampick-class ${pick[g]===no?'selected':''}" data-pick-grade="${g}" data-pick-class="${no}" ${open?'':'disabled'}><span>${no}</span><small>반</small></button>`).join('')}</div></section>`).join('')}</div><div class="ssampick-my ${[1,2,3].every(g=>pick[g])?'complete':'waiting'}">${[1,2,3].every(g=>pick[g])?`<div class="ssampick-my-title">MY PICK 🎯</div><div class="ssampick-my-picks"><span>1학년 <b>${pick[1]}반</b></span><span>2학년 <b>${pick[2]}반</b></span><span>3학년 <b>${pick[3]}반</b></span></div>${open?'<small>마감 전까지 언제든 변경할 수 있습니다.</small>':''}`:'<div class="ssampick-wait-icon">✓</div><div><b>세 학년의 우승 예상 학급을 모두 선택해주세요.</b><small>1·2·3학년에서 각각 한 학급씩 선택하면 저장할 수 있습니다.</small></div>'}</div>${open?`<button type="button" class="ssampick-save" id="ssamPickSave" ${[1,2,3].every(g=>pick[g])?'':'disabled'}>🎯 나의 PICK 저장</button>`:`<div class="ssampick-closed">🔒 쌤PICK 예측이 마감되었습니다.</div>`}<div class="ssampick-levels"><div class="ssampick-level nice"><strong>🎯 NICE PICK</strong><span>1개 학년 적중</span></div><div class="ssampick-level great"><strong>🎯🎯 GREAT PICK</strong><span>2개 학년 적중</span></div><div class="ssampick-level perfect"><strong>👑 PERFECT PICK</strong><span>3개 학년 모두 적중</span></div></div><div class="ssampick-prize-note"><span>🎁</span><b>적중 결과에 따라 소소한 상품(?)이 준비되어 있습니다.</b></div></div>`;
     contentEl.querySelectorAll('[data-pick-grade]').forEach(btn=>btn.onclick=()=>{pick[Number(btn.dataset.pickGrade)]=Number(btn.dataset.pickClass);draw();});
-    const saveBtn=document.getElementById('ssamPickSave');if(saveBtn)saveBtn.onclick=async()=>{saveBtn.disabled=true;saveBtn.textContent='저장 중…';try{await saveMySsamPick(extension,pick);alert('쌤PICK을 저장했습니다. 🎯');await renderSsamPick(contentEl);}catch(e){alert(e.message==='closed'?'쌤PICK 참여가 마감되었습니다.':'저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');}};
+    const saveBtn=document.getElementById('ssamPickSave');if(saveBtn)saveBtn.onclick=async()=>{saveBtn.disabled=true;saveBtn.textContent='저장 중…';try{await saveMySsamPick(extension,pick);alert('나의 PICK을 저장했습니다. 🎯');await renderSsamPick(contentEl);}catch(e){alert(e.message==='closed'?'쌤PICK 참여가 마감되었습니다.':'저장에 실패했습니다. 잠시 후 다시 시도해 주세요.');}};
   };draw();
 }
 
@@ -887,6 +947,8 @@ async function staffView(v, contentEl=staffContent){
     await drawFaqAdmin();
   } else if(v==='luckymanager'){
     await luckyAdminRender(contentEl);
+  } else if(v==='ssampickmanager'){
+    await renderSsamPickManager(contentEl);
   } else if(v==='ssampick'){
     currentStaffVoteType=null;
     await renderSsamPick(contentEl);
