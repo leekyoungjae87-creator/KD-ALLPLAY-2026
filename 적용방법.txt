@@ -1,0 +1,19 @@
+경덕 ALL PLAY V76.16 배포수정본
+
+[이번 수정의 핵심]
+1. 파일명을 실제 배포명으로 통일: index.html / app.js / sw.js
+2. index.html의 app.js, config.js 버전을 v76.16으로 갱신
+3. 서비스워커 등록 버전을 v76.16으로 갱신
+4. 새 sw.js는 HTML/JS/CSS/config를 network-first로 불러와 업데이트가 바로 반영되도록 수정
+5. 오래된 캐시를 activate 단계에서 삭제
+6. V76.15의 행운권 명단확정/추첨결과 저장 기능 유지
+
+[GitHub에 올릴 파일]
+- index.html → 기존 index.html 덮어쓰기
+- app.js → 기존 app.js 덮어쓰기
+- sw.js → 기존 sw.js 덮어쓰기
+- supabase_lucky_setup.sql → GitHub 업로드용이 아니라 Supabase SQL Editor에서 1회 실행
+
+[중요]
+GitHub Pages 반영 후 처음 한 번은 브라우저에서 강력 새로고침(Ctrl+Shift+R)을 권장합니다.
+모바일은 브라우저 탭을 완전히 닫았다 다시 열면 새 서비스워커가 적용되기 쉽습니다.
