@@ -75,12 +75,12 @@ const eventRules = [
     "남학생 3명·여학생 3명으로 구성합니다.",
     "미션 6개를 차례로 클리어합니다.",
     "남-여-남-여-남-여 순서로 진행합니다.",
-    "출발 지점과 골인 지점은 조회대 앞쪽이며 각 주자가 반바퀴씩 달립니다."
+    "출발 지점과 골인 지점은 조회대 앞쪽이며 각 주자가 한바퀴씩 달립니다."
   ]},
   {icon:"🏁",accent:"green",cat:"단체",name:"이어달리기",people:"8명",type:"결선 경기",rules:[
     "남학생 4명·여학생 4명으로 구성합니다.",
     "여-남-여-남-여-남-여-남 순서로 진행합니다.",
-    "본부석 조회대 앞쪽에서 출발하여 각 주자가 반바퀴씩 달립니다.",
+    "본부석 조회대 앞쪽에서 출발하여 각 주자가 한바퀴씩 달립니다.",
     "마지막 주자는 결승선까지 달리며 골인 지점은 공원 쪽 수돗가(2학년 응원석)입니다."
   ]},
   {icon:"⚽",accent:"purple",cat:"사전",name:"축구(남)",people:"9명",type:"사전 경기",rules:[
@@ -342,10 +342,16 @@ findStudent.onclick=()=>{
   studentResult.innerHTML=found?`<div class="participant-found"><b>${found.no} ${escapeHtml(found.name)}</b><span>${found.className||''}</span><p>참가 종목</p><div>${(found.events||[]).map(e=>`<em>${e}</em>`).join('')}</div></div>`:'등록된 참가자 명단에서 찾지 못했습니다.';
 };
 
+// V76.35: 제출된 깃발 사진을 정적 기본 이미지로 제공하고, 관리자/Supabase 이미지가 있으면 그것을 우선 사용합니다.
+const BUILTIN_FLAG_IMAGES={
+  '1-1':'1-1.jpg','1-2':'1-2.jpg','1-3':'1-3.jpg','1-4':'1-4.jpg',
+  '1-5':'1-5.jpg','1-6':'1-6.jpg','1-7':'1-7.jpg'
+};
+function flagImageFor(key,store){return (store&&store[key])||BUILTIN_FLAG_IMAGES[key]||'';}
 let flagGrade=1;
 async function renderFlags(){
   let store=await loadSharedFlags();
-  flagGallery.innerHTML=Array.from({length:classCount(flagGrade)},(_,i)=>{let key=`${flagGrade}-${i+1}`,url=store[key];return url?`<div class="flag-card" style="background:url('${url}') center/cover"><b style="background:#ffffffdd;padding:4px 7px;border-radius:8px">${key}</b></div>`:`<div class="flag-card"><b>${key}</b><small>깃발 이미지 준비 중</small></div>`}).join('');
+  flagGallery.innerHTML=Array.from({length:classCount(flagGrade)},(_,i)=>{let key=`${flagGrade}-${i+1}`,url=flagImageFor(key,store);return url?`<div class="flag-card" style="background:url('${url}') center/cover"><b style="background:#ffffffdd;padding:4px 7px;border-radius:8px">${key}</b></div>`:`<div class="flag-card"><b>${key}</b><small>깃발 이미지 준비 중</small></div>`}).join('');
 }
 document.querySelectorAll('#flagTabs button').forEach(b=>b.onclick=()=>{flagGrade=Number(b.dataset.fgrade);document.querySelectorAll('#flagTabs button').forEach(x=>x.classList.toggle('active',x===b));renderFlags()});renderFlags();
 
@@ -678,7 +684,7 @@ async function renderStaffVote(type,contentEl=staffContent){
     const chosenText=chosen.length===2?`✓ ${chosen.map(no=>`${grade}-${no}`).join(' · ')} 투표 완료`:chosen.length?`${chosen.length}/2 선택됨`:'미투표';
     const article=document.createElement('article');article.className='vote-grade-card';
     article.innerHTML=`<div class="vote-grade-top"><div><span>${grade}</span><b>${grade}학년</b></div><em class="${chosen.length===2?'done':''}">${chosenText}</em></div>
-      <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=sharedFlagCache[key]||'';const checked=chosen.includes(no);return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${checked?'selected':''}"><input type="checkbox" name="vote_${type}_${grade}" value="${no}" ${checked?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
+      <div class="vote-choice-grid ${type==='flag'?'flag-vote-grid':''}">${candidates.map(no=>{const key=`${grade}-${no}`;const music=performanceMusicMap()[key]||'음악 정보 준비 중';const img=flagImageFor(key,sharedFlagCache);const checked=chosen.includes(no);return `<label class="vote-choice ${type==='flag'?'flag-vote-choice':''} ${checked?'selected':''}"><input type="checkbox" name="vote_${type}_${grade}" value="${no}" ${checked?'checked':''} ${isOpen?'':'disabled'}><span>${type==='flag'?`<span class="vote-flag-thumb ${img?'has-image':''}">${img?`<img src="${img}" alt="${key} 학급 깃발">`:'<i>이미지 준비 중</i>'}</span>`:''}<b>${key}</b><small>${type==='performance'?`🎵 ${escapeHtml(music)}`:'학급 깃발'}</small></span></label>`}).join('')}</div>
       <button class="vote-submit" data-vote-save="${grade}" ${isOpen?'':'disabled'}>${chosen.length===2?'선택 수정 저장':'2개 학급 선택 저장'}</button>`;
     wrap.appendChild(article);
   });
@@ -985,7 +991,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.24',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.35',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
