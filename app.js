@@ -342,10 +342,11 @@ findStudent.onclick=()=>{
   studentResult.innerHTML=found?`<div class="participant-found"><b>${found.no} ${escapeHtml(found.name)}</b><span>${found.className||''}</span><p>참가 종목</p><div>${(found.events||[]).map(e=>`<em>${e}</em>`).join('')}</div></div>`:'등록된 참가자 명단에서 찾지 못했습니다.';
 };
 
-// V76.35: 제출된 깃발 사진을 정적 기본 이미지로 제공하고, 관리자/Supabase 이미지가 있으면 그것을 우선 사용합니다.
+// V76.37: 제출된 깃발 사진을 정적 기본 이미지로 제공하고, 관리자/Supabase 이미지가 있으면 그것을 우선 사용합니다.
 const BUILTIN_FLAG_IMAGES={
   '1-1':'1-1.jpg','1-2':'1-2.jpg','1-3':'1-3.jpg','1-4':'1-4.jpg',
-  '1-5':'1-5.jpg','1-6':'1-6.jpg','1-7':'1-7.jpg'
+  '1-5':'1-5.jpg','1-6':'1-6.jpg','1-7':'1-7.jpg',
+  '2-8':'2-8.jpg','3-2':'3-2.jpg'
 };
 function flagImageFor(key,store){return (store&&store[key])||BUILTIN_FLAG_IMAGES[key]||'';}
 let flagGrade=1;
@@ -991,7 +992,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.35',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.37',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
