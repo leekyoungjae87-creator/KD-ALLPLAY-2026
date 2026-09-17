@@ -417,6 +417,58 @@ const VOTE_STATE_LOCAL_KEY='kd_v61_vote_state';
 const kdSbConfig=window.KD_SUPABASE||{};
 const kdSbReady=!!(kdSbConfig.url&&kdSbConfig.anonKey&&window.supabase&&window.supabase.createClient);
 const kdSb=kdSbReady?window.supabase.createClient(kdSbConfig.url,kdSbConfig.anonKey):null;
+
+// ===== V76.40 실시간 점수 공유 (Supabase + 로컬 백업) =====
+let scoreRealtimeChannel=null;
+async function pullSharedScores(){
+  if(!kdSbReady) return false;
+  try{
+    const {data,error}=await kdSb.from('kd_scores').select('class_key,event_name,points');
+    if(error) throw error;
+    const local=getScores();
+    if(!data || !data.length){
+      // 최초 1회: 기존 기기에 들어 있던 확정 점수를 공용 점수표로 올립니다.
+      const seed=[];
+      Object.entries(local).forEach(([classKey,events])=>scoreEvents.forEach(eventName=>{
+        const points=Number(events[eventName]||0);
+        if(points>0) seed.push({class_key:classKey,event_name:eventName,points});
+      }));
+      if(seed.length){
+        const {error:seedError}=await kdSb.from('kd_scores').upsert(seed,{onConflict:'class_key,event_name'});
+        if(seedError) throw seedError;
+      }
+      return true;
+    }
+    data.forEach(row=>{
+      if(!local[row.class_key]) local[row.class_key]={};
+      local[row.class_key][row.event_name]=Number(row.points)||0;
+    });
+    save(STORE.scores,local);
+    renderScores();
+    return true;
+  }catch(e){console.warn('shared scores pull',e);return false;}
+}
+async function saveSharedScore(classKey,eventName,points){
+  const local=getScores();
+  if(!local[classKey]) local[classKey]={};
+  local[classKey][eventName]=Number(points)||0;
+  save(STORE.scores,local); // 네트워크 장애 시에도 관리자 기기에 백업
+  renderScores();
+  if(!kdSbReady) return false;
+  try{
+    const {error}=await kdSb.from('kd_scores').upsert({class_key:classKey,event_name:eventName,points:Number(points)||0,updated_at:new Date().toISOString()},{onConflict:'class_key,event_name'});
+    if(error) throw error;
+    return true;
+  }catch(e){console.warn('shared score save',e);return false;}
+}
+function subscribeSharedScores(){
+  if(!kdSbReady || scoreRealtimeChannel) return;
+  scoreRealtimeChannel=kdSb.channel('kd-scores-live-v7640')
+    .on('postgres_changes',{event:'*',schema:'public',table:'kd_scores'},async()=>{await pullSharedScores();})
+    .subscribe();
+}
+setTimeout(async()=>{await pullSharedScores();subscribeSharedScores();},0);
+
 // ===== V76.3 공용 Q&A — 학생 질문 → 관리자 답변 → 실시간 반영 =====
 async function getQnaData(){
   if(kdSbReady){
@@ -915,17 +967,17 @@ async function staffView(v, contentEl=staffContent){
       quickEventEl=document.getElementById('quickEvent');
       quickEventEl.onchange=()=>{quickEvent=quickEventEl.value;sessionStorage.setItem('kd_score_event',quickEvent);lastScoreAction=null;drawQuickScore();};
       contentEl.querySelectorAll('[data-score-grade]').forEach(b=>b.onclick=()=>{quickGrade=Number(b.dataset.scoreGrade);sessionStorage.setItem('kd_score_grade',quickGrade);lastScoreAction=null;drawQuickScore();});
-      contentEl.querySelectorAll('[data-quick-score]').forEach(b=>b.onclick=()=>{
+      contentEl.querySelectorAll('[data-quick-score]').forEach(b=>b.onclick=async()=>{
         const cls=b.dataset.quickScore, rank=Number(b.dataset.rank), point=pointsForRank(quickEvent,rank);
         const all=getScores(); const prev=Number(all[cls]?.[quickEvent]||0);
-        all[cls][quickEvent]=point; save(STORE.scores,all); renderScores();
-        lastScoreAction={cls,event:quickEvent,prev,message:`✓ ${cls} · ${quickEvent} · ${rank===5?'5위 이하':rank+'위'} · ${point}점 반영 완료`};
+        const ok=await saveSharedScore(cls,quickEvent,point);
+        lastScoreAction={cls,event:quickEvent,prev,message:`✓ ${cls} · ${quickEvent} · ${rank===5?'5위 이하':rank+'위'} · ${point}점 ${ok?'실시간 공유 완료':'기기 저장 완료 · 공유 연결 확인 필요'}`};
         drawQuickScore();
       });
       const undo=document.getElementById('quickUndo');
-      if(undo) undo.onclick=()=>{
+      if(undo) undo.onclick=async()=>{
         if(!lastScoreAction)return;
-        const a=lastScoreAction, all=getScores(); all[a.cls][a.event]=a.prev; save(STORE.scores,all); renderScores();
+        const a=lastScoreAction; await saveSharedScore(a.cls,a.event,a.prev);
         const msg=`↩ ${a.cls} · ${a.event} 입력을 이전 상태로 되돌렸습니다.`; lastScoreAction=null; drawQuickScore();
         const st=document.getElementById('quickScoreStatus'); if(st) st.textContent=msg;
       };
