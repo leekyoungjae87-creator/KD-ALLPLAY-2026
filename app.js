@@ -353,7 +353,7 @@ function flagImageFor(key,store){return (store&&store[key])||BUILTIN_FLAG_IMAGES
 let flagGrade=1;
 async function renderFlags(){
   let store=await loadSharedFlags();
-  flagGallery.innerHTML=Array.from({length:classCount(flagGrade)},(_,i)=>{let key=`${flagGrade}-${i+1}`,url=flagImageFor(key,store);return url?`<div class="flag-card" style="background:url('${url}') center/cover"><b style="background:#ffffffdd;padding:4px 7px;border-radius:8px">${key}</b></div>`:`<div class="flag-card"><b>${key}</b><small>깃발 이미지 준비 중</small></div>`}).join('');
+  flagGallery.innerHTML=Array.from({length:classCount(flagGrade)},(_,i)=>{let key=`${flagGrade}-${i+1}`,url=flagImageFor(key,store),[g,c]=key.split('-');return url?`<div class="flag-gallery-item"><div class="flag-card flag-image-only" style="background-image:url('${url}')"></div><div class="flag-class-label">${g}학년 ${c}반</div></div>`:`<div class="flag-gallery-item"><div class="flag-card flag-empty"><small>깃발 이미지 준비 중</small></div><div class="flag-class-label">${g}학년 ${c}반</div></div>`}).join('');
 }
 document.querySelectorAll('#flagTabs button').forEach(b=>b.onclick=()=>{flagGrade=Number(b.dataset.fgrade);document.querySelectorAll('#flagTabs button').forEach(x=>x.classList.toggle('active',x===b));renderFlags()});renderFlags();
 
