@@ -1,10 +1,10 @@
-const CACHE_NAME = 'kd-allplay-v76-45';
+const CACHE_NAME = 'kd-allplay-v76-46';
 const CORE = [
   './',
   './index.html',
   './styles.css',
-  './config.js?v=76.44',
-  './app.js?v=76.44',
+  './config.js?v=76.46',
+  './app.js?v=76.46',
   './1-1.jpg','./1-2.jpg','./1-3.jpg','./1-4.jpg','./1-5.jpg','./1-6.jpg','./1-7.jpg','./2-2.jpg','./2-4.jpg','./2-7.jpg','./2-8.jpg','./3-1.jpg','./3-2.jpg','./3-4.jpg'
 ];
 
