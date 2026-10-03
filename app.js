@@ -1419,21 +1419,20 @@ async function kdCountView(key){
  const day=new Date().toISOString().slice(0,10);const {error}=await kdSb.from('kd_performance_views').upsert({class_key:key,viewer_key:viewer,view_date:day},{onConflict:'class_key,viewer_key,view_date',ignoreDuplicates:true});if(error)throw error;await kdLoadViewCounts();document.querySelectorAll(`[data-view-for="${key}"]`).forEach(x=>x.textContent=`👁 ${kdViewCounts[key]||0}`);}catch(e){}
 }
 function kdOpenPerformance(key){
- const modal=document.getElementById('performancePlayerModal'),wrap=document.getElementById('performanceFrameWrap');if(!modal||!wrap)return;
- document.getElementById('performanceModalTitle').textContent=`${key} 학급 퍼포먼스`;
- document.getElementById('performanceModalMeta').innerHTML=`${KD_PERFORMANCE_AWARDS[key]?`<span>${KD_PERFORMANCE_AWARDS[key]}</span>`:''}<b>👁 <span data-view-for="${key}">${kdViewCounts[key]||0}</span></b>`;
- wrap.innerHTML=`<iframe src="https://drive.google.com/file/d/${KD_PERFORMANCE_VIDEOS[key]}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe><span class="drive-open-block" aria-hidden="true"></span>`;
- modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');modal.classList.add('performance-fullscreen-mode');document.body.classList.add('modal-open');
- const card=modal.querySelector('.performance-modal-card');
- if(card&&card.requestFullscreen){try{const r=card.requestFullscreen();if(r&&r.catch)r.catch(()=>{});}catch(e){}}
+ const id=KD_PERFORMANCE_VIDEOS[key]; if(!id)return;
  kdCountView(key);
+ // 모바일에서 Drive iframe 재생이 검게 멈추는 문제를 피하기 위해
+ // Google Drive 미리보기 플레이어를 새 전체 화면(새 탭)으로 엽니다.
+ const url=`https://drive.google.com/file/d/${id}/preview`;
+ const win=window.open(url,'_blank','noopener,noreferrer');
+ if(!win) location.href=url;
 }
 function kdClosePerformance(){const m=document.getElementById('performancePlayerModal');if(!m)return;if(document.fullscreenElement){try{document.exitFullscreen()}catch(e){}}m.classList.add('hidden');m.classList.remove('performance-fullscreen-mode');m.setAttribute('aria-hidden','true');const w=document.getElementById('performanceFrameWrap');if(w)w.innerHTML='';document.body.classList.remove('modal-open')}
 document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
 document.querySelectorAll('[data-close-performance]').forEach(x=>x.onclick=kdClosePerformance);
 kdLoadViewCounts().then(kdRenderPerformanceVideos);kdRenderPerformanceVideos();
 
-const KD_GALLERY=[1,4,7,9,15,16,17,20,21,22,23,24,25,26,27,28,29,30].map(n=>`assets/gallery/allplay-${String(n).padStart(2,'0')}.jpg`);let kdGalleryIndex=0;
+const KD_GALLERY=Array.from({length:18},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg?v=77.7`);let kdGalleryIndex=0;
 function kdRenderGallery(){const g=document.getElementById('allplayGallery');if(!g)return;g.innerHTML=KD_GALLERY.map((src,i)=>`<button class="gallery-item" data-gallery-index="${i}" aria-label="사진 ${i+1} 크게 보기"><img src="${src}" loading="lazy" draggable="false" alt="2026 경덕 ALL PLAY ${i+1}"><span>${String(i+1).padStart(2,'0')}</span></button>`).join('');g.querySelectorAll('[data-gallery-index]').forEach(b=>b.onclick=()=>kdOpenGallery(Number(b.dataset.galleryIndex)));}
 function kdOpenGallery(i){kdGalleryIndex=(i+KD_GALLERY.length)%KD_GALLERY.length;const m=document.getElementById('galleryModal'),img=document.getElementById('galleryModalImage');if(!m||!img)return;img.src=KD_GALLERY[kdGalleryIndex];document.getElementById('galleryCounter').textContent=`${kdGalleryIndex+1} / ${KD_GALLERY.length}`;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
 function kdCloseGallery(){const m=document.getElementById('galleryModal');if(m){m.classList.add('hidden');m.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open')}
