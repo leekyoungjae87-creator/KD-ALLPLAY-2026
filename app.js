@@ -1057,7 +1057,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=78.1',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.37',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
@@ -1436,7 +1436,7 @@ async function kdOpenPerformance(key){
  if(!m||!w)return;
  const title=document.getElementById('performanceModalTitle'); if(title)title.textContent=`${key} 학급 퍼포먼스`;
  const meta=document.getElementById('performanceModalMeta'); if(meta)meta.innerHTML='<span>세로 화면에서 바로 감상</span><b>전체화면은 선택</b>';
- w.innerHTML=`<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="${key} 학급 퍼포먼스"></iframe>`;
+ w.innerHTML=`<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer" title="${key} 학급 퍼포먼스"></iframe>`;
  let actions=m.querySelector('.performance-player-actions');
  if(!actions){actions=document.createElement('div');actions.className='performance-player-actions';actions.innerHTML='<button class="primary" type="button" data-performance-fullscreen>⛶ 전체화면</button><button type="button" data-performance-close2>목록으로</button>';m.querySelector('.performance-modal-card')?.appendChild(actions);}
  actions.querySelector('[data-performance-fullscreen]').onclick=kdEnterPerformanceFullscreen;
