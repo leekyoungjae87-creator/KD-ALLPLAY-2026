@@ -193,7 +193,8 @@ function updateCountdown(){
     h=Math.floor(diff/3600000); diff%=3600000;
     m=Math.floor(diff/60000); s=Math.floor((diff%60000)/1000);
   }
-  const txt=diff<=0?'D-DAY':`D-${d}`;
+  const eventFinished=new Date()>new Date('2026-10-01T16:00:00+09:00');
+  const txt=eventFinished?'THANK YOU':(diff<=0?'D-DAY':`D-${d}`);
   document.getElementById('homeDday').textContent=txt;
   document.getElementById('ddayText').textContent=txt;
   document.getElementById('days').textContent=String(d).padStart(2,'0');
@@ -203,7 +204,7 @@ function updateCountdown(){
   document.getElementById('homeH').textContent=String(h).padStart(2,'0');
   document.getElementById('homeM').textContent=String(m).padStart(2,'0');
   document.getElementById('homeS').textContent=String(s).padStart(2,'0');
-  document.getElementById('homeCountSub').textContent=d>0?`${d}일 ${h}시간 ${m}분 남았습니다.`:'오늘은 ALL PLAY!';
+  document.getElementById('homeCountSub').textContent=eventFinished?'2026. 10. 1. 모두가 함께 만든 하루':(d>0?`${d}일 ${h}시간 ${m}분 남았습니다.`:'오늘은 ALL PLAY!');
 }
 updateCountdown();setInterval(updateCountdown,1000);
 
@@ -267,12 +268,23 @@ function gradeRows(g){
   let s=getScores();
   return Array.from({length:classCount(g)},(_,i)=>{let key=`${g}-${i+1}`, total=scoreEvents.reduce((a,e)=>a+(Number(s[key][e])||0),0);return {key,total,data:s[key]}}).sort((a,b)=>b.total-a.total);
 }
+const FINAL_STANDINGS={
+  1:[['1-7',460],['1-2',430],['1-5',380],['1-3',330],['1-6',320],['1-4',270]],
+  2:[['2-1',500],['2-2',390],['2-8',350],['2-7',340],['2-4',330],['2-3',300],['2-5',260],['2-6',230]],
+  3:[['3-3',440],['3-1',390],['3-2',390],['3-4',380],['3-6',330],['3-7',300],['3-5',250]]
+};
 function renderScores(){
-  let rows=gradeRows(currentGrade);
+  const rows=(FINAL_STANDINGS[currentGrade]||[]).map(([key,total])=>({key,total}));
   const medals=['🥇','🥈','🥉'];
-  rankCards.innerHTML=rows.slice(0,3).map((r,i)=>`<div class="rank-card podium-${i+1}"><div class="rank-medal">${medals[i]}</div><span>${i+1}위</span><strong>${r.key}</strong><b>${r.total}<small>점</small></b><em>${currentGrade}학년 TOP ${i+1}</em></div>`).join('');
-  scoreTable.innerHTML=`<div class="score-board-head"><div><small>CLASS RANKING</small><b>${currentGrade}학년 전체 순위</b></div><span>🏁 경기 결과 반영</span></div><table class="score-table"><thead><tr><th>순위</th><th>학급</th>${scoreEvents.map(e=>`<th>${e}</th>`).join('')}<th>총점</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${i<3?'top-row top-'+(i+1):''}"><td><span class="table-rank">${i<3?medals[i]:i+1}</span></td><td class="class-cell"><b>${r.key}</b></td>${scoreEvents.map(e=>`<td>${r.data[e]}</td>`).join('')}<td class="total-cell"><b>${r.total}</b><small>점</small></td></tr>`).join('')}</tbody></table>`;
-  renderLeaders();
+  rankCards.innerHTML=rows.slice(0,3).map((r,i)=>`<div class="rank-card podium-${i+1}"><div class="rank-medal">${medals[i]}</div><span>${i+1}위</span><strong>${r.key}</strong><b>${r.total}<small>점</small></b><em>${currentGrade}학년 FINAL</em></div>`).join('');
+  scoreTable.innerHTML=`<div class="score-board-head final-board-head"><div><small>FINAL CLASS RANKING</small><b>${currentGrade}학년 최종 순위</b></div><span>✓ 최종 확정</span></div><table class="score-table final-score-table"><thead><tr><th>순위</th><th>학급</th><th>총점</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="${i<3?'top-row top-'+(i+1):''}"><td><span class="table-rank">${i<3?medals[i]:i+1}</span></td><td class="class-cell"><b>${r.key}</b>${currentGrade===3&&r.key==='3-1'?'<small class="tiebreak-badge">줄다리기 승</small>':''}</td><td class="total-cell"><b>${r.total}</b><small>점</small></td></tr>`).join('')}</tbody></table>`;
+  renderFinalAwards();
+}
+function renderFinalAwards(){
+ const el=document.getElementById('performanceAwards'); if(!el)return;
+ const awards={1:['1-1','1-4','1-6'],2:['2-5','2-4','2-3'],3:['3-1','3-2','3-7']};
+ const labels=['🥇 최우수','🥈 우수','🥉 장려'];
+ el.innerHTML=`<div class="award-head"><small>PERFORMANCE AWARDS</small><h3>🎉 응원 퍼포먼스 수상</h3><p>학년별 퍼포먼스 수상 학급입니다.</p></div><div class="award-grade-grid">${[1,2,3].map(g=>`<article><b>${g}학년</b>${awards[g].map((c,i)=>`<div><span>${labels[i]}</span><strong>${c}</strong></div>`).join('')}</article>`).join('')}</div>`;
 }
 document.querySelectorAll('#gradeTabs button').forEach(b=>b.onclick=()=>{currentGrade=Number(b.dataset.grade);document.querySelectorAll('#gradeTabs button').forEach(x=>x.classList.toggle('active',x===b));renderScores()});
 function renderLeaders(){const el=document.getElementById('leaderBoard');if(!el)return;el.innerHTML=[1,2,3].map(g=>{let r=gradeRows(g)[0];return `<div class="leader"><span>${g}학년 선두</span><b>${r.key}</b><small>${r.total}점</small></div>`}).join('')}
@@ -1385,3 +1397,43 @@ async function luckyAdminRender(contentEl){
   });
 }
 
+
+
+/* ===== V77.0 AFTER ARCHIVE ===== */
+const KD_PERFORMANCE_VIDEOS = {"1-1": "1j2wFNlwPhI_P0eMLP6BCM1RHoqguNM11", "1-2": "1nqzfxLbip3tiyh56d3sSbnJQo1v8zDXS", "1-3": "1REHYAWWi-TiYZUAsuPRjErIW70hbuop6", "1-4": "199K8vQgta_eBG17M9CBdkoCzBw_5Szee", "1-6": "1dInhzsYC1oTKw9xEoa4zaKf26EPhJDxe", "1-7": "1S9dtoN0PZnAKv87mi2S-anhTQGgznVm0", "2-3": "1EGu8ZPcVb_6HqWFAWYn9Reso1LkzNH7k", "2-4": "1UcBAdP9n4o7SU623GXP0WSTUFe7iJlHh", "2-5": "1diia6J6b4yRu9RjbCL5bv8Qujs-ZS99v", "2-7": "1JYyzRE6SQ7ZgDo34vUKJ2hjKKAeZAY9W", "2-8": "1GpsbzSSyLHv7mXs_N6EfTrgfaZQNJmkV", "3-1": "14ShfZOh9D5TM6xClXU09JbtLG1Un3vTJ", "3-2": "1v5Xuyaie2BVyfeivwm6m4-PYKfbnlS8c", "3-3": "1bgKD7Ab6ZpAk0BjF_Qa_v0JiD8QJaVYx", "3-4": "1DFcMNQ7GArEidAdu8HRffm996w6SRbnT", "3-5": "1IIAQ1vSGGykqvwbcqjwuKkszwaYdTaUz", "3-6": "1Tx2WYOYnjk46meLtiCyczchbbOW5otHp", "3-7": "1SfTRIc2Ot0XcNpLh1keX_Yxdv5osPEUQ"};
+const KD_PERFORMANCE_AWARDS={'1-1':'🥇 최우수','1-4':'🥈 우수','1-6':'🥉 장려','2-5':'🥇 최우수','2-4':'🥈 우수','2-3':'🥉 장려','3-1':'🥇 최우수','3-2':'🥈 우수','3-7':'🥉 장려'};
+let kdVideoGrade=1, kdViewCounts={};
+async function kdLoadViewCounts(){
+  if(!kdSbReady) return;
+  try{const {data,error}=await kdSb.from('kd_performance_views').select('class_key');if(error)throw error;kdViewCounts={};(data||[]).forEach(r=>kdViewCounts[r.class_key]=(kdViewCounts[r.class_key]||0)+1);}catch(e){console.info('V77 view counter setup pending');}
+}
+function kdRenderPerformanceVideos(){
+ const grid=document.getElementById('performanceVideoGrid');if(!grid)return;
+ const keys=Object.keys(KD_PERFORMANCE_VIDEOS).filter(k=>Number(k.split('-')[0])===kdVideoGrade).sort((a,b)=>Number(a.split('-')[1])-Number(b.split('-')[1]));
+ grid.innerHTML=keys.map((k,i)=>`<button class="performance-video-card" data-performance-key="${k}"><div class="video-card-art"><span class="video-number">${String(i+1).padStart(2,'0')}</span><i>▶</i></div><div class="video-card-copy"><div><small>CLASS PERFORMANCE</small><h3>${k}</h3></div>${KD_PERFORMANCE_AWARDS[k]?`<em>${KD_PERFORMANCE_AWARDS[k]}</em>`:''}</div><div class="video-card-foot"><span>🎬 영상 보기</span><b data-view-for="${k}">👁 ${kdViewCounts[k]||0}</b></div></button>`).join('');
+ grid.querySelectorAll('[data-performance-key]').forEach(b=>b.onclick=()=>kdOpenPerformance(b.dataset.performanceKey));
+}
+async function kdCountView(key){
+ if(!kdSbReady)return;
+ try{let viewer=localStorage.getItem('kd_v77_viewer');if(!viewer){viewer=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());localStorage.setItem('kd_v77_viewer',viewer)}
+ const day=new Date().toISOString().slice(0,10);const {error}=await kdSb.from('kd_performance_views').upsert({class_key:key,viewer_key:viewer,view_date:day},{onConflict:'class_key,viewer_key,view_date',ignoreDuplicates:true});if(error)throw error;await kdLoadViewCounts();document.querySelectorAll(`[data-view-for="${key}"]`).forEach(x=>x.textContent=`👁 ${kdViewCounts[key]||0}`);}catch(e){}
+}
+function kdOpenPerformance(key){
+ const modal=document.getElementById('performancePlayerModal'),wrap=document.getElementById('performanceFrameWrap');if(!modal||!wrap)return;
+ document.getElementById('performanceModalTitle').textContent=`${key} 학급 퍼포먼스`;
+ document.getElementById('performanceModalMeta').innerHTML=`${KD_PERFORMANCE_AWARDS[key]?`<span>${KD_PERFORMANCE_AWARDS[key]}</span>`:''}<b>👁 <span data-view-for="${key}">${kdViewCounts[key]||0}</span></b>`;
+ wrap.innerHTML=`<iframe src="https://drive.google.com/file/d/${KD_PERFORMANCE_VIDEOS[key]}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
+ modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');kdCountView(key);
+}
+function kdClosePerformance(){const m=document.getElementById('performancePlayerModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');const w=document.getElementById('performanceFrameWrap');if(w)w.innerHTML='';document.body.classList.remove('modal-open')}
+document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
+document.querySelectorAll('[data-close-performance]').forEach(x=>x.onclick=kdClosePerformance);
+kdLoadViewCounts().then(kdRenderPerformanceVideos);kdRenderPerformanceVideos();
+
+const KD_GALLERY=Array.from({length:20},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg`);let kdGalleryIndex=0;
+function kdRenderGallery(){const g=document.getElementById('allplayGallery');if(!g)return;g.innerHTML=KD_GALLERY.map((src,i)=>`<button class="gallery-item" data-gallery-index="${i}" aria-label="사진 ${i+1} 크게 보기"><img src="${src}" loading="lazy" draggable="false" alt="2026 경덕 ALL PLAY ${i+1}"><span>${String(i+1).padStart(2,'0')}</span></button>`).join('');g.querySelectorAll('[data-gallery-index]').forEach(b=>b.onclick=()=>kdOpenGallery(Number(b.dataset.galleryIndex)));}
+function kdOpenGallery(i){kdGalleryIndex=(i+KD_GALLERY.length)%KD_GALLERY.length;const m=document.getElementById('galleryModal'),img=document.getElementById('galleryModalImage');if(!m||!img)return;img.src=KD_GALLERY[kdGalleryIndex];document.getElementById('galleryCounter').textContent=`${kdGalleryIndex+1} / ${KD_GALLERY.length}`;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+function kdCloseGallery(){const m=document.getElementById('galleryModal');if(m){m.classList.add('hidden');m.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open')}
+document.querySelectorAll('[data-close-gallery]').forEach(x=>x.onclick=kdCloseGallery);document.querySelector('[data-gallery-prev]')?.addEventListener('click',()=>kdOpenGallery(kdGalleryIndex-1));document.querySelector('[data-gallery-next]')?.addEventListener('click',()=>kdOpenGallery(kdGalleryIndex+1));kdRenderGallery();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){kdCloseGallery();kdClosePerformance()}if(!document.getElementById('galleryModal')?.classList.contains('hidden')){if(e.key==='ArrowLeft')kdOpenGallery(kdGalleryIndex-1);if(e.key==='ArrowRight')kdOpenGallery(kdGalleryIndex+1)}});
+document.addEventListener('contextmenu',e=>{if(e.target.closest('#media,#performance-videos'))e.preventDefault()});
