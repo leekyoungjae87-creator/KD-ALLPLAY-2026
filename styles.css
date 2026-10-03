@@ -2706,3 +2706,14 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 .performance-modal-card:fullscreen{width:100vw!important;height:100vh!important;max-height:none!important;border-radius:0!important;background:#000!important;}
 .performance-modal-card:fullscreen .performance-modal-head{display:none!important;}
 .performance-modal-card:fullscreen .performance-frame-wrap{position:absolute!important;inset:0!important;height:100%!important;aspect-ratio:auto!important;}
+
+/* V77.8 landscape performance player */
+#performancePlayerModal.performance-landscape-player{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;background:#000!important;z-index:99999!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+#performancePlayerModal.performance-landscape-player .performance-modal-card{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;border-radius:0!important;background:#000!important;overflow:hidden!important;}
+#performancePlayerModal.performance-landscape-player .performance-modal-head{position:absolute!important;top:max(10px,env(safe-area-inset-top))!important;right:max(10px,env(safe-area-inset-right))!important;left:auto!important;z-index:20!important;background:transparent!important;padding:0!important;}
+#performancePlayerModal.performance-landscape-player .performance-modal-head>div{display:none!important;}
+#performancePlayerModal.performance-landscape-player [data-close-performance]{width:56px!important;height:56px!important;min-width:56px!important;border-radius:50%!important;background:rgba(15,23,42,.82)!important;color:#fff!important;font-size:34px!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 4px 18px rgba(0,0,0,.3)!important;touch-action:manipulation!important;}
+#performancePlayerModal.performance-landscape-player #performanceFrameWrap{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background:#000!important;}
+#performancePlayerModal.performance-landscape-player #performanceFrameWrap iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important;background:#000!important;}
+#performancePlayerModal.performance-landscape-player .performance-modal-note{display:none!important;}
+@media (orientation:portrait){#performancePlayerModal.performance-landscape-player .performance-modal-card{width:100vw!important;height:100dvh!important;}}
