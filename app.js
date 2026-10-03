@@ -1430,7 +1430,7 @@ document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVide
 document.querySelectorAll('[data-close-performance]').forEach(x=>x.onclick=kdClosePerformance);
 kdLoadViewCounts().then(kdRenderPerformanceVideos);kdRenderPerformanceVideos();
 
-const KD_GALLERY=Array.from({length:20},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg`);let kdGalleryIndex=0;
+const KD_GALLERY=[1,4,7,9,15,16,17,20].map(n=>`assets/gallery/allplay-${String(n).padStart(2,'0')}.jpg`);let kdGalleryIndex=0;
 function kdRenderGallery(){const g=document.getElementById('allplayGallery');if(!g)return;g.innerHTML=KD_GALLERY.map((src,i)=>`<button class="gallery-item" data-gallery-index="${i}" aria-label="사진 ${i+1} 크게 보기"><img src="${src}" loading="lazy" draggable="false" alt="2026 경덕 ALL PLAY ${i+1}"><span>${String(i+1).padStart(2,'0')}</span></button>`).join('');g.querySelectorAll('[data-gallery-index]').forEach(b=>b.onclick=()=>kdOpenGallery(Number(b.dataset.galleryIndex)));}
 function kdOpenGallery(i){kdGalleryIndex=(i+KD_GALLERY.length)%KD_GALLERY.length;const m=document.getElementById('galleryModal'),img=document.getElementById('galleryModalImage');if(!m||!img)return;img.src=KD_GALLERY[kdGalleryIndex];document.getElementById('galleryCounter').textContent=`${kdGalleryIndex+1} / ${KD_GALLERY.length}`;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
 function kdCloseGallery(){const m=document.getElementById('galleryModal');if(m){m.classList.add('hidden');m.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open')}
