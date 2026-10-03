@@ -2680,3 +2680,11 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:420px){.performance-video-grid{grid-template-columns:1fr 1fr}.video-card-art{height:95px}.video-card-copy{padding:11px 10px 7px}.video-card-copy h3{font-size:17px}.video-card-copy em{font-size:7.5px;padding:5px 6px}.video-card-foot{padding:0 10px 11px;font-size:9px}}
 
 #home .countdown-card .mini-clock{display:none} #home .now-strip{display:none}
+
+/* V77.2 mobile replay polish */
+.hero-kicker-mobile{font-size:clamp(18px,4.6vw,28px);font-weight:900;letter-spacing:-.04em;color:#203a59;white-space:nowrap}
+.hero-play-title{display:inline-block;margin-top:4px;font-size:clamp(34px,9vw,58px)!important;line-height:1!important;letter-spacing:-.055em}
+.hero-play-title span{white-space:nowrap}
+@media(max-width:600px){
+ .hero-card{padding:22px 18px!important}.hero-card h2{line-height:1.15!important;margin-bottom:10px!important}.hero-card p{font-size:12px!important}.hero-btns{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.hero-btns button{font-size:12px!important;padding:11px 8px!important;white-space:nowrap}.archive-quick b{font-size:13px!important}.after-video-title h2,.after-gallery-title h2{font-size:28px!important;white-space:nowrap}.main-nav button{white-space:nowrap;font-size:12px!important;padding-left:12px!important;padding-right:12px!important}
+}
