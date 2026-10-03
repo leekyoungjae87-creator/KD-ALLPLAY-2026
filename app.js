@@ -1422,7 +1422,7 @@ function kdOpenPerformance(key){
  const modal=document.getElementById('performancePlayerModal'),wrap=document.getElementById('performanceFrameWrap');if(!modal||!wrap)return;
  document.getElementById('performanceModalTitle').textContent=`${key} 학급 퍼포먼스`;
  document.getElementById('performanceModalMeta').innerHTML=`${KD_PERFORMANCE_AWARDS[key]?`<span>${KD_PERFORMANCE_AWARDS[key]}</span>`:''}<b>👁 <span data-view-for="${key}">${kdViewCounts[key]||0}</span></b>`;
- wrap.innerHTML=`<iframe src="https://drive.google.com/file/d/${KD_PERFORMANCE_VIDEOS[key]}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
+ wrap.innerHTML=`<iframe src="https://drive.google.com/file/d/${KD_PERFORMANCE_VIDEOS[key]}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe><span class="drive-open-block" aria-hidden="true"></span>`;
  modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');kdCountView(key);
 }
 function kdClosePerformance(){const m=document.getElementById('performancePlayerModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');const w=document.getElementById('performanceFrameWrap');if(w)w.innerHTML='';document.body.classList.remove('modal-open')}

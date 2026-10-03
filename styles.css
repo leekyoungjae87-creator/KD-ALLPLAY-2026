@@ -2688,3 +2688,9 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 @media(max-width:600px){
  .hero-card{padding:22px 18px!important}.hero-card h2{line-height:1.15!important;margin-bottom:10px!important}.hero-card p{font-size:12px!important}.hero-btns{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.hero-btns button{font-size:12px!important;padding:11px 8px!important;white-space:nowrap}.archive-quick b{font-size:13px!important}.after-video-title h2,.after-gallery-title h2{font-size:28px!important;white-space:nowrap}.main-nav button{white-space:nowrap;font-size:12px!important;padding-left:12px!important;padding-right:12px!important}
 }
+
+/* V77.3 performance polish */
+.after-video-title h2{color:#ef4444!important;text-shadow:0 1px 0 rgba(255,255,255,.06)}
+.performance-frame-wrap{overflow:hidden}
+.drive-open-block{position:absolute;z-index:4;right:0;top:0;width:74px;height:74px;background:transparent;pointer-events:auto}
+@media(max-width:640px){.after-video-title h2{font-size:27px!important}.drive-open-block{width:66px;height:66px}}
