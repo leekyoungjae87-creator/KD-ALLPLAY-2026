@@ -1411,7 +1411,7 @@ function kdRenderPerformanceVideos(){
  const grid=document.getElementById('performanceVideoGrid');if(!grid)return;
  const keys=Object.keys(KD_PERFORMANCE_VIDEOS).filter(k=>Number(k.split('-')[0])===kdVideoGrade).sort((a,b)=>Number(a.split('-')[1])-Number(b.split('-')[1]));
  grid.innerHTML=keys.map((k,i)=>`<button class="performance-video-card" data-performance-key="${k}"><div class="video-card-art"><span class="video-number">${String(i+1).padStart(2,'0')}</span><i>▶</i></div><div class="video-card-copy"><div><small>CLASS PERFORMANCE</small><h3>${k}</h3></div>${KD_PERFORMANCE_AWARDS[k]?`<em>${KD_PERFORMANCE_AWARDS[k]}</em>`:''}</div><div class="video-card-foot"><span>▶ 영상 보기</span><b data-view-for="${k}">👁 ${kdViewCounts[k]||0}</b></div></button>`).join('');
- grid.querySelectorAll('[data-performance-key]').forEach(b=>b.onclick=()=>kdOpenPerformance(b.dataset.performanceKey));
+ grid.querySelectorAll('[data-performance-key]').forEach(b=>{b.type='button';});
 }
 async function kdCountView(key){
  if(!kdSbReady)return;
@@ -1453,11 +1453,25 @@ async function kdClosePerformance(){
 }
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){try{screen.orientation?.unlock?.()}catch(e){}}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!document.getElementById('performancePlayerModal')?.classList.contains('hidden'))kdKeepScreenAwake();});
-document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
+// V78.0: robust mobile tap handling via event delegation
+document.addEventListener('click',e=>{
+ const card=e.target.closest?.('[data-performance-key]');
+ if(!card || !document.getElementById('performance-videos')?.contains(card)) return;
+ e.preventDefault(); e.stopPropagation();
+ kdOpenPerformance(card.dataset.performanceKey);
+},{capture:true});
+document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);// V78.0: robust mobile tap handling via event delegation
+document.addEventListener('click',e=>{
+ const card=e.target.closest?.('[data-performance-key]');
+ if(!card || !document.getElementById('performance-videos')?.contains(card)) return;
+ e.preventDefault(); e.stopPropagation();
+ kdOpenPerformance(card.dataset.performanceKey);
+},{capture:true});
+document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
 document.querySelectorAll('[data-close-performance]').forEach(x=>x.onclick=kdClosePerformance);
 kdLoadViewCounts().then(kdRenderPerformanceVideos);kdRenderPerformanceVideos();
 
-const KD_GALLERY=Array.from({length:18},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg?v=77.9`);let kdGalleryIndex=0;
+const KD_GALLERY=Array.from({length:18},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg?v=78.0`);let kdGalleryIndex=0;
 function kdRenderGallery(){const g=document.getElementById('allplayGallery');if(!g)return;g.innerHTML=KD_GALLERY.map((src,i)=>`<button class="gallery-item" data-gallery-index="${i}" aria-label="사진 ${i+1} 크게 보기"><img src="${src}" loading="lazy" draggable="false" alt="2026 경덕 ALL PLAY ${i+1}"><span>${String(i+1).padStart(2,'0')}</span></button>`).join('');g.querySelectorAll('[data-gallery-index]').forEach(b=>b.onclick=()=>kdOpenGallery(Number(b.dataset.galleryIndex)));}
 function kdOpenGallery(i){kdGalleryIndex=(i+KD_GALLERY.length)%KD_GALLERY.length;const m=document.getElementById('galleryModal'),img=document.getElementById('galleryModalImage');if(!m||!img)return;img.src=KD_GALLERY[kdGalleryIndex];document.getElementById('galleryCounter').textContent=`${kdGalleryIndex+1} / ${KD_GALLERY.length}`;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
 function kdCloseGallery(){const m=document.getElementById('galleryModal');if(m){m.classList.add('hidden');m.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open')}
