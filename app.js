@@ -1057,7 +1057,7 @@ if(adminLoginBtnEl){
 }
 
 document.querySelectorAll('[data-admin-view]').forEach(b=>b.onclick=async()=>{if(!adminContentEl)return;adminContentEl.innerHTML='<div class="info-note">불러오는 중입니다…</div>';try{await staffView(b.dataset.adminView,adminContentEl);}catch(e){console.error(e);adminContentEl.innerHTML='<div class="vote-empty">관리 화면을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</div>';}});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=76.37',{updateViaCache:'none'}).catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=78.1',{updateViaCache:'none'}).catch(()=>{})}
 
 
 
@@ -1411,7 +1411,7 @@ function kdRenderPerformanceVideos(){
  const grid=document.getElementById('performanceVideoGrid');if(!grid)return;
  const keys=Object.keys(KD_PERFORMANCE_VIDEOS).filter(k=>Number(k.split('-')[0])===kdVideoGrade).sort((a,b)=>Number(a.split('-')[1])-Number(b.split('-')[1]));
  grid.innerHTML=keys.map((k,i)=>`<button class="performance-video-card" data-performance-key="${k}"><div class="video-card-art"><span class="video-number">${String(i+1).padStart(2,'0')}</span><i>▶</i></div><div class="video-card-copy"><div><small>CLASS PERFORMANCE</small><h3>${k}</h3></div>${KD_PERFORMANCE_AWARDS[k]?`<em>${KD_PERFORMANCE_AWARDS[k]}</em>`:''}</div><div class="video-card-foot"><span>▶ 영상 보기</span><b data-view-for="${k}">👁 ${kdViewCounts[k]||0}</b></div></button>`).join('');
- grid.querySelectorAll('[data-performance-key]').forEach(b=>{b.type='button';});
+ grid.querySelectorAll('[data-performance-key]').forEach(b=>b.onclick=()=>kdOpenPerformance(b.dataset.performanceKey));
 }
 async function kdCountView(key){
  if(!kdSbReady)return;
@@ -1436,7 +1436,7 @@ async function kdOpenPerformance(key){
  if(!m||!w)return;
  const title=document.getElementById('performanceModalTitle'); if(title)title.textContent=`${key} 학급 퍼포먼스`;
  const meta=document.getElementById('performanceModalMeta'); if(meta)meta.innerHTML='<span>세로 화면에서 바로 감상</span><b>전체화면은 선택</b>';
- w.innerHTML=`<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="no-referrer" title="${key} 학급 퍼포먼스"></iframe>`;
+ w.innerHTML=`<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="${key} 학급 퍼포먼스"></iframe>`;
  let actions=m.querySelector('.performance-player-actions');
  if(!actions){actions=document.createElement('div');actions.className='performance-player-actions';actions.innerHTML='<button class="primary" type="button" data-performance-fullscreen>⛶ 전체화면</button><button type="button" data-performance-close2>목록으로</button>';m.querySelector('.performance-modal-card')?.appendChild(actions);}
  actions.querySelector('[data-performance-fullscreen]').onclick=kdEnterPerformanceFullscreen;
@@ -1453,25 +1453,11 @@ async function kdClosePerformance(){
 }
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){try{screen.orientation?.unlock?.()}catch(e){}}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!document.getElementById('performancePlayerModal')?.classList.contains('hidden'))kdKeepScreenAwake();});
-// V78.0: robust mobile tap handling via event delegation
-document.addEventListener('click',e=>{
- const card=e.target.closest?.('[data-performance-key]');
- if(!card || !document.getElementById('performance-videos')?.contains(card)) return;
- e.preventDefault(); e.stopPropagation();
- kdOpenPerformance(card.dataset.performanceKey);
-},{capture:true});
-document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);// V78.0: robust mobile tap handling via event delegation
-document.addEventListener('click',e=>{
- const card=e.target.closest?.('[data-performance-key]');
- if(!card || !document.getElementById('performance-videos')?.contains(card)) return;
- e.preventDefault(); e.stopPropagation();
- kdOpenPerformance(card.dataset.performanceKey);
-},{capture:true});
-document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
+document.querySelectorAll('[data-video-grade]').forEach(b=>b.onclick=()=>{kdVideoGrade=Number(b.dataset.videoGrade);document.querySelectorAll('[data-video-grade]').forEach(x=>x.classList.toggle('active',x===b));kdRenderPerformanceVideos()});
 document.querySelectorAll('[data-close-performance]').forEach(x=>x.onclick=kdClosePerformance);
 kdLoadViewCounts().then(kdRenderPerformanceVideos);kdRenderPerformanceVideos();
 
-const KD_GALLERY=Array.from({length:18},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg?v=78.0`);let kdGalleryIndex=0;
+const KD_GALLERY=Array.from({length:18},(_,i)=>`assets/gallery/allplay-${String(i+1).padStart(2,'0')}.jpg?v=77.9`);let kdGalleryIndex=0;
 function kdRenderGallery(){const g=document.getElementById('allplayGallery');if(!g)return;g.innerHTML=KD_GALLERY.map((src,i)=>`<button class="gallery-item" data-gallery-index="${i}" aria-label="사진 ${i+1} 크게 보기"><img src="${src}" loading="lazy" draggable="false" alt="2026 경덕 ALL PLAY ${i+1}"><span>${String(i+1).padStart(2,'0')}</span></button>`).join('');g.querySelectorAll('[data-gallery-index]').forEach(b=>b.onclick=()=>kdOpenGallery(Number(b.dataset.galleryIndex)));}
 function kdOpenGallery(i){kdGalleryIndex=(i+KD_GALLERY.length)%KD_GALLERY.length;const m=document.getElementById('galleryModal'),img=document.getElementById('galleryModalImage');if(!m||!img)return;img.src=KD_GALLERY[kdGalleryIndex];document.getElementById('galleryCounter').textContent=`${kdGalleryIndex+1} / ${KD_GALLERY.length}`;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
 function kdCloseGallery(){const m=document.getElementById('galleryModal');if(m){m.classList.add('hidden');m.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open')}
