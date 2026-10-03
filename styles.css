@@ -2690,7 +2690,19 @@ footer{border-top:1px solid var(--line);background:#fff;padding:22px;text-align:
 }
 
 /* V77.3 performance polish */
-.after-video-title h2{color:#ef4444!important;text-shadow:0 1px 0 rgba(255,255,255,.06)}
+.after-video-title h2{color:#7dd3fc!important;text-shadow:0 1px 0 rgba(255,255,255,.08)}
 .performance-frame-wrap{overflow:hidden}
 .drive-open-block{position:absolute;z-index:4;right:0;top:0;width:74px;height:74px;background:transparent;pointer-events:auto}
 @media(max-width:640px){.after-video-title h2{font-size:27px!important}.drive-open-block{width:66px;height:66px}}
+
+/* V77.6 fullscreen performance player */
+.performance-fullscreen-mode{padding:0!important;background:#000!important;}
+.performance-fullscreen-mode .performance-modal-backdrop{background:#000!important;backdrop-filter:none!important;}
+.performance-fullscreen-mode .performance-modal-card{width:100vw!important;height:100dvh!important;max-height:none!important;border-radius:0!important;background:#000!important;overflow:hidden!important;}
+.performance-fullscreen-mode .performance-modal-head{display:none!important;}
+.performance-fullscreen-mode .performance-frame-wrap{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;background:#000!important;}
+.performance-fullscreen-mode .performance-modal-close{position:fixed!important;right:14px!important;top:max(14px,env(safe-area-inset-top))!important;z-index:10020!important;background:rgba(15,23,42,.82)!important;}
+.performance-fullscreen-mode .drive-open-block{position:absolute!important;right:0!important;top:0!important;width:84px!important;height:84px!important;z-index:4!important;background:transparent!important;}
+.performance-modal-card:fullscreen{width:100vw!important;height:100vh!important;max-height:none!important;border-radius:0!important;background:#000!important;}
+.performance-modal-card:fullscreen .performance-modal-head{display:none!important;}
+.performance-modal-card:fullscreen .performance-frame-wrap{position:absolute!important;inset:0!important;height:100%!important;aspect-ratio:auto!important;}
