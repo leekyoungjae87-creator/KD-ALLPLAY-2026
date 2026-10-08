@@ -62,6 +62,9 @@
 .lucky-prize-grid .lucky-prize:nth-child(10){background:linear-gradient(180deg,#eaf7ff 0%,#f9fdff 100%)}
 .lucky-prize-grid .lucky-prize.selected{border:2px solid #2d6da4;box-shadow:0 12px 26px rgba(45,109,164,.12)}
 .lucky-warning-bottom{max-width:900px;margin:24px auto 4px;padding:15px 16px}
+
+/* Performance replay: mobile-first, isolated from existing tabs */
+.pr-grades{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}.pr-grades button{border:1px solid #d1d5db;border-radius:12px;padding:10px 18px;background:#fff;color:#222;font-weight:700;cursor:pointer}.pr-grades button.pr-selected{background:#192f52;color:#fff}.pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}.pr-tile{border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff}.pr-tile strong{display:block;margin-bottom:9px}.pr-tile iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#101827}.pr-tile a{display:inline-block;margin-top:9px;font-size:13px}.pr-hint{font-size:13px;color:#555;margin:12px 0}@media(max-width:640px){.pr-grid{grid-template-columns:1fr}.pr-tile{padding:10px}.pr-grades button{flex:1}}
 </style>
 
 <style>
@@ -211,7 +214,7 @@
 <style>
 .pm-gallery{max-width:1120px;margin:24px auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .pm-item{margin:0;background:#f1f5f9;border-radius:14px;overflow:hidden;aspect-ratio:4/3}
-.pm-item img{display:block;width:100%;height:100%;object-fit:cover;cursor:default}
+.pm-item.photo-error{outline:2px dashed #ef4444}.pm-item.photo-error:after{content:"사진 파일을 찾을 수 없습니다";display:block;padding:12px;text-align:center;font-size:12px;color:#b91c1c}.pm-item img{display:block;width:100%;height:100%;object-fit:cover;cursor:default}
 @media(max-width:700px){.pm-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:15px auto}.pm-item{border-radius:10px}}
 </style></head>
 <body>
@@ -232,13 +235,14 @@
 
 <nav class="main-nav" id="mainNav">
   <button class="active" data-page="home">🏠 홈</button>
+  <button data-page="finalresults">🥇 최종 점수 결과</button>
+  <button data-page="playmoments">📸 PLAY MOMENTS (사진)</button>
+  <button data-page="performance-replay">🎬 퍼포먼스 다시보기</button>
   <button data-page="lucky">🎁 행운권 응모</button>
   <button data-page="patbingsu">🍧 팥빙수 부스</button>
   <button data-page="schedule">📅 일정</button>
   <button data-page="weather">🌤️ 당일 날씨</button>
   <button data-page="live">🏆 실시간 점수</button>
-  <button data-page="finalresults">🥇 최종 점수 결과</button>
-  <button data-page="playmoments">📸 PLAY MOMENTS (사진)</button>
   <button data-page="points">📊 종목별 배점표</button>
   <button data-page="rules">📖 경기 규칙</button>
   <button data-page="brackets">⚽ 예선 진행 및 결과</button>
@@ -262,7 +266,7 @@
     <div class="hero-grid">
       <article class="hero-card">
         <div class="hero-tag">2026 ALL PLAY</div>
-        <h2>모두의 체육한마당<br><strong class="hero-focus hero-play-title">지금부터 한눈에 <span>PLAY!</span></strong></h2>
+        <h2><span style="color:#2563EB">우리의 추억을</span><br><strong class="hero-focus hero-play-title" style="white-space:nowrap"><span style="color:#16A34A!important">RE:</span> <span style="color:#DC2626!important">PLAY!</span></strong></h2>
         <p><span class="v8-hero-desc">일정, 점수, 대진, 참가자, 경기 규칙과 본부 공지를 한 곳에서 확인하세요.</span></p>
         <div class="hero-btns">
           <button data-go="schedule">오늘 일정 보기</button>
@@ -545,33 +549,34 @@
 
   <section class="page" id="playmoments">
 <div class="page-title peach"><div class="icon">📸</div><div><small>2026 KD ALL PLAY · MOMENTS</small><h2>PLAY MOMENTS (사진)</h2><p>우리의 순간을 다시 RE:PLAY!</p></div></div>
-<div class="pm-gallery"><figure class="pm-item"><img src="play-moments/001.jpg" alt="체육한마당 사진 1" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/002.jpg" alt="체육한마당 사진 2" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/003.jpg" alt="체육한마당 사진 3" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/004.jpg" alt="체육한마당 사진 4" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/005.jpg" alt="체육한마당 사진 5" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/006.jpg" alt="체육한마당 사진 6" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/007.jpg" alt="체육한마당 사진 7" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/008.jpg" alt="체육한마당 사진 8" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/009.jpg" alt="체육한마당 사진 9" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/010.jpg" alt="체육한마당 사진 10" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/011.jpg" alt="체육한마당 사진 11" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/012.jpg" alt="체육한마당 사진 12" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/013.jpg" alt="체육한마당 사진 13" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/014.jpg" alt="체육한마당 사진 14" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/015.jpg" alt="체육한마당 사진 15" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/016.jpg" alt="체육한마당 사진 16" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/017.jpg" alt="체육한마당 사진 17" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/018.jpg" alt="체육한마당 사진 18" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/019.jpg" alt="체육한마당 사진 19" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/020.jpg" alt="체육한마당 사진 20" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/021.jpg" alt="체육한마당 사진 21" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/022.jpg" alt="체육한마당 사진 22" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/023.jpg" alt="체육한마당 사진 23" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/024.jpg" alt="체육한마당 사진 24" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/025.jpg" alt="체육한마당 사진 25" loading="lazy" decoding="async"></figure>
-<figure class="pm-item"><img src="play-moments/026.jpg" alt="체육한마당 사진 26" loading="lazy" decoding="async"></figure></div>
+<div class="pm-gallery"><figure class="pm-item"><img src="play-moments/001.jpg?v=20261008b" alt="체육한마당 사진 1" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/002.jpg?v=20261008b" alt="체육한마당 사진 2" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/003.jpg?v=20261008b" alt="체육한마당 사진 3" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/004.jpg?v=20261008b" alt="체육한마당 사진 4" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/005.jpg?v=20261008b" alt="체육한마당 사진 5" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/006.jpg?v=20261008b" alt="체육한마당 사진 6" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/007.jpg?v=20261008b" alt="체육한마당 사진 7" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/008.jpg?v=20261008b" alt="체육한마당 사진 8" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/009.jpg?v=20261008b" alt="체육한마당 사진 9" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/010.jpg?v=20261008b" alt="체육한마당 사진 10" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/011.jpg?v=20261008b" alt="체육한마당 사진 11" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/012.jpg?v=20261008b" alt="체육한마당 사진 12" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/013.jpg?v=20261008b" alt="체육한마당 사진 13" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/014.jpg?v=20261008b" alt="체육한마당 사진 14" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/015.jpg?v=20261008b" alt="체육한마당 사진 15" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/016.jpg?v=20261008b" alt="체육한마당 사진 16" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/017.jpg?v=20261008b" alt="체육한마당 사진 17" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/018.jpg?v=20261008b" alt="체육한마당 사진 18" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/019.jpg?v=20261008b" alt="체육한마당 사진 19" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/020.jpg?v=20261008b" alt="체육한마당 사진 20" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/021.jpg?v=20261008b" alt="체육한마당 사진 21" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/022.jpg?v=20261008b" alt="체육한마당 사진 22" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/023.jpg?v=20261008b" alt="체육한마당 사진 23" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/024.jpg?v=20261008b" alt="체육한마당 사진 24" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/025.jpg?v=20261008b" alt="체육한마당 사진 25" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure>
+<figure class="pm-item"><img src="play-moments/026.jpg?v=20261008b" alt="체육한마당 사진 26" loading="lazy" decoding="async" onerror="this.closest('figure').classList.add('photo-error')"></figure></div>
 </section>
+<section class="page" id="performance-replay"><h2>🎬 응원 퍼포먼스 다시보기</h2><p class="pr-hint">학년을 선택한 후 영상을 눌러 재생하세요. Wi-Fi 환경에서 시청을 권장합니다. 일부 기기에서 재생되지 않으면 ‘Drive에서 보기’를 눌러주세요.</p><div class="pr-grades"><button type="button" class="pr-selected" data-pr-switch="1">1학년 (6개)</button><button type="button" data-pr-switch="2">2학년 (5개)</button><button type="button" data-pr-switch="3">3학년 (7개)</button></div><div class="pr-grid"><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-1반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1j2wFNlwPhI_P0eMLP6BCM1RHoqguNM11/preview" title="1-1반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1j2wFNlwPhI_P0eMLP6BCM1RHoqguNM11/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-2반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1nqzfxLbip3tiyh56d3sSbnJQo1v8zDXS/preview" title="1-2반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1nqzfxLbip3tiyh56d3sSbnJQo1v8zDXS/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-3반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1REHYAWWi-TiYZUAsuPRjErIW70hbuop6/preview" title="1-3반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1REHYAWWi-TiYZUAsuPRjErIW70hbuop6/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-4반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/199K8vQgta_eBG17M9CBdkoCzBw_5Szee/preview" title="1-4반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/199K8vQgta_eBG17M9CBdkoCzBw_5Szee/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-6반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1dInhzsYC1oTKw9xEoa4zaKf26EPhJDxe/preview" title="1-6반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1dInhzsYC1oTKw9xEoa4zaKf26EPhJDxe/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="1" style="display:block"><strong>1-7반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1S9dtoN0PZnAKv87mi2S-anhTQGgznVm0/preview" title="1-7반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1S9dtoN0PZnAKv87mi2S-anhTQGgznVm0/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="2" style="display:none"><strong>2-3반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1EGu8ZPcVb_6HqWFAWYn9Reso1LkzNH7k/preview" title="2-3반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1EGu8ZPcVb_6HqWFAWYn9Reso1LkzNH7k/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="2" style="display:none"><strong>2-4반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1UcBAdP9n4o7SU623GXP0WSTUFe7iJlHh/preview" title="2-4반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1UcBAdP9n4o7SU623GXP0WSTUFe7iJlHh/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="2" style="display:none"><strong>2-5반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1diia6J6b4yRu9RjbCL5bv8Qujs-ZS99v/preview" title="2-5반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1diia6J6b4yRu9RjbCL5bv8Qujs-ZS99v/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="2" style="display:none"><strong>2-7반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1JYyzRE6SQ7ZgDo34vUKJ2hjKKAeZAY9W/preview" title="2-7반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1JYyzRE6SQ7ZgDo34vUKJ2hjKKAeZAY9W/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="2" style="display:none"><strong>2-8반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1GpsbzSSyLHv7mXs_N6EfTrgfaZQNJmkV/preview" title="2-8반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1GpsbzSSyLHv7mXs_N6EfTrgfaZQNJmkV/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-1반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/14ShfZOh9D5TM6xClXU09JbtLG1Un3vTJ/preview" title="3-1반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/14ShfZOh9D5TM6xClXU09JbtLG1Un3vTJ/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-2반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1v5Xuyaie2BVyfeivwm6m4-PYKfbnlS8c/preview" title="3-2반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1v5Xuyaie2BVyfeivwm6m4-PYKfbnlS8c/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-3반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1bgKD7Ab6ZpAk0BjF_Qa_v0JiD8QJaVYx/preview" title="3-3반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1bgKD7Ab6ZpAk0BjF_Qa_v0JiD8QJaVYx/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-4반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1DFcMNQ7GArEidAdu8HRffm996w6SRbnT/preview" title="3-4반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1DFcMNQ7GArEidAdu8HRffm996w6SRbnT/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-5반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1IIAQ1vSGGykqvwbcqjwuKkszwaYdTaUz/preview" title="3-5반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1IIAQ1vSGGykqvwbcqjwuKkszwaYdTaUz/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-6반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1Tx2WYOYnjk46meLtiCyczchbbOW5otHp/preview" title="3-6반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1Tx2WYOYnjk46meLtiCyczchbbOW5otHp/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article><article class="pr-tile" data-pr-grade="3" style="display:none"><strong>3-7반 응원 퍼포먼스</strong><iframe loading="lazy" data-src="https://drive.google.com/file/d/1SfTRIc2Ot0XcNpLh1keX_Yxdv5osPEUQ/preview" title="3-7반 응원 퍼포먼스" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe><a href="https://drive.google.com/file/d/1SfTRIc2Ot0XcNpLh1keX_Yxdv5osPEUQ/view" target="_blank" rel="noopener noreferrer">재생이 안 되면 Drive에서 보기 ↗</a></article></div></section>
 <section class="page" id="finalresults">
 <div class="page-title peach"><div class="icon">🥇</div><div><small>FINAL RESULTS · 2026</small><h2>체육한마당 최종 점수 결과</h2><p>학년별 최종 순위와 종합 점수를 확인하세요.</p></div></div>
 <div class="grade-tabs" id="finalGradeTabs"><button class="active" data-final-grade="1">1학년</button><button data-final-grade="2">2학년</button><button data-final-grade="3">3학년</button></div>
@@ -1355,6 +1360,10 @@ const finalData={
 function render(g){document.querySelectorAll('[data-final-grade]').forEach(b=>b.classList.toggle('active',b.dataset.finalGrade===String(g)));document.getElementById('finalResultsContent').innerHTML='<div class="final-results-list">'+finalData[g].map(([rank,cls,score])=>'<div class="final-results-row '+(rank<=3?'top ':'')+(score===null?'unknown':'')+'"><span class="final-results-rank">'+(rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank+'위')+'</span><span class="final-results-class">'+cls+'반</span><span class="final-results-score">'+(score===null?'점수 미확인':score+'<small>점</small>')+'</span></div>').join('')+'</div>'}
 document.querySelectorAll('[data-final-grade]').forEach(b=>b.addEventListener('click',()=>render(b.dataset.finalGrade)));render(1);
 })();
+</script>
+<script>
+/* Only load active grade videos; mobile bandwidth saver */
+document.addEventListener('DOMContentLoaded',function(){function switchGrade(g){document.querySelectorAll('[data-pr-switch]').forEach(b=>b.classList.toggle('pr-selected',b.dataset.prSwitch===g));document.querySelectorAll('[data-pr-grade]').forEach(card=>{const active=card.dataset.prGrade===g;card.style.display=active?'block':'none';const f=card.querySelector('iframe');if(!active){f.removeAttribute('src')}else if(!f.getAttribute('src')){f.src=f.dataset.src}})}document.querySelectorAll('[data-pr-switch]').forEach(b=>b.addEventListener('click',()=>switchGrade(b.dataset.prSwitch)));document.querySelector('[data-page="performance-replay"]')?.addEventListener('click',()=>switchGrade(document.querySelector('[data-pr-switch].pr-selected')?.dataset.prSwitch||'1'));});
 </script>
 </body>
 </html>
