@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kd-allplay-v76-61-performance';
+const CACHE_NAME = 'kd-allplay-v76-63-mobile-photo';
 const CORE = [
   './',
   './index.html',
